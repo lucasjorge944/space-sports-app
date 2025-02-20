@@ -8,7 +8,7 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -24,8 +24,8 @@ export default function BookingScreen() {
   const [time, setTime] = useState(new Date());
   const [sport, setSport] = useState(availableSports[0].toLowerCase());
   const [people, setPeople] = useState(1);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const [isTimePickerVisible, setTimePickerVisible] = useState(false);
 
   const peopleOptions = Array.from({ length: 20 }, (_, i) => i + 1);
 
@@ -44,6 +44,16 @@ export default function BookingScreen() {
       people,
     });
     router.back();
+  };
+
+  const handleConfirmDate = (selectedDate: Date) => {
+    setDatePickerVisible(false);
+    setDate(selectedDate);
+  };
+
+  const handleConfirmTime = (selectedTime: Date) => {
+    setTimePickerVisible(false);
+    setTime(selectedTime);
   };
 
   return (
@@ -76,7 +86,7 @@ export default function BookingScreen() {
             <Text style={styles.label}>Data</Text>
             <TouchableOpacity
               style={styles.dateButton}
-              onPress={() => setShowDatePicker(true)}
+              onPress={() => setDatePickerVisible(true)}
             >
               <Text>{date.toLocaleDateString()}</Text>
               <Ionicons name="calendar-outline" size={20} color="#666" />
@@ -88,7 +98,7 @@ export default function BookingScreen() {
             <Text style={styles.label}>Hora</Text>
             <TouchableOpacity
               style={styles.dateButton}
-              onPress={() => setShowTimePicker(true)}
+              onPress={() => setTimePickerVisible(true)}
             >
               <Text>{time.toLocaleTimeString().slice(0, 5)}</Text>
               <Ionicons name="time-outline" size={20} color="#666" />
@@ -136,28 +146,23 @@ export default function BookingScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Date/Time Pickers */}
-      {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          onChange={(event, selectedDate) => {
-            setShowDatePicker(false);
-            if (selectedDate) setDate(selectedDate);
-          }}
-        />
-      )}
+      {/* Date Picker Modal */}
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirmDate}
+        onCancel={() => setDatePickerVisible(false)}
+        minimumDate={new Date()}
+      />
 
-      {showTimePicker && (
-        <DateTimePicker
-          value={time}
-          mode="time"
-          onChange={(event, selectedDate) => {
-            setShowTimePicker(false);
-            if (selectedDate) setTime(selectedDate);
-          }}
-        />
-      )}
+      {/* Time Picker Modal */}
+      <DateTimePickerModal
+        isVisible={isTimePickerVisible}
+        mode="time"
+        onConfirm={handleConfirmTime}
+        onCancel={() => setTimePickerVisible(false)}
+        is24Hour={true}
+      />
     </SafeAreaView>
   );
 }
