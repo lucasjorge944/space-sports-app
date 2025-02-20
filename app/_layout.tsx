@@ -68,7 +68,9 @@ export default function RootLayout() {
             alignItems: 'center',
             zIndex: 999,
           }}
-        ></Animated.View>
+        >
+          <CustomSplash />
+        </Animated.View>
       )}
       <StatusBar style="auto" />
     </>
