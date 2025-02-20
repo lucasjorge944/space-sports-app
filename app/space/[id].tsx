@@ -14,7 +14,8 @@ import { Ionicons } from '@expo/vector-icons';
 const MOCK_SPACE = {
   id: '1',
   name: 'Arena Sports',
-  description: 'O melhor complexo esportivo da região, com quadras profissionais de Beach Tennis e Vôlei de Praia.',
+  description:
+    'O melhor complexo esportivo da região, com quadras profissionais de Beach Tennis e Vôlei de Praia.',
   rating: 4.8,
   reviews: 128,
   image: 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6',
@@ -31,7 +32,13 @@ const MOCK_SPACE = {
     { frequency: '2x na semana', price: 360 },
     { frequency: 'Ilimitado', price: 480 },
   ],
-  amenities: ['Estacionamento', 'Vestiário', 'Chuveiros', 'Lanchonete', 'Wi-Fi'],
+  amenities: [
+    'Estacionamento',
+    'Vestiário',
+    'Chuveiros',
+    'Lanchonete',
+    'Wi-Fi',
+  ],
   schedule: {
     weekdays: '06:00 - 22:00',
     weekends: '08:00 - 20:00',
@@ -44,14 +51,16 @@ const MOCK_SPACE = {
 };
 
 export default function SpaceDetailsScreen() {
-  const [selectedTab, setSelectedTab] = useState<'reserve' | 'classes'>('reserve');
+  const [selectedTab, setSelectedTab] = useState<'reserve' | 'classes'>(
+    'reserve'
+  );
   const { id } = useLocalSearchParams();
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton} 
+        <TouchableOpacity
+          style={styles.backButton}
           onPress={() => router.back()}
         >
           <Ionicons name="arrow-back" size={24} color="#fff" />
@@ -61,9 +70,9 @@ export default function SpaceDetailsScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView 
-        horizontal 
-        pagingEnabled 
+      <ScrollView
+        horizontal
+        pagingEnabled
         showsHorizontalScrollIndicator={false}
         style={styles.imageCarousel}
       >
@@ -107,11 +116,15 @@ export default function SpaceDetailsScreen() {
           <Text style={styles.sectionTitle}>Horário de Funcionamento</Text>
           <View style={styles.scheduleItem}>
             <Text style={styles.scheduleDay}>Segunda à Sexta</Text>
-            <Text style={styles.scheduleTime}>{MOCK_SPACE.schedule.weekdays}</Text>
+            <Text style={styles.scheduleTime}>
+              {MOCK_SPACE.schedule.weekdays}
+            </Text>
           </View>
           <View style={styles.scheduleItem}>
             <Text style={styles.scheduleDay}>Sábado e Domingo</Text>
-            <Text style={styles.scheduleTime}>{MOCK_SPACE.schedule.weekends}</Text>
+            <Text style={styles.scheduleTime}>
+              {MOCK_SPACE.schedule.weekends}
+            </Text>
           </View>
         </View>
 
@@ -120,7 +133,11 @@ export default function SpaceDetailsScreen() {
           <View style={styles.amenitiesList}>
             {MOCK_SPACE.amenities.map((amenity) => (
               <View key={amenity} style={styles.amenityItem}>
-                <Ionicons name="checkmark-circle-outline" size={20} color="#1a73e8" />
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={20}
+                  color="#1a73e8"
+                />
                 <Text style={styles.amenityText}>{amenity}</Text>
               </View>
             ))}
@@ -130,18 +147,34 @@ export default function SpaceDetailsScreen() {
         <View style={styles.servicesContainer}>
           <View style={styles.tabsContainer}>
             <TouchableOpacity
-              style={[styles.tab, selectedTab === 'reserve' && styles.activeTab]}
+              style={[
+                styles.tab,
+                selectedTab === 'reserve' && styles.activeTab,
+              ]}
               onPress={() => setSelectedTab('reserve')}
             >
-              <Text style={[styles.tabText, selectedTab === 'reserve' && styles.activeTabText]}>
+              <Text
+                style={[
+                  styles.tabText,
+                  selectedTab === 'reserve' && styles.activeTabText,
+                ]}
+              >
                 Reservar Espaço
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.tab, selectedTab === 'classes' && styles.activeTab]}
+              style={[
+                styles.tab,
+                selectedTab === 'classes' && styles.activeTab,
+              ]}
               onPress={() => setSelectedTab('classes')}
             >
-              <Text style={[styles.tabText, selectedTab === 'classes' && styles.activeTabText]}>
+              <Text
+                style={[
+                  styles.tabText,
+                  selectedTab === 'classes' && styles.activeTabText,
+                ]}
+              >
                 Aulas
               </Text>
             </TouchableOpacity>
@@ -151,7 +184,9 @@ export default function SpaceDetailsScreen() {
             <View style={styles.pricesContainer}>
               {MOCK_SPACE.hourlyPrices.map((price) => (
                 <TouchableOpacity key={price.hours} style={styles.priceCard}>
-                  <Text style={styles.hours}>{price.hours} hora{price.hours > 1 ? 's' : ''}</Text>
+                  <Text style={styles.hours}>
+                    {price.hours} hora{price.hours > 1 ? 's' : ''}
+                  </Text>
                   <Text style={styles.price}>R$ {price.price.toFixed(2)}</Text>
                   <TouchableOpacity style={styles.reserveButton}>
                     <Text style={styles.reserveButtonText}>Reservar</Text>
@@ -164,7 +199,9 @@ export default function SpaceDetailsScreen() {
               {MOCK_SPACE.classPlans.map((plan) => (
                 <TouchableOpacity key={plan.frequency} style={styles.planCard}>
                   <Text style={styles.planFrequency}>{plan.frequency}</Text>
-                  <Text style={styles.planPrice}>R$ {plan.price.toFixed(2)}/mês</Text>
+                  <Text style={styles.planPrice}>
+                    R$ {plan.price.toFixed(2)}/mês
+                  </Text>
                   <TouchableOpacity style={styles.enrollButton}>
                     <Text style={styles.enrollButtonText}>Matricular</Text>
                   </TouchableOpacity>

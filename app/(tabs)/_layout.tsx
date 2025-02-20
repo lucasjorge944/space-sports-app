@@ -36,7 +36,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen name="space/[id]" options={{}} />
     </Tabs>
   );
 }
