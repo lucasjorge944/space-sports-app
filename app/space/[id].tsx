@@ -56,8 +56,16 @@ export default function SpaceDetailsScreen() {
   );
   const { id } = useLocalSearchParams();
 
-  const handleOpenBooking = () => {
-    router.push('/booking');
+  const handleOpenBooking = (price: { hours: number; price: number }) => {
+    router.push({
+      pathname: '/booking',
+      params: {
+        hours: price.hours,
+        price: price.price,
+        spaceName: MOCK_SPACE.name,
+        sports: MOCK_SPACE.sports.join(','),
+      },
+    });
   };
 
   return (
@@ -194,7 +202,7 @@ export default function SpaceDetailsScreen() {
                   <Text style={styles.price}>R$ {price.price.toFixed(2)}</Text>
                   <TouchableOpacity
                     style={styles.reserveButton}
-                    onPress={handleOpenBooking}
+                    onPress={() => handleOpenBooking(price)}
                   >
                     <Text style={styles.reserveButtonText}>Reservar</Text>
                   </TouchableOpacity>
