@@ -18,11 +18,17 @@ export default function BookingScreen() {
   const spaceName = params.spaceName as string;
   const hours = Number(params.hours);
   const price = Number(params.price);
-  const availableSports = (params.sports as string).split(',');
+
+  // Definir as opções de esporte fixas
+  const SPORTS_OPTIONS = [
+    { label: 'Futvolei', value: 'futvolei' },
+    { label: 'Volei', value: 'volei' },
+    { label: 'Beach Tennis', value: 'beach-tennis' },
+  ];
 
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
-  const [sport, setSport] = useState(availableSports[0].toLowerCase());
+  const [sport, setSport] = useState(SPORTS_OPTIONS[0].value);
   const [people, setPeople] = useState(1);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
@@ -114,8 +120,12 @@ export default function BookingScreen() {
                 onValueChange={(value) => setSport(value)}
                 style={styles.picker}
               >
-                {availableSports.map((s) => (
-                  <Picker.Item key={s} label={s} value={s.toLowerCase()} />
+                {SPORTS_OPTIONS.map((option) => (
+                  <Picker.Item
+                    key={option.value}
+                    label={option.label}
+                    value={option.value}
+                  />
                 ))}
               </Picker>
             </View>
@@ -153,6 +163,7 @@ export default function BookingScreen() {
         onConfirm={handleConfirmDate}
         onCancel={() => setDatePickerVisible(false)}
         minimumDate={new Date()}
+        locale="pt-BR"
       />
 
       {/* Time Picker Modal */}
@@ -162,6 +173,7 @@ export default function BookingScreen() {
         onConfirm={handleConfirmTime}
         onCancel={() => setTimePickerVisible(false)}
         is24Hour={true}
+        locale="pt-BR"
       />
     </SafeAreaView>
   );
