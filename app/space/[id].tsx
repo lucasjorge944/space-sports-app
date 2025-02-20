@@ -56,6 +56,10 @@ export default function SpaceDetailsScreen() {
   );
   const { id } = useLocalSearchParams();
 
+  const handleOpenBooking = () => {
+    router.push('/booking');
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -188,7 +192,10 @@ export default function SpaceDetailsScreen() {
                     {price.hours} hora{price.hours > 1 ? 's' : ''}
                   </Text>
                   <Text style={styles.price}>R$ {price.price.toFixed(2)}</Text>
-                  <TouchableOpacity style={styles.reserveButton}>
+                  <TouchableOpacity
+                    style={styles.reserveButton}
+                    onPress={handleOpenBooking}
+                  >
                     <Text style={styles.reserveButtonText}>Reservar</Text>
                   </TouchableOpacity>
                 </TouchableOpacity>
@@ -464,5 +471,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: '500',
+  },
+  bookButton: {
+    backgroundColor: '#1a73e8',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  bookButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
