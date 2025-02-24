@@ -43,6 +43,7 @@ export default function BookingScreen() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedTime, setSelectedTime] = useState(AVAILABLE_HOURS[0].value);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showSportPicker, setShowSportPicker] = useState(false);
 
   const peopleOptions = Array.from({ length: 20 }, (_, i) => i + 1);
 
@@ -138,21 +139,15 @@ export default function BookingScreen() {
           {/* Esporte */}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Esporte</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={sport}
-                onValueChange={(value) => setSport(value)}
-                style={styles.picker}
-              >
-                {SPORTS_OPTIONS.map((option) => (
-                  <Picker.Item
-                    key={option.value}
-                    label={option.label}
-                    value={option.value}
-                  />
-                ))}
-              </Picker>
-            </View>
+            <TouchableOpacity
+              style={styles.dateButton}
+              onPress={() => setShowSportPicker(true)}
+            >
+              <Text>
+                {SPORTS_OPTIONS.find((s) => s.value === sport)?.label}
+              </Text>
+              <Ionicons name="chevron-down" size={20} color="#666" />
+            </TouchableOpacity>
           </View>
 
           {/* Quantidade de Pessoas */}
@@ -262,6 +257,52 @@ export default function BookingScreen() {
                     ]}
                   >
                     {hour.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Sport Picker Modal */}
+      <Modal
+        visible={showSportPicker}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowSportPicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.calendarContainer}>
+            <View style={styles.calendarHeader}>
+              <Text style={styles.calendarTitle}>Selecione o Esporte</Text>
+              <TouchableOpacity
+                onPress={() => setShowSportPicker(false)}
+                style={styles.closeButton}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.sportPickerContainer}>
+              {SPORTS_OPTIONS.map((option) => (
+                <TouchableOpacity
+                  key={option.value}
+                  style={[
+                    styles.sportOption,
+                    sport === option.value && styles.sportOptionSelected,
+                  ]}
+                  onPress={() => {
+                    setSport(option.value);
+                    setShowSportPicker(false);
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.sportOptionText,
+                      sport === option.value && styles.sportOptionTextSelected,
+                    ]}
+                  >
+                    {option.label}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -419,6 +460,28 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   timeOptionTextSelected: {
+    color: '#fff',
+  },
+  sportPickerContainer: {
+    paddingHorizontal: 10,
+  },
+  sportOption: {
+    padding: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  sportOptionSelected: {
+    backgroundColor: '#1a73e8',
+    borderColor: '#1a73e8',
+  },
+  sportOptionText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  sportOptionTextSelected: {
     color: '#fff',
   },
 });
