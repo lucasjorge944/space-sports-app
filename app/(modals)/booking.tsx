@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   Modal,
   ActivityIndicator,
+  Share,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -94,6 +95,30 @@ export default function BookingScreen() {
   // Adicione esta função para calcular o valor por pessoa
   const calculatePricePerPerson = () => {
     return (price / people).toFixed(2);
+  };
+
+  const handleShare = async () => {
+    try {
+      const message =
+        `🏐 Reserva confirmada!\n\n` +
+        `📍 Local: ${spaceName}\n` +
+        `📅 Data: ${date.toLocaleDateString('pt-BR')}\n` +
+        `🕒 Horário: ${selectedTime}\n` +
+        `⚽ Esporte: ${
+          SPORTS_OPTIONS.find((s) => s.value === sport)?.label
+        }\n` +
+        `⏱️ Duração: ${hours} hora${hours > 1 ? 's' : ''}\n` +
+        `👥 Pessoas: ${people}\n\n` +
+        `💰 Valor total: R$ ${price.toFixed(2)}\n` +
+        `💵 Valor por pessoa: R$ ${calculatePricePerPerson()}`;
+
+      await Share.share({
+        message,
+        title: 'Compartilhar Reserva',
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -421,10 +446,15 @@ export default function BookingScreen() {
             </View>
 
             <TouchableOpacity
-              style={styles.finishButton}
-              onPress={handleFinish}
+              style={[styles.finishButton, { backgroundColor: '#25D366' }]}
+              onPress={handleShare}
             >
-              <Text style={styles.finishButtonText}>Concluir</Text>
+              <View style={styles.shareButtonContent}>
+                <Ionicons name="share-social" size={24} color="#fff" />
+                <Text style={styles.finishButtonText}>
+                  Compartilhar com amigos
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -741,5 +771,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  shareButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
 });
