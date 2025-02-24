@@ -15,6 +15,15 @@ import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 
+// Criar array de horários disponíveis
+const AVAILABLE_HOURS = Array.from({ length: 18 }, (_, i) => {
+  const hour = i + 6; // Começa às 6h
+  return {
+    label: `${hour.toString().padStart(2, '0')}:00`,
+    value: `${hour.toString().padStart(2, '0')}:00`,
+  };
+});
+
 export default function BookingScreen() {
   const params = useLocalSearchParams();
   const spaceName = params.spaceName as string;
@@ -29,12 +38,11 @@ export default function BookingScreen() {
   ];
 
   const [date, setDate] = useState(new Date());
-  const [time, setTime] = useState(new Date());
   const [sport, setSport] = useState(SPORTS_OPTIONS[0].value);
   const [people, setPeople] = useState(1);
-  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
-  const [isTimePickerVisible, setTimePickerVisible] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [selectedTime, setSelectedTime] = useState(AVAILABLE_HOURS[0].value);
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const peopleOptions = Array.from({ length: 20 }, (_, i) => i + 1);
 
@@ -48,7 +56,7 @@ export default function BookingScreen() {
       hours,
       price,
       date,
-      time,
+      time: selectedTime,
       sport,
       people,
     });
@@ -56,13 +64,7 @@ export default function BookingScreen() {
   };
 
   const handleConfirmDate = (selectedDate: Date) => {
-    setDatePickerVisible(false);
     setDate(selectedDate);
-  };
-
-  const handleConfirmTime = (selectedTime: Date) => {
-    setTimePickerVisible(false);
-    setTime(selectedTime);
   };
 
   // Função para formatar a data para o formato do calendário
@@ -126,9 +128,9 @@ export default function BookingScreen() {
             <Text style={styles.label}>Hora</Text>
             <TouchableOpacity
               style={styles.dateButton}
-              onPress={() => setTimePickerVisible(true)}
+              onPress={() => setShowTimePicker(true)}
             >
-              <Text>{time.toLocaleTimeString().slice(0, 5)}</Text>
+              <Text>{selectedTime}</Text>
               <Ionicons name="time-outline" size={20} color="#666" />
             </TouchableOpacity>
           </View>
@@ -222,14 +224,51 @@ export default function BookingScreen() {
       </Modal>
 
       {/* Time Picker Modal */}
-      <DateTimePickerModal
-        isVisible={isTimePickerVisible}
-        mode="time"
-        onConfirm={handleConfirmTime}
-        onCancel={() => setTimePickerVisible(false)}
-        is24Hour={true}
-        locale="pt-BR"
-      />
+      <Modal
+        visible={showTimePicker}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowTimePicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.calendarContainer}>
+            <View style={styles.calendarHeader}>
+              <Text style={styles.calendarTitle}>Selecione o Horário</Text>
+              <TouchableOpacity
+                onPress={() => setShowTimePicker(false)}
+                style={styles.closeButton}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.timePickerContainer}>
+              {AVAILABLE_HOURS.map((hour) => (
+                <TouchableOpacity
+                  key={hour.value}
+                  style={[
+                    styles.timeOption,
+                    selectedTime === hour.value && styles.timeOptionSelected,
+                  ]}
+                  onPress={() => {
+                    setSelectedTime(hour.value);
+                    setShowTimePicker(false);
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.timeOptionText,
+                      selectedTime === hour.value &&
+                        styles.timeOptionTextSelected,
+                    ]}
+                  >
+                    {hour.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -303,13 +342,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pickerContainer: {
+    marginTop: 8,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
     overflow: 'hidden',
+    backgroundColor: '#fff',
   },
   picker: {
-    height: 48,
+    width: '100%',
   },
   footer: {
     padding: 20,
@@ -353,5 +394,31 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     padding: 4,
+  },
+  timePickerContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  timeOption: {
+    width: '30%',
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  timeOptionSelected: {
+    backgroundColor: '#1a73e8',
+    borderColor: '#1a73e8',
+  },
+  timeOptionText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  timeOptionTextSelected: {
+    color: '#fff',
   },
 });
