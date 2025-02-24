@@ -48,6 +48,38 @@ const MOCK_SPACE = {
     'https://images.unsplash.com/photo-1554068865-24cecd4e34b8',
     'https://images.unsplash.com/photo-1577412647305-991150c7d163',
   ],
+  reviewsUsers: [
+    {
+      id: '1',
+      userName: 'João Silva',
+      rating: 5,
+      date: '2024-03-15',
+      comment:
+        'Excelente estrutura! As quadras são muito bem cuidadas e o atendimento é ótimo.',
+      userAvatar:
+        'https://images.unsplash.com/photo-1599566150163-29194dcaad36',
+    },
+    {
+      id: '2',
+      userName: 'Maria Santos',
+      rating: 4,
+      date: '2024-03-10',
+      comment:
+        'Ótimo local para praticar Beach Tennis. Só faltou um pouco mais de sombra na área de descanso.',
+      userAvatar:
+        'https://images.unsplash.com/photo-1494790108377-be9c29b29330',
+    },
+    {
+      id: '3',
+      userName: 'Pedro Costa',
+      rating: 5,
+      date: '2024-03-05',
+      comment:
+        'Ambiente familiar e muito agradável. Professores muito atenciosos!',
+      userAvatar:
+        'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61',
+    },
+  ],
 };
 
 export default function SpaceDetailsScreen() {
@@ -224,6 +256,58 @@ export default function SpaceDetailsScreen() {
               ))}
             </View>
           )}
+        </View>
+
+        <View style={styles.reviewsContainer}>
+          <Text style={styles.sectionTitle}>Avaliações</Text>
+          <View style={styles.reviewsSummary}>
+            <View style={styles.ratingBig}>
+              <Text style={styles.ratingNumber}>{MOCK_SPACE.rating}</Text>
+              <View style={styles.starsContainer}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Ionicons
+                    key={star}
+                    name={star <= MOCK_SPACE.rating ? 'star' : 'star-outline'}
+                    size={20}
+                    color="#FFD700"
+                  />
+                ))}
+              </View>
+              <Text style={styles.totalReviews}>
+                {MOCK_SPACE.reviewsUsers.length} avaliações
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.reviewsList}>
+            {MOCK_SPACE.reviewsUsers.map((review) => (
+              <View key={review.id} style={styles.reviewCard}>
+                <View style={styles.reviewHeader}>
+                  <Image
+                    source={{ uri: review.userAvatar }}
+                    style={styles.reviewerAvatar}
+                  />
+                  <View style={styles.reviewerInfo}>
+                    <Text style={styles.reviewerName}>{review.userName}</Text>
+                    <View style={styles.reviewRating}>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Ionicons
+                          key={star}
+                          name={star <= review.rating ? 'star' : 'star-outline'}
+                          size={16}
+                          color="#FFD700"
+                        />
+                      ))}
+                    </View>
+                  </View>
+                  <Text style={styles.reviewDate}>
+                    {new Date(review.date).toLocaleDateString('pt-BR')}
+                  </Text>
+                </View>
+                <Text style={styles.reviewComment}>{review.comment}</Text>
+              </View>
+            ))}
+          </View>
         </View>
       </View>
     </ScrollView>
@@ -491,5 +575,72 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  reviewsContainer: {
+    marginBottom: 24,
+  },
+  reviewsSummary: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  ratingBig: {
+    alignItems: 'center',
+  },
+  ratingNumber: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  starsContainer: {
+    flexDirection: 'row',
+    gap: 4,
+    marginVertical: 8,
+  },
+  totalReviews: {
+    fontSize: 14,
+    color: '#666',
+  },
+  reviewsList: {
+    gap: 16,
+  },
+  reviewCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#e8e8e8',
+  },
+  reviewHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  reviewerAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 12,
+  },
+  reviewerInfo: {
+    flex: 1,
+  },
+  reviewerName: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
+  },
+  reviewRating: {
+    flexDirection: 'row',
+    gap: 2,
+    marginTop: 4,
+  },
+  reviewDate: {
+    fontSize: 12,
+    color: '#666',
+  },
+  reviewComment: {
+    fontSize: 14,
+    color: '#333',
+    lineHeight: 20,
   },
 });
