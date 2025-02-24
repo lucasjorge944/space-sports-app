@@ -64,11 +64,6 @@ export default function BookingScreen() {
     setShowReceipt(true);
   };
 
-  const handleFinish = () => {
-    setShowReceipt(false);
-    router.back();
-  };
-
   const handleConfirmDate = (selectedDate: Date) => {
     setDate(selectedDate);
   };
@@ -366,14 +361,20 @@ export default function BookingScreen() {
         visible={showReceipt}
         transparent
         animationType="fade"
-        onRequestClose={() => setShowReceipt(false)}
+        onRequestClose={() => {
+          setShowReceipt(false);
+          router.back();
+        }}
       >
         <View style={styles.modalOverlay}>
           <View style={styles.receiptContainer}>
             <View style={styles.receiptHeader}>
               <Text style={styles.receiptTitle}>Reserva confirmada</Text>
               <TouchableOpacity
-                onPress={() => setShowReceipt(false)}
+                onPress={() => {
+                  setShowReceipt(false);
+                  router.back();
+                }}
                 style={styles.closeButton}
               >
                 <Ionicons name="close" size={24} color="#666" />
