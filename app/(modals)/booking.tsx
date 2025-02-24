@@ -153,16 +153,24 @@ export default function BookingScreen() {
           {/* Quantidade de Pessoas */}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Quantidade de Pessoas</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={people}
-                onValueChange={(value) => setPeople(value)}
-                style={styles.picker}
+            <View style={styles.numberInputContainer}>
+              <TouchableOpacity
+                style={styles.numberButton}
+                onPress={() => setPeople(Math.max(1, people - 1))}
               >
-                {peopleOptions.map((n) => (
-                  <Picker.Item key={n} label={n.toString()} value={n} />
-                ))}
-              </Picker>
+                <Ionicons name="remove" size={20} color="#666" />
+              </TouchableOpacity>
+
+              <View style={styles.numberDisplay}>
+                <Text style={styles.numberText}>{people}</Text>
+              </View>
+
+              <TouchableOpacity
+                style={styles.numberButton}
+                onPress={() => setPeople(Math.min(20, people + 1))}
+              >
+                <Ionicons name="add" size={20} color="#666" />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -483,5 +491,32 @@ const styles = StyleSheet.create({
   },
   sportOptionTextSelected: {
     color: '#fff',
+  },
+  numberInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  numberButton: {
+    padding: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f5f5f5',
+    width: 48,
+  },
+  numberDisplay: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+  },
+  numberText: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '500',
   },
 });
