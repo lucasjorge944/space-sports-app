@@ -355,6 +355,12 @@ export default function BookingScreen() {
               </TouchableOpacity>
             </View>
 
+            <View style={styles.successIconContainer}>
+              <View style={styles.successIconCircle}>
+                <Ionicons name="checkmark" size={48} color="#fff" />
+              </View>
+            </View>
+
             <View style={styles.receiptContent}>
               <View style={styles.receiptItem}>
                 <Text style={styles.receiptLabel}>Titular da reserva</Text>
@@ -723,5 +729,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     marginTop: 8,
+  },
+  successIconContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  successIconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#4CAF50',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
