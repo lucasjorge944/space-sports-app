@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  TextInput,
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -86,6 +87,9 @@ export default function SpaceDetailsScreen() {
   const [selectedTab, setSelectedTab] = useState<'reserve' | 'classes'>(
     'reserve'
   );
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [userRating, setUserRating] = useState(0);
+  const [userComment, setUserComment] = useState('');
   const { id } = useLocalSearchParams();
 
   const handleOpenBooking = (price: { hours: number; price: number }) => {
@@ -98,6 +102,13 @@ export default function SpaceDetailsScreen() {
         sports: MOCK_SPACE.sports.join(','),
       },
     });
+  };
+
+  const handleSubmitReview = () => {
+    console.log({ rating: userRating, comment: userComment });
+    setUserRating(0);
+    setUserComment('');
+    setShowReviewForm(false);
   };
 
   return (
@@ -278,6 +289,62 @@ export default function SpaceDetailsScreen() {
               </Text>
             </View>
           </View>
+
+          {!showReviewForm ? (
+            <TouchableOpacity
+              style={styles.addReviewButton}
+              onPress={() => setShowReviewForm(true)}
+            >
+              <Ionicons name="star-outline" size={20} color="#fff" />
+              <Text style={styles.addReviewButtonText}>Avaliar Espaço</Text>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.reviewForm}>
+              <Text style={styles.reviewFormTitle}>Sua Avaliação</Text>
+              <View style={styles.ratingInput}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <TouchableOpacity
+                    key={star}
+                    onPress={() => setUserRating(star)}
+                  >
+                    <Ionicons
+                      name={star <= userRating ? 'star' : 'star-outline'}
+                      size={32}
+                      color="#FFD700"
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <TextInput
+                style={styles.commentInput}
+                placeholder="Conte sua experiência neste espaço..."
+                value={userComment}
+                onChangeText={setUserComment}
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+              />
+              <View style={styles.reviewFormButtons}>
+                <TouchableOpacity
+                  style={[styles.reviewFormButton, styles.cancelButton]}
+                  onPress={() => {
+                    setShowReviewForm(false);
+                    setUserRating(0);
+                    setUserComment('');
+                  }}
+                >
+                  <Text style={styles.cancelButtonText}>Cancelar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.reviewFormButton, styles.submitButton]}
+                  onPress={handleSubmitReview}
+                  disabled={userRating === 0 || !userComment.trim()}
+                >
+                  <Text style={styles.submitButtonText}>Enviar Avaliação</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
 
           <View style={styles.reviewsList}>
             {MOCK_SPACE.reviewsUsers.map((review) => (
@@ -642,5 +709,76 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
     lineHeight: 20,
+  },
+  addReviewButton: {
+    backgroundColor: '#1a73e8',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 20,
+    gap: 8,
+  },
+  addReviewButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  reviewForm: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#e8e8e8',
+  },
+  reviewFormTitle: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#333',
+    marginBottom: 16,
+  },
+  ratingInput: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: 16,
+  },
+  commentInput: {
+    borderWidth: 1,
+    borderColor: '#e8e8e8',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 14,
+    color: '#333',
+    minHeight: 100,
+    marginBottom: 16,
+  },
+  reviewFormButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  reviewFormButton: {
+    flex: 1,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#f5f5f5',
+  },
+  cancelButtonText: {
+    color: '#666',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  submitButton: {
+    backgroundColor: '#1a73e8',
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
