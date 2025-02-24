@@ -7,7 +7,9 @@ import {
   Platform,
   ScrollView,
   SafeAreaView,
+  Modal,
 } from 'react-native';
+import { Calendar } from 'react-native-calendars';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
@@ -32,6 +34,7 @@ export default function BookingScreen() {
   const [people, setPeople] = useState(1);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
 
   const peopleOptions = Array.from({ length: 20 }, (_, i) => i + 1);
 
@@ -60,6 +63,25 @@ export default function BookingScreen() {
   const handleConfirmTime = (selectedTime: Date) => {
     setTimePickerVisible(false);
     setTime(selectedTime);
+  };
+
+  // Função para formatar a data para o formato do calendário
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Função para converter string do calendário para Date
+  const parseDate = (dateString: string) => {
+    const [year, month, day] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  };
+
+  const handleDateSelect = (day: any) => {
+    setDate(parseDate(day.dateString));
+    setShowCalendar(false);
   };
 
   return (
@@ -92,9 +114,9 @@ export default function BookingScreen() {
             <Text style={styles.label}>Data</Text>
             <TouchableOpacity
               style={styles.dateButton}
-              onPress={() => setDatePickerVisible(true)}
+              onPress={() => setShowCalendar(true)}
             >
-              <Text>{date.toLocaleDateString()}</Text>
+              <Text>{date.toLocaleDateString('pt-BR')}</Text>
               <Ionicons name="calendar-outline" size={20} color="#666" />
             </TouchableOpacity>
           </View>
@@ -156,15 +178,48 @@ export default function BookingScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Date Picker Modal */}
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="date"
-        onConfirm={handleConfirmDate}
-        onCancel={() => setDatePickerVisible(false)}
-        minimumDate={new Date()}
-        locale="pt-BR"
-      />
+      {/* Calendar Modal */}
+      <Modal
+        visible={showCalendar}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowCalendar(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.calendarContainer}>
+            <View style={styles.calendarHeader}>
+              <Text style={styles.calendarTitle}>Selecione a Data</Text>
+              <TouchableOpacity
+                onPress={() => setShowCalendar(false)}
+                style={styles.closeButton}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+            <Calendar
+              current={formatDate(date)}
+              minDate={formatDate(new Date())}
+              onDayPress={handleDateSelect}
+              markedDates={{
+                [formatDate(date)]: {
+                  selected: true,
+                  selectedColor: '#1a73e8',
+                },
+              }}
+              theme={{
+                todayTextColor: '#1a73e8',
+                selectedDayBackgroundColor: '#1a73e8',
+                selectedDayTextColor: '#ffffff',
+                arrowColor: '#1a73e8',
+                monthTextColor: '#333',
+                textDayFontWeight: '400',
+                textMonthFontWeight: 'bold',
+                textDayHeaderFontWeight: '500',
+              }}
+            />
+          </View>
+        </View>
+      </Modal>
 
       {/* Time Picker Modal */}
       <DateTimePickerModal
@@ -271,5 +326,32 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  calendarContainer: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    width: '90%',
+    maxWidth: 360,
+  },
+  calendarHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  calendarTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  closeButton: {
+    padding: 4,
   },
 });
