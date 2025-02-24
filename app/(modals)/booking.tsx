@@ -8,6 +8,7 @@ import {
   ScrollView,
   SafeAreaView,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -45,6 +46,8 @@ export default function BookingScreen() {
   const [selectedTime, setSelectedTime] = useState(AVAILABLE_HOURS[0].value);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showSportPicker, setShowSportPicker] = useState(false);
+  const [showReceipt, setShowReceipt] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const peopleOptions = Array.from({ length: 20 }, (_, i) => i + 1);
 
@@ -52,16 +55,16 @@ export default function BookingScreen() {
     router.back();
   };
 
-  const handleSubmit = () => {
-    console.log('Dados da reserva:', {
-      spaceName,
-      hours,
-      price,
-      date,
-      time: selectedTime,
-      sport,
-      people,
-    });
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    // Simular uma chamada de API
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setIsLoading(false);
+    setShowReceipt(true);
+  };
+
+  const handleFinish = () => {
+    setShowReceipt(false);
     router.back();
   };
 
@@ -332,6 +335,106 @@ export default function BookingScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Receipt Modal */}
+      <Modal
+        visible={showReceipt}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowReceipt(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.receiptContainer}>
+            <View style={styles.receiptHeader}>
+              <Text style={styles.receiptTitle}>Reserva confirmada</Text>
+              <TouchableOpacity
+                onPress={() => setShowReceipt(false)}
+                style={styles.closeButton}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.receiptContent}>
+              <View style={styles.receiptItem}>
+                <Text style={styles.receiptLabel}>Titular da reserva</Text>
+                <Text style={styles.receiptValue}>Lucas Jorge</Text>
+              </View>
+
+              <View style={styles.receiptItem}>
+                <Text style={styles.receiptLabel}>Local</Text>
+                <Text style={styles.receiptValue}>{spaceName}</Text>
+              </View>
+
+              <View style={styles.receiptItem}>
+                <Text style={styles.receiptLabel}>Data</Text>
+                <Text style={styles.receiptValue}>
+                  {date.toLocaleDateString('pt-BR')}
+                </Text>
+              </View>
+
+              <View style={styles.receiptItem}>
+                <Text style={styles.receiptLabel}>Horário</Text>
+                <Text style={styles.receiptValue}>{selectedTime}</Text>
+              </View>
+
+              <View style={styles.receiptItem}>
+                <Text style={styles.receiptLabel}>Esporte</Text>
+                <Text style={styles.receiptValue}>
+                  {SPORTS_OPTIONS.find((s) => s.value === sport)?.label}
+                </Text>
+              </View>
+
+              <View style={styles.receiptItem}>
+                <Text style={styles.receiptLabel}>Duração</Text>
+                <Text style={styles.receiptValue}>
+                  {hours} hora{hours > 1 ? 's' : ''}
+                </Text>
+              </View>
+
+              <View style={styles.receiptItem}>
+                <Text style={styles.receiptLabel}>Pessoas</Text>
+                <Text style={styles.receiptValue}>{people}</Text>
+              </View>
+
+              <View style={styles.receiptDivider} />
+
+              <View style={styles.receiptItem}>
+                <Text style={styles.receiptLabel}>Valor Total</Text>
+                <Text style={[styles.receiptValue, styles.totalValue]}>
+                  R$ {price.toFixed(2)}
+                </Text>
+              </View>
+
+              <View style={styles.receiptItem}>
+                <Text style={styles.receiptLabel}>Valor por pessoa</Text>
+                <Text style={styles.receiptValue}>
+                  R$ {calculatePricePerPerson()}
+                </Text>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={styles.finishButton}
+              onPress={handleFinish}
+            >
+              <Text style={styles.finishButtonText}>Concluir</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Loading Modal */}
+      <Modal visible={isLoading} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.loadingContainer}>
+            <View style={styles.loadingContent}>
+              <ActivityIndicator size="large" color="#1a73e8" />
+              <Text style={styles.loadingText}>Confirmando reserva...</Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -545,5 +648,80 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     fontStyle: 'italic',
+  },
+  receiptContainer: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    width: '90%',
+    maxWidth: 360,
+  },
+  receiptHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  receiptTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  receiptContent: {
+    marginBottom: 20,
+  },
+  receiptItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  receiptLabel: {
+    fontSize: 16,
+    color: '#666',
+  },
+  receiptValue: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '500',
+  },
+  receiptDivider: {
+    height: 1,
+    backgroundColor: '#eee',
+    marginVertical: 12,
+  },
+  totalValue: {
+    fontSize: 18,
+    color: '#1a73e8',
+    fontWeight: 'bold',
+  },
+  finishButton: {
+    backgroundColor: '#1a73e8',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  finishButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  loadingContainer: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 24,
+    width: '80%',
+    maxWidth: 280,
+    alignItems: 'center',
+  },
+  loadingContent: {
+    alignItems: 'center',
+    gap: 16,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 8,
   },
 });
