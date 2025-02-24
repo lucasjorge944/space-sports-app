@@ -21,6 +21,7 @@ const AVAILABLE_HOURS = Array.from({ length: 18 }, (_, i) => {
   return {
     label: `${hour.toString().padStart(2, '0')}:00`,
     value: `${hour.toString().padStart(2, '0')}:00`,
+    disabled: hour >= 17 && hour <= 20,
   };
 });
 
@@ -187,7 +188,7 @@ export default function BookingScreen() {
       <Modal
         visible={showCalendar}
         transparent
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setShowCalendar(false)}
       >
         <View style={styles.modalOverlay}>
@@ -230,7 +231,7 @@ export default function BookingScreen() {
       <Modal
         visible={showTimePicker}
         transparent
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setShowTimePicker(false)}
       >
         <View style={styles.modalOverlay}>
@@ -251,17 +252,22 @@ export default function BookingScreen() {
                   style={[
                     styles.timeOption,
                     selectedTime === hour.value && styles.timeOptionSelected,
+                    hour.disabled && styles.timeOptionDisabled,
                   ]}
                   onPress={() => {
-                    setSelectedTime(hour.value);
-                    setShowTimePicker(false);
+                    if (!hour.disabled) {
+                      setSelectedTime(hour.value);
+                      setShowTimePicker(false);
+                    }
                   }}
+                  disabled={hour.disabled}
                 >
                   <Text
                     style={[
                       styles.timeOptionText,
                       selectedTime === hour.value &&
                         styles.timeOptionTextSelected,
+                      hour.disabled && styles.timeOptionTextDisabled,
                     ]}
                   >
                     {hour.label}
@@ -277,7 +283,7 @@ export default function BookingScreen() {
       <Modal
         visible={showSportPicker}
         transparent
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setShowSportPicker(false)}
       >
         <View style={styles.modalOverlay}>
@@ -518,5 +524,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     fontWeight: '500',
+  },
+  timeOptionDisabled: {
+    backgroundColor: '#f5f5f5',
+    borderColor: '#eee',
+  },
+  timeOptionTextDisabled: {
+    color: '#999',
   },
 });
