@@ -88,6 +88,11 @@ export default function BookingScreen() {
     setShowCalendar(false);
   };
 
+  // Adicione esta função para calcular o valor por pessoa
+  const calculatePricePerPerson = () => {
+    return (price / people).toFixed(2);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
@@ -173,6 +178,9 @@ export default function BookingScreen() {
                 <Ionicons name="add" size={20} color="#666" />
               </TouchableOpacity>
             </View>
+            <Text style={styles.pricePerPerson}>
+              R$ {calculatePricePerPerson()} por pessoa
+            </Text>
           </View>
         </View>
       </ScrollView>
@@ -531,5 +539,11 @@ const styles = StyleSheet.create({
   },
   timeOptionTextDisabled: {
     color: '#999',
+  },
+  pricePerPerson: {
+    marginTop: 8,
+    fontSize: 14,
+    color: '#666',
+    fontStyle: 'italic',
   },
 });
