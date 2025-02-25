@@ -32,6 +32,7 @@ const MOCK_SPACE = {
     { frequency: '1x na semana', price: 240 },
     { frequency: '2x na semana', price: 360 },
     { frequency: 'Ilimitado', price: 480 },
+    { frequency: 'Experimental', price: 0 },
   ],
   amenities: [
     'Estacionamento',
