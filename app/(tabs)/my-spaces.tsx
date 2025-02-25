@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const MOCK_RESERVATIONS = [
@@ -7,19 +14,27 @@ const MOCK_RESERVATIONS = [
     id: '1',
     spaceName: 'Arena Sports',
     sport: 'Beach Tennis',
-    date: '28 Fev',
-    time: '19:00 - 20:00',
+    date: '28/03/2024',
+    time: '19:00',
+    duration: '1 hora',
     price: 100,
     image: 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6',
+    holder: 'Lucas Jorge',
+    people: 4,
+    pricePerPerson: 25,
   },
   {
     id: '2',
     spaceName: 'Centro Esportivo',
     sport: 'Futevôlei',
-    date: '01 Mar',
-    time: '18:00 - 19:00',
+    date: '01/04/2024',
+    time: '18:00',
+    duration: '2 horas',
     price: 90,
     image: 'https://images.unsplash.com/photo-1577412647305-991150c7d163',
+    holder: 'Lucas Jorge',
+    people: 2,
+    pricePerPerson: 45,
   },
 ];
 
@@ -68,10 +83,29 @@ export default function MySpacesScreen() {
                   <Text style={styles.detailText}>{reservation.time}</Text>
                 </View>
               </View>
-              <View style={styles.priceTag}>
-                <Text style={styles.priceText}>
-                  R$ {reservation.price.toFixed(2)}
-                </Text>
+              <View style={styles.detailsContainer}>
+                <View style={styles.detailItem}>
+                  <Ionicons name="hourglass-outline" size={16} color="#666" />
+                  <Text style={styles.detailText}>{reservation.duration}</Text>
+                </View>
+                <View style={styles.detailItem}>
+                  <Ionicons name="people-outline" size={16} color="#666" />
+                  <Text style={styles.detailText}>
+                    {reservation.people} pessoas
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.priceContainer}>
+                <View style={styles.pricePerPersonTag}>
+                  <Text style={styles.pricePerPersonText}>
+                    R$ {reservation.pricePerPerson.toFixed(2)}/pessoa
+                  </Text>
+                </View>
+                <View style={styles.priceTag}>
+                  <Text style={styles.priceText}>
+                    R$ {reservation.price.toFixed(2)}
+                  </Text>
+                </View>
               </View>
             </View>
           </TouchableOpacity>
@@ -204,6 +238,24 @@ const styles = StyleSheet.create({
   detailText: {
     fontSize: 14,
     color: '#666',
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 8,
+  },
+  pricePerPersonTag: {
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  pricePerPersonText: {
+    color: '#666',
+    fontSize: 14,
+    fontWeight: '500',
   },
   priceTag: {
     alignSelf: 'flex-end',
