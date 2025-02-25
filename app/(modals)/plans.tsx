@@ -8,8 +8,21 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Stack } from 'expo-router';
 
 const MOCK_CLASSES = [
+  {
+    id: '2',
+    spaceName: 'Arena Sports',
+    sport: 'Futevôlei',
+    schedule: 'Segunda, Quarta e Sexta',
+    time: '18:00 - 19:00',
+    plan: '3x na semana',
+    price: 420,
+    image: 'https://images.unsplash.com/photo-1577412647305-991150c7d163',
+    instructor: 'Prof. Goiano',
+    status: 'active',
+  },
   {
     id: '1',
     spaceName: 'Beach Sports',
@@ -20,54 +33,157 @@ const MOCK_CLASSES = [
     price: 360,
     image: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8',
     instructor: 'Prof. Rafael Silva',
+    status: 'inactive',
   },
 ];
 
 export default function PlansScreen() {
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Meus Planos</Text>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Planos Ativos</Text>
-        {MOCK_CLASSES.map((class_) => (
-          <TouchableOpacity key={class_.id} style={styles.card}>
-            <Image
-              source={{ uri: class_.image }}
-              style={styles.cardImage}
-              resizeMode="cover"
-            />
-            <View style={styles.cardContent}>
-              <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>{class_.spaceName}</Text>
-                <TouchableOpacity style={styles.moreButton}>
-                  <Ionicons name="ellipsis-horizontal" size={24} color="#666" />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.sportName}>{class_.sport}</Text>
-              <Text style={styles.instructorName}>{class_.instructor}</Text>
-              <View style={styles.detailsContainer}>
-                <View style={styles.detailItem}>
-                  <Ionicons name="calendar-outline" size={16} color="#666" />
-                  <Text style={styles.detailText}>{class_.schedule}</Text>
-                </View>
-                <View style={styles.detailItem}>
-                  <Ionicons name="time-outline" size={16} color="#666" />
-                  <Text style={styles.detailText}>{class_.time}</Text>
-                </View>
-              </View>
-              <View style={styles.planContainer}>
-                <View style={styles.planTag}>
-                  <Text style={styles.planText}>{class_.plan}</Text>
-                </View>
-                <Text style={styles.planPrice}>
-                  R$ {class_.price.toFixed(2)}/mês
+    <>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerTitle: 'Meus Planos',
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: '#f5f5f5' },
+          headerBackTitle: 'Voltar',
+        }}
+      />
+      <ScrollView style={styles.container}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Planos</Text>
+          {MOCK_CLASSES.map((class_) => (
+            <TouchableOpacity
+              key={class_.id}
+              style={[
+                styles.card,
+                class_.status === 'inactive' && styles.inactiveCard,
+              ]}
+            >
+              <View
+                style={[
+                  styles.statusBadge,
+                  class_.status === 'inactive'
+                    ? styles.inactiveBadge
+                    : styles.activeBadge,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.statusText,
+                    class_.status === 'inactive'
+                      ? styles.inactiveStatusText
+                      : styles.activeStatusText,
+                  ]}
+                >
+                  {class_.status === 'inactive' ? 'Inativo' : 'Ativo'}
                 </Text>
               </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
+              <Image
+                source={{ uri: class_.image }}
+                style={[
+                  styles.cardImage,
+                  class_.status === 'inactive' && styles.inactiveImage,
+                ]}
+                resizeMode="cover"
+              />
+              <View style={styles.cardContent}>
+                <View style={styles.cardHeader}>
+                  <Text
+                    style={[
+                      styles.cardTitle,
+                      class_.status === 'inactive' && styles.inactiveText,
+                    ]}
+                  >
+                    {class_.spaceName}
+                  </Text>
+                  <TouchableOpacity style={styles.moreButton}>
+                    <Ionicons
+                      name="ellipsis-horizontal"
+                      size={24}
+                      color={class_.status === 'inactive' ? '#999' : '#666'}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <Text
+                  style={[
+                    styles.sportName,
+                    class_.status === 'inactive' && styles.inactiveText,
+                  ]}
+                >
+                  {class_.sport}
+                </Text>
+                <Text
+                  style={[
+                    styles.instructorName,
+                    class_.status === 'inactive' && styles.inactiveInstructor,
+                  ]}
+                >
+                  {class_.instructor}
+                </Text>
+                <View style={styles.detailsContainer}>
+                  <View style={styles.detailItem}>
+                    <Ionicons
+                      name="calendar-outline"
+                      size={16}
+                      color={class_.status === 'inactive' ? '#999' : '#666'}
+                    />
+                    <Text
+                      style={[
+                        styles.detailText,
+                        class_.status === 'inactive' && styles.inactiveText,
+                      ]}
+                    >
+                      {class_.schedule}
+                    </Text>
+                  </View>
+                  <View style={styles.detailItem}>
+                    <Ionicons
+                      name="time-outline"
+                      size={16}
+                      color={class_.status === 'inactive' ? '#999' : '#666'}
+                    />
+                    <Text
+                      style={[
+                        styles.detailText,
+                        class_.status === 'inactive' && styles.inactiveText,
+                      ]}
+                    >
+                      {class_.time}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.planContainer}>
+                  <View
+                    style={[
+                      styles.planTag,
+                      class_.status === 'inactive' && styles.inactivePlanTag,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.planText,
+                        class_.status === 'inactive' && styles.inactivePlanText,
+                      ]}
+                    >
+                      {class_.plan}
+                    </Text>
+                  </View>
+                  <Text
+                    style={[
+                      styles.planPrice,
+                      class_.status === 'inactive' && styles.inactivePlanText,
+                    ]}
+                  >
+                    R$ {class_.price.toFixed(2)}/mês
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    </>
   );
 }
 
@@ -76,17 +192,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    marginTop: 60,
-    paddingHorizontal: 20,
-    color: '#1a73e8',
-  },
   section: {
     marginBottom: 30,
     paddingHorizontal: 20,
+    marginTop: 20,
   },
   sectionTitle: {
     fontSize: 18,
@@ -174,5 +283,48 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1a73e8',
+  },
+  inactiveCard: {
+    opacity: 0.8,
+  },
+  inactiveImage: {
+    opacity: 0.6,
+  },
+  inactiveText: {
+    color: '#999',
+  },
+  inactiveInstructor: {
+    color: '#999',
+  },
+  inactivePlanTag: {
+    backgroundColor: '#f5f5f5',
+  },
+  inactivePlanText: {
+    color: '#999',
+  },
+  statusBadge: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    zIndex: 1,
+  },
+  activeBadge: {
+    backgroundColor: '#e8f5e9',
+  },
+  inactiveBadge: {
+    backgroundColor: '#ffebee',
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  activeStatusText: {
+    color: '#2e7d32',
+  },
+  inactiveStatusText: {
+    color: '#c62828',
   },
 });
