@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  Modal,
+  Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
@@ -38,6 +40,26 @@ const MOCK_CLASSES = [
 ];
 
 export default function PlansScreen() {
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [selectedPlan, setSelectedPlan] = React.useState<
+    null | (typeof MOCK_CLASSES)[0]
+  >(null);
+
+  const handleOpenOptions = useCallback((plan: (typeof MOCK_CLASSES)[0]) => {
+    setSelectedPlan(plan);
+    setModalVisible(true);
+  }, []);
+
+  const handleChangePlan = useCallback(() => {
+    // Implementar lógica de alteração
+    setModalVisible(false);
+  }, []);
+
+  const handleToggleStatus = useCallback(() => {
+    // Implementar lógica de ativação/inativação
+    setModalVisible(false);
+  }, []);
+
   return (
     <>
       <Stack.Screen
@@ -97,7 +119,10 @@ export default function PlansScreen() {
                   >
                     {class_.spaceName}
                   </Text>
-                  <TouchableOpacity style={styles.moreButton}>
+                  <TouchableOpacity
+                    style={styles.moreButton}
+                    onPress={() => handleOpenOptions(class_)}
+                  >
                     <Ionicons
                       name="ellipsis-horizontal"
                       size={24}
@@ -183,6 +208,64 @@ export default function PlansScreen() {
           ))}
         </View>
       </ScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setModalVisible(false)}
+        >
+          <View style={styles.modalView}>
+            <View style={styles.modalHandle} />
+
+            {selectedPlan?.status === 'active' && (
+              <>
+                <TouchableOpacity
+                  style={styles.modalOption}
+                  onPress={handleChangePlan}
+                >
+                  <Ionicons name="sync-outline" size={24} color="#333" />
+                  <Text style={styles.modalOptionText}>Mudar Plano</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.modalOption, styles.toggleOption]}
+                  onPress={handleToggleStatus}
+                >
+                  <Ionicons
+                    name="pause-circle-outline"
+                    size={24}
+                    color="#c62828"
+                  />
+                  <Text style={[styles.modalOptionText, { color: '#c62828' }]}>
+                    Inativar Plano
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
+
+            {selectedPlan?.status === 'inactive' && (
+              <TouchableOpacity
+                style={styles.modalOption}
+                onPress={handleToggleStatus}
+              >
+                <Ionicons
+                  name="play-circle-outline"
+                  size={24}
+                  color="#2e7d32"
+                />
+                <Text style={[styles.modalOptionText, { color: '#2e7d32' }]}>
+                  Ativar Plano
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </Pressable>
+      </Modal>
     </>
   );
 }
@@ -326,5 +409,39 @@ const styles = StyleSheet.create({
   },
   inactiveStatusText: {
     color: '#c62828',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 16,
+    paddingBottom: 32,
+  },
+  modalHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#DDD',
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    gap: 12,
+  },
+  modalOptionText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  toggleOption: {
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
   },
 });
