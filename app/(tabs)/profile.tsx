@@ -32,6 +32,15 @@ export default function ProfileScreen() {
           <Ionicons name="chevron-forward" size={24} color="#666" />
         </TouchableOpacity>
 
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => router.push('/plans')}
+        >
+          <Ionicons name="calendar-outline" size={24} color="#1a73e8" />
+          <Text style={styles.menuText}>Meus Planos</Text>
+          <Ionicons name="chevron-forward" size={24} color="#666" />
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.menuItem}>
           <Ionicons name="settings-outline" size={24} color="#1a73e8" />
           <Text style={styles.menuText}>Configurações</Text>

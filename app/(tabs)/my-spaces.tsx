@@ -41,20 +41,6 @@ const MOCK_RESERVATIONS = [
   },
 ];
 
-const MOCK_CLASSES = [
-  {
-    id: '1',
-    spaceName: 'Beach Sports',
-    sport: 'Beach Tennis',
-    schedule: 'Terças e Quintas',
-    time: '19:00 - 20:00',
-    plan: '2x na semana',
-    price: 360,
-    image: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8',
-    instructor: 'Prof. Rafael Silva',
-  },
-];
-
 export default function MySpacesScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = React.useState(false);
@@ -157,52 +143,6 @@ export default function MySpacesScreen() {
                       R$ {reservation.price.toFixed(2)}
                     </Text>
                   </View>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <Text style={styles.title}>Minhas Aulas</Text>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Planos Ativos</Text>
-          {MOCK_CLASSES.map((class_) => (
-            <TouchableOpacity key={class_.id} style={styles.card}>
-              <Image
-                source={{ uri: class_.image }}
-                style={styles.cardImage}
-                resizeMode="cover"
-              />
-              <View style={styles.cardContent}>
-                <View style={styles.cardHeader}>
-                  <Text style={styles.cardTitle}>{class_.spaceName}</Text>
-                  <TouchableOpacity style={styles.moreButton}>
-                    <Ionicons
-                      name="ellipsis-horizontal"
-                      size={24}
-                      color="#666"
-                    />
-                  </TouchableOpacity>
-                </View>
-                <Text style={styles.sportName}>{class_.sport}</Text>
-                <Text style={styles.instructorName}>{class_.instructor}</Text>
-                <View style={styles.detailsContainer}>
-                  <View style={styles.detailItem}>
-                    <Ionicons name="calendar-outline" size={16} color="#666" />
-                    <Text style={styles.detailText}>{class_.schedule}</Text>
-                  </View>
-                  <View style={styles.detailItem}>
-                    <Ionicons name="time-outline" size={16} color="#666" />
-                    <Text style={styles.detailText}>{class_.time}</Text>
-                  </View>
-                </View>
-                <View style={styles.planContainer}>
-                  <View style={styles.planTag}>
-                    <Text style={styles.planText}>{class_.plan}</Text>
-                  </View>
-                  <Text style={styles.planPrice}>
-                    R$ {class_.price.toFixed(2)}/mês
-                  </Text>
                 </View>
               </View>
             </TouchableOpacity>
