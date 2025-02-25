@@ -51,6 +51,8 @@ export default function PlansScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [planModalVisible, setPlanModalVisible] = React.useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = React.useState(false);
+  const [confirmStatusModalVisible, setConfirmStatusModalVisible] =
+    React.useState(false);
   const [selectedPlan, setSelectedPlan] = React.useState<
     null | (typeof MOCK_CLASSES)[0]
   >(null);
@@ -70,8 +72,8 @@ export default function PlansScreen() {
   }, []);
 
   const handleToggleStatus = useCallback(() => {
-    // Implementar lógica de ativação/inativação
     setModalVisible(false);
+    setConfirmStatusModalVisible(true);
   }, []);
 
   const handleSelectNewPlan = useCallback((plan: (typeof MOCK_PLANS)[0]) => {
@@ -93,6 +95,23 @@ export default function PlansScreen() {
       setIsLoading(false);
     }
   }, [newPlan]);
+
+  const handleConfirmStatusChange = useCallback(async () => {
+    setConfirmStatusModalVisible(false);
+    setIsLoading(true);
+
+    try {
+      // Simular uma chamada de API
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Implementar lógica de ativação/inativação
+      console.log(
+        'Status alterado para:',
+        selectedPlan?.status === 'inactive' ? 'active' : 'inactive'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedPlan?.status]);
 
   return (
     <>
@@ -422,6 +441,76 @@ export default function PlansScreen() {
         </View>
       </Modal>
 
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={confirmStatusModalVisible}
+        onRequestClose={() => setConfirmStatusModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.confirmModalView}>
+            <View style={styles.confirmModalContent}>
+              <Ionicons
+                name="alert-circle-outline"
+                size={48}
+                color={
+                  selectedPlan?.status === 'inactive' ? '#2e7d32' : '#c62828'
+                }
+              />
+              <Text style={styles.confirmModalTitle}>
+                {selectedPlan?.status === 'inactive'
+                  ? 'Ativar Plano'
+                  : 'Inativar Plano'}
+              </Text>
+              <Text style={styles.confirmModalText}>
+                {selectedPlan?.status === 'inactive'
+                  ? 'Deseja reativar este plano?'
+                  : 'Tem certeza que deseja inativar este plano?'}
+              </Text>
+
+              <View style={styles.planStatusDetails}>
+                <Text style={styles.planStatusName}>{selectedPlan?.sport}</Text>
+                <Text style={styles.planStatusFrequency}>
+                  {selectedPlan?.plan}
+                </Text>
+                <Text style={styles.planStatusPrice}>
+                  R$ {selectedPlan?.price.toFixed(2)}/mês
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.confirmModalButtons}>
+              <TouchableOpacity
+                style={[
+                  styles.confirmModalButton,
+                  styles.confirmModalButtonCancel,
+                ]}
+                onPress={() => setConfirmStatusModalVisible(false)}
+              >
+                <Text style={styles.confirmModalButtonTextCancel}>
+                  Cancelar
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.confirmModalButton,
+                  styles.confirmModalButtonConfirm,
+                  selectedPlan?.status === 'inactive'
+                    ? styles.activateButton
+                    : styles.deactivateButton,
+                ]}
+                onPress={handleConfirmStatusChange}
+              >
+                <Text style={styles.confirmModalButtonTextConfirm}>
+                  {selectedPlan?.status === 'inactive' ? 'Ativar' : 'Inativar'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       <Loading visible={isLoading} />
     </>
   );
@@ -737,5 +826,31 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '500',
+  },
+  planStatusDetails: {
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  planStatusName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  planStatusFrequency: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 4,
+  },
+  planStatusPrice: {
+    fontSize: 16,
+    color: '#1a73e8',
+    fontWeight: '500',
+  },
+  activateButton: {
+    backgroundColor: '#2e7d32',
+  },
+  deactivateButton: {
+    backgroundColor: '#c62828',
   },
 });
