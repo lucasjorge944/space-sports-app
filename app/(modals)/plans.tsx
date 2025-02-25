@@ -464,8 +464,8 @@ export default function PlansScreen() {
               </Text>
               <Text style={styles.confirmModalText}>
                 {selectedPlan?.status === 'inactive'
-                  ? 'Deseja reativar este plano?'
-                  : 'Tem certeza que deseja inativar este plano?'}
+                  ? 'Que bom que você quer voltar! Deseja reativar este plano?'
+                  : 'Que pena... Tem certeza que deseja inativar este plano?'}
               </Text>
 
               <View style={styles.planStatusDetails}>
