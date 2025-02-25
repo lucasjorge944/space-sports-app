@@ -52,6 +52,7 @@ const MOCK_TODAY_CLASSES = [
     image: 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6',
     participants: 4,
     maxParticipants: 6,
+    confirmed: true,
   },
   {
     id: '2',
@@ -63,6 +64,7 @@ const MOCK_TODAY_CLASSES = [
     image: 'https://images.unsplash.com/photo-1577412647305-991150c7d163',
     participants: 3,
     maxParticipants: 4,
+    confirmed: false,
   },
 ];
 
@@ -73,6 +75,9 @@ export default function MySpacesScreen() {
   const [selectedReservation, setSelectedReservation] = React.useState<
     null | (typeof MOCK_RESERVATIONS)[0]
   >(null);
+  const [confirmedClasses, setConfirmedClasses] = React.useState<string[]>(
+    MOCK_TODAY_CLASSES.filter((c) => c.confirmed).map((c) => c.id)
+  );
 
   const handleOpenOptions = useCallback(
     (reservation: (typeof MOCK_RESERVATIONS)[0]) => {
@@ -100,6 +105,22 @@ export default function MySpacesScreen() {
       // Simular uma chamada de API
       await new Promise((resolve) => setTimeout(resolve, 1500));
       // Implementar lógica de cancelamento aqui
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const handleToggleConfirmation = useCallback(async (classId: string) => {
+    setIsLoading(true);
+    try {
+      // Simular chamada à API
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      setConfirmedClasses((prev) =>
+        prev.includes(classId)
+          ? prev.filter((id) => id !== classId)
+          : [...prev, classId]
+      );
     } finally {
       setIsLoading(false);
     }
@@ -135,11 +156,46 @@ export default function MySpacesScreen() {
                     <Text style={styles.detailText}>{class_.duration}</Text>
                   </View>
                 </View>
-                <View style={styles.participantsContainer}>
-                  <Ionicons name="people-outline" size={16} color="#666" />
-                  <Text style={styles.participantsText}>
-                    {class_.participants}/{class_.maxParticipants} alunos
-                  </Text>
+                <View style={styles.classFooter}>
+                  <View style={styles.participantsContainer}>
+                    <Ionicons name="people-outline" size={16} color="#666" />
+                    <Text style={styles.participantsText}>
+                      {class_.participants}/{class_.maxParticipants} alunos
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={[
+                      styles.confirmButton,
+                      confirmedClasses.includes(class_.id) &&
+                        styles.confirmedButton,
+                    ]}
+                    onPress={() => handleToggleConfirmation(class_.id)}
+                  >
+                    <Ionicons
+                      name={
+                        confirmedClasses.includes(class_.id)
+                          ? 'close-circle-outline'
+                          : 'checkmark-circle-outline'
+                      }
+                      size={20}
+                      color={
+                        confirmedClasses.includes(class_.id)
+                          ? '#dc3545'
+                          : '#1a73e8'
+                      }
+                    />
+                    <Text
+                      style={[
+                        styles.confirmButtonText,
+                        confirmedClasses.includes(class_.id) &&
+                          styles.confirmedButtonText,
+                      ]}
+                    >
+                      {confirmedClasses.includes(class_.id)
+                        ? 'Retirar Presença'
+                        : 'Confirmar Presença'}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
@@ -529,5 +585,31 @@ const styles = StyleSheet.create({
     color: '#666',
     fontSize: 14,
     fontWeight: '500',
+  },
+  classFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  confirmButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: '#e8f0fe',
+  },
+  confirmedButton: {
+    backgroundColor: '#ffebee',
+  },
+  confirmButtonText: {
+    color: '#1a73e8',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  confirmedButtonText: {
+    color: '#dc3545',
   },
 });
