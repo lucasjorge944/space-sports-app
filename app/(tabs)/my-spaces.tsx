@@ -41,6 +41,27 @@ const MOCK_RESERVATIONS = [
   },
 ];
 
+const MOCK_TODAY_CLASSES = [
+  {
+    id: '1',
+    spaceName: 'Arena Sports',
+    sport: 'Beach Tennis',
+    time: '19:00',
+    duration: '1 hora',
+    instructor: 'João Silva',
+    image: 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6',
+  },
+  {
+    id: '2',
+    spaceName: 'Centro Esportivo',
+    sport: 'Futevôlei',
+    time: '20:00',
+    duration: '1 hora',
+    instructor: 'Maria Santos',
+    image: 'https://images.unsplash.com/photo-1577412647305-991150c7d163',
+  },
+];
+
 export default function MySpacesScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = React.useState(false);
@@ -84,6 +105,37 @@ export default function MySpacesScreen() {
     <>
       <ScrollView style={styles.container}>
         <Text style={styles.title}>Minhas Reservas</Text>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Aulas de Hoje</Text>
+          {MOCK_TODAY_CLASSES.map((class_) => (
+            <View key={class_.id} style={styles.card}>
+              <Image
+                source={{ uri: class_.image }}
+                style={styles.cardImage}
+                resizeMode="cover"
+              />
+              <View style={styles.cardContent}>
+                <Text style={styles.cardTitle}>{class_.spaceName}</Text>
+                <Text style={styles.sportName}>{class_.sport}</Text>
+                <Text style={styles.instructorName}>
+                  Professor: {class_.instructor}
+                </Text>
+                <View style={styles.detailsContainer}>
+                  <View style={styles.detailItem}>
+                    <Ionicons name="time-outline" size={16} color="#666" />
+                    <Text style={styles.detailText}>{class_.time}</Text>
+                  </View>
+                  <View style={styles.detailItem}>
+                    <Ionicons name="hourglass-outline" size={16} color="#666" />
+                    <Text style={styles.detailText}>{class_.duration}</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          ))}
+        </View>
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Próximas Reservas</Text>
           {MOCK_RESERVATIONS.map((reservation) => (
