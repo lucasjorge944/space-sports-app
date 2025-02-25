@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  Modal,
+  Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -53,107 +55,179 @@ const MOCK_CLASSES = [
 ];
 
 export default function MySpacesScreen() {
-  return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Minhas Reservas</Text>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Próximas Reservas</Text>
-        {MOCK_RESERVATIONS.map((reservation) => (
-          <TouchableOpacity key={reservation.id} style={styles.card}>
-            <Image
-              source={{ uri: reservation.image }}
-              style={styles.cardImage}
-              resizeMode="cover"
-            />
-            <View style={styles.cardContent}>
-              <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>{reservation.spaceName}</Text>
-                <TouchableOpacity style={styles.moreButton}>
-                  <Ionicons name="ellipsis-horizontal" size={24} color="#666" />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.sportName}>{reservation.sport}</Text>
-              <View style={styles.detailsContainer}>
-                <View style={styles.detailItem}>
-                  <Ionicons name="calendar-outline" size={16} color="#666" />
-                  <Text style={styles.detailText}>{reservation.date}</Text>
-                </View>
-                <View style={styles.detailItem}>
-                  <Ionicons name="time-outline" size={16} color="#666" />
-                  <Text style={styles.detailText}>{reservation.time}</Text>
-                </View>
-              </View>
-              <View style={styles.detailsContainer}>
-                <View style={styles.detailItem}>
-                  <Ionicons name="hourglass-outline" size={16} color="#666" />
-                  <Text style={styles.detailText}>{reservation.duration}</Text>
-                </View>
-                <View style={styles.detailItem}>
-                  <Ionicons name="people-outline" size={16} color="#666" />
-                  <Text style={styles.detailText}>
-                    {reservation.people} pessoas
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.priceContainer}>
-                <View style={styles.pricePerPersonTag}>
-                  <Text style={styles.pricePerPersonText}>
-                    R$ {reservation.pricePerPerson.toFixed(2)}/pessoa
-                  </Text>
-                </View>
-                <View style={styles.priceTag}>
-                  <Text style={styles.priceText}>
-                    R$ {reservation.price.toFixed(2)}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [selectedReservation, setSelectedReservation] = React.useState<
+    null | (typeof MOCK_RESERVATIONS)[0]
+  >(null);
 
-      <Text style={styles.title}>Minhas Aulas</Text>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Aulas Inscritas</Text>
-        {MOCK_CLASSES.map((class_) => (
-          <TouchableOpacity key={class_.id} style={styles.card}>
-            <Image
-              source={{ uri: class_.image }}
-              style={styles.cardImage}
-              resizeMode="cover"
-            />
-            <View style={styles.cardContent}>
-              <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>{class_.spaceName}</Text>
-                <TouchableOpacity style={styles.moreButton}>
-                  <Ionicons name="ellipsis-horizontal" size={24} color="#666" />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.sportName}>{class_.sport}</Text>
-              <Text style={styles.instructorName}>{class_.instructor}</Text>
-              <View style={styles.detailsContainer}>
-                <View style={styles.detailItem}>
-                  <Ionicons name="calendar-outline" size={16} color="#666" />
-                  <Text style={styles.detailText}>{class_.schedule}</Text>
+  const handleOpenOptions = useCallback(
+    (reservation: (typeof MOCK_RESERVATIONS)[0]) => {
+      setSelectedReservation(reservation);
+      setModalVisible(true);
+    },
+    []
+  );
+
+  const handleChangeReservation = useCallback(() => {
+    // Implementar lógica de alteração
+    setModalVisible(false);
+  }, []);
+
+  const handleCancelReservation = useCallback(() => {
+    // Implementar lógica de cancelamento
+    setModalVisible(false);
+  }, []);
+
+  return (
+    <>
+      <ScrollView style={styles.container}>
+        <Text style={styles.title}>Minhas Reservas</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Próximas Reservas</Text>
+          {MOCK_RESERVATIONS.map((reservation) => (
+            <TouchableOpacity key={reservation.id} style={styles.card}>
+              <Image
+                source={{ uri: reservation.image }}
+                style={styles.cardImage}
+                resizeMode="cover"
+              />
+              <View style={styles.cardContent}>
+                <View style={styles.cardHeader}>
+                  <Text style={styles.cardTitle}>{reservation.spaceName}</Text>
+                  <TouchableOpacity
+                    style={styles.moreButton}
+                    onPress={() => handleOpenOptions(reservation)}
+                  >
+                    <Ionicons
+                      name="ellipsis-horizontal"
+                      size={24}
+                      color="#666"
+                    />
+                  </TouchableOpacity>
                 </View>
-                <View style={styles.detailItem}>
-                  <Ionicons name="time-outline" size={16} color="#666" />
-                  <Text style={styles.detailText}>{class_.time}</Text>
+                <Text style={styles.sportName}>{reservation.sport}</Text>
+                <View style={styles.detailsContainer}>
+                  <View style={styles.detailItem}>
+                    <Ionicons name="calendar-outline" size={16} color="#666" />
+                    <Text style={styles.detailText}>{reservation.date}</Text>
+                  </View>
+                  <View style={styles.detailItem}>
+                    <Ionicons name="time-outline" size={16} color="#666" />
+                    <Text style={styles.detailText}>{reservation.time}</Text>
+                  </View>
+                </View>
+                <View style={styles.detailsContainer}>
+                  <View style={styles.detailItem}>
+                    <Ionicons name="hourglass-outline" size={16} color="#666" />
+                    <Text style={styles.detailText}>
+                      {reservation.duration}
+                    </Text>
+                  </View>
+                  <View style={styles.detailItem}>
+                    <Ionicons name="people-outline" size={16} color="#666" />
+                    <Text style={styles.detailText}>
+                      {reservation.people} pessoas
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.priceContainer}>
+                  <View style={styles.pricePerPersonTag}>
+                    <Text style={styles.pricePerPersonText}>
+                      R$ {reservation.pricePerPerson.toFixed(2)}/pessoa
+                    </Text>
+                  </View>
+                  <View style={styles.priceTag}>
+                    <Text style={styles.priceText}>
+                      R$ {reservation.price.toFixed(2)}
+                    </Text>
+                  </View>
                 </View>
               </View>
-              <View style={styles.planContainer}>
-                <View style={styles.planTag}>
-                  <Text style={styles.planText}>{class_.plan}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <Text style={styles.title}>Minhas Aulas</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Aulas Inscritas</Text>
+          {MOCK_CLASSES.map((class_) => (
+            <TouchableOpacity key={class_.id} style={styles.card}>
+              <Image
+                source={{ uri: class_.image }}
+                style={styles.cardImage}
+                resizeMode="cover"
+              />
+              <View style={styles.cardContent}>
+                <View style={styles.cardHeader}>
+                  <Text style={styles.cardTitle}>{class_.spaceName}</Text>
+                  <TouchableOpacity style={styles.moreButton}>
+                    <Ionicons
+                      name="ellipsis-horizontal"
+                      size={24}
+                      color="#666"
+                    />
+                  </TouchableOpacity>
                 </View>
-                <Text style={styles.planPrice}>
-                  R$ {class_.price.toFixed(2)}/mês
-                </Text>
+                <Text style={styles.sportName}>{class_.sport}</Text>
+                <Text style={styles.instructorName}>{class_.instructor}</Text>
+                <View style={styles.detailsContainer}>
+                  <View style={styles.detailItem}>
+                    <Ionicons name="calendar-outline" size={16} color="#666" />
+                    <Text style={styles.detailText}>{class_.schedule}</Text>
+                  </View>
+                  <View style={styles.detailItem}>
+                    <Ionicons name="time-outline" size={16} color="#666" />
+                    <Text style={styles.detailText}>{class_.time}</Text>
+                  </View>
+                </View>
+                <View style={styles.planContainer}>
+                  <View style={styles.planTag}>
+                    <Text style={styles.planText}>{class_.plan}</Text>
+                  </View>
+                  <Text style={styles.planPrice}>
+                    R$ {class_.price.toFixed(2)}/mês
+                  </Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setModalVisible(false)}
+        >
+          <View style={styles.modalView}>
+            <View style={styles.modalHandle} />
+
+            <TouchableOpacity
+              style={styles.modalOption}
+              onPress={handleChangeReservation}
+            >
+              <Ionicons name="calendar-outline" size={24} color="#333" />
+              <Text style={styles.modalOptionText}>Alterar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.modalOption, styles.cancelOption]}
+              onPress={handleCancelReservation}
+            >
+              <Ionicons name="close-circle-outline" size={24} color="#dc3545" />
+              <Text style={[styles.modalOptionText, styles.cancelText]}>
+                Cancelar
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+      </Modal>
+    </>
   );
 }
 
@@ -290,5 +364,42 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1a73e8',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 16,
+    paddingBottom: 32,
+  },
+  modalHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#DDD',
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    gap: 12,
+  },
+  modalOptionText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  cancelOption: {
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  cancelText: {
+    color: '#dc3545',
   },
 });
