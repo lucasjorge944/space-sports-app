@@ -56,6 +56,7 @@ const MOCK_CLASSES = [
 
 export default function MySpacesScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [confirmModalVisible, setConfirmModalVisible] = React.useState(false);
   const [selectedReservation, setSelectedReservation] = React.useState<
     null | (typeof MOCK_RESERVATIONS)[0]
   >(null);
@@ -74,8 +75,13 @@ export default function MySpacesScreen() {
   }, []);
 
   const handleCancelReservation = useCallback(() => {
-    // Implementar lógica de cancelamento
     setModalVisible(false);
+    setConfirmModalVisible(true);
+  }, []);
+
+  const handleConfirmCancel = useCallback(() => {
+    // Implementar lógica de cancelamento aqui
+    setConfirmModalVisible(false);
   }, []);
 
   return (
@@ -226,6 +232,49 @@ export default function MySpacesScreen() {
             </TouchableOpacity>
           </View>
         </Pressable>
+      </Modal>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={confirmModalVisible}
+        onRequestClose={() => setConfirmModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.confirmModalView}>
+            <View style={styles.confirmModalContent}>
+              <Ionicons name="alert-circle-outline" size={48} color="#dc3545" />
+              <Text style={styles.confirmModalTitle}>Cancelar Reserva</Text>
+              <Text style={styles.confirmModalText}>
+                Tem certeza que deseja cancelar esta reserva?
+              </Text>
+            </View>
+
+            <View style={styles.confirmModalButtons}>
+              <TouchableOpacity
+                style={[
+                  styles.confirmModalButton,
+                  styles.confirmModalButtonCancel,
+                ]}
+                onPress={() => setConfirmModalVisible(false)}
+              >
+                <Text style={styles.confirmModalButtonTextCancel}>Voltar</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.confirmModalButton,
+                  styles.confirmModalButtonConfirm,
+                ]}
+                onPress={handleConfirmCancel}
+              >
+                <Text style={styles.confirmModalButtonTextConfirm}>
+                  Confirmar
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </Modal>
     </>
   );
@@ -401,5 +450,54 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     color: '#dc3545',
+  },
+  confirmModalView: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 24,
+    width: '100%',
+    alignSelf: 'center',
+  },
+  confirmModalContent: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  confirmModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  confirmModalText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+  },
+  confirmModalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  confirmModalButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  confirmModalButtonCancel: {
+    backgroundColor: '#f5f5f5',
+  },
+  confirmModalButtonConfirm: {
+    backgroundColor: '#dc3545',
+  },
+  confirmModalButtonTextCancel: {
+    color: '#666',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  confirmModalButtonTextConfirm: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
