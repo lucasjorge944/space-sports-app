@@ -49,9 +49,13 @@ const MOCK_PLANS = [
 export default function PlansScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [planModalVisible, setPlanModalVisible] = React.useState(false);
+  const [confirmModalVisible, setConfirmModalVisible] = React.useState(false);
   const [selectedPlan, setSelectedPlan] = React.useState<
     null | (typeof MOCK_CLASSES)[0]
   >(null);
+  const [newPlan, setNewPlan] = React.useState<null | (typeof MOCK_PLANS)[0]>(
+    null
+  );
 
   const handleOpenOptions = useCallback((plan: (typeof MOCK_CLASSES)[0]) => {
     setSelectedPlan(plan);
@@ -69,10 +73,16 @@ export default function PlansScreen() {
   }, []);
 
   const handleSelectNewPlan = useCallback((plan: (typeof MOCK_PLANS)[0]) => {
-    // Implementar lógica de mudança de plano
-    console.log('Novo plano selecionado:', plan);
+    setNewPlan(plan);
     setPlanModalVisible(false);
+    setConfirmModalVisible(true);
   }, []);
+
+  const handleConfirmPlanChange = useCallback(() => {
+    // Implementar lógica de mudança de plano
+    console.log('Confirmada troca para:', newPlan);
+    setConfirmModalVisible(false);
+  }, [newPlan]);
 
   return (
     <>
@@ -330,6 +340,77 @@ export default function PlansScreen() {
           </View>
         </View>
       </Modal>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={confirmModalVisible}
+        onRequestClose={() => setConfirmModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.confirmModalView}>
+            <View style={styles.confirmModalContent}>
+              <Ionicons name="alert-circle-outline" size={48} color="#1a73e8" />
+              <Text style={styles.confirmModalTitle}>Confirmar Mudança</Text>
+              <Text style={styles.confirmModalText}>
+                Deseja alterar seu plano atual?
+              </Text>
+
+              <View style={styles.planChangeDetails}>
+                <View style={styles.planChangeItem}>
+                  <Text style={styles.planChangeLabel}>Plano Atual</Text>
+                  <Text style={styles.planChangePlan}>
+                    {selectedPlan?.plan}
+                  </Text>
+                  <Text style={styles.planChangePrice}>
+                    R$ {selectedPlan?.price.toFixed(2)}/mês
+                  </Text>
+                </View>
+
+                <View style={styles.planChangeArrow}>
+                  <Ionicons name="arrow-forward" size={24} color="#666" />
+                </View>
+
+                <View style={styles.planChangeItem}>
+                  <Text style={styles.planChangeLabel}>Novo Plano</Text>
+                  <Text style={styles.planChangePlan}>
+                    {newPlan?.frequency}
+                  </Text>
+                  <Text style={styles.planChangePrice}>
+                    R$ {newPlan?.price.toFixed(2)}/mês
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.confirmModalButtons}>
+              <TouchableOpacity
+                style={[
+                  styles.confirmModalButton,
+                  styles.confirmModalButtonCancel,
+                ]}
+                onPress={() => setConfirmModalVisible(false)}
+              >
+                <Text style={styles.confirmModalButtonTextCancel}>
+                  Cancelar
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.confirmModalButton,
+                  styles.confirmModalButtonConfirm,
+                ]}
+                onPress={handleConfirmPlanChange}
+              >
+                <Text style={styles.confirmModalButtonTextConfirm}>
+                  Confirmar
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 }
@@ -564,5 +645,85 @@ const styles = StyleSheet.create({
   planPriceLabel: {
     fontSize: 14,
     color: '#666',
+  },
+  confirmModalView: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 24,
+    width: '100%',
+    alignSelf: 'center',
+  },
+  confirmModalContent: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  confirmModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  confirmModalText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  planChangeDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 8,
+  },
+  planChangeItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  planChangeLabel: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+  planChangePlan: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  planChangePrice: {
+    fontSize: 14,
+    color: '#1a73e8',
+    fontWeight: '500',
+  },
+  planChangeArrow: {
+    paddingHorizontal: 16,
+  },
+  confirmModalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  confirmModalButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  confirmModalButtonCancel: {
+    backgroundColor: '#f5f5f5',
+  },
+  confirmModalButtonConfirm: {
+    backgroundColor: '#1a73e8',
+  },
+  confirmModalButtonTextCancel: {
+    color: '#666',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  confirmModalButtonTextConfirm: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
