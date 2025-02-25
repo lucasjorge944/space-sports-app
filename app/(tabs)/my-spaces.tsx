@@ -10,6 +10,7 @@ import {
   Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Loading } from '../components/Loading';
 
 const MOCK_RESERVATIONS = [
   {
@@ -57,6 +58,7 @@ const MOCK_CLASSES = [
 export default function MySpacesScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [selectedReservation, setSelectedReservation] = React.useState<
     null | (typeof MOCK_RESERVATIONS)[0]
   >(null);
@@ -79,9 +81,17 @@ export default function MySpacesScreen() {
     setConfirmModalVisible(true);
   }, []);
 
-  const handleConfirmCancel = useCallback(() => {
-    // Implementar lógica de cancelamento aqui
+  const handleConfirmCancel = useCallback(async () => {
     setConfirmModalVisible(false);
+    setIsLoading(true);
+
+    try {
+      // Simular uma chamada de API
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Implementar lógica de cancelamento aqui
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   return (
@@ -276,6 +286,8 @@ export default function MySpacesScreen() {
           </View>
         </View>
       </Modal>
+
+      <Loading visible={isLoading} />
     </>
   );
 }
