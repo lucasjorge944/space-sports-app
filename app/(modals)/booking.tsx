@@ -16,6 +16,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
+import { Loading } from '../components/Loading';
 
 // Criar array de horários disponíveis
 const AVAILABLE_HOURS = Array.from({ length: 18 }, (_, i) => {
@@ -462,16 +463,7 @@ export default function BookingScreen() {
       </Modal>
 
       {/* Loading Modal */}
-      <Modal visible={isLoading} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <View style={styles.loadingContainer}>
-            <View style={styles.loadingContent}>
-              <ActivityIndicator size="large" color="#1a73e8" />
-              <Text style={styles.loadingText}>Confirmando reserva...</Text>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <Loading visible={isLoading} message="Confirmando reserva..." />
     </SafeAreaView>
   );
 }
@@ -743,23 +735,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  loadingContainer: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 24,
-    width: '80%',
-    maxWidth: 280,
-    alignItems: 'center',
-  },
-  loadingContent: {
-    alignItems: 'center',
-    gap: 16,
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 8,
   },
   successIconContainer: {
     alignItems: 'center',
