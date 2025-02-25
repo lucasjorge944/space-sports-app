@@ -39,8 +39,16 @@ const MOCK_CLASSES = [
   },
 ];
 
+const MOCK_PLANS = [
+  { frequency: '1x na semana', price: 240 },
+  { frequency: '2x na semana', price: 360 },
+  { frequency: '3x na semana', price: 420 },
+  { frequency: 'Ilimitado', price: 480 },
+];
+
 export default function PlansScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [planModalVisible, setPlanModalVisible] = React.useState(false);
   const [selectedPlan, setSelectedPlan] = React.useState<
     null | (typeof MOCK_CLASSES)[0]
   >(null);
@@ -51,13 +59,19 @@ export default function PlansScreen() {
   }, []);
 
   const handleChangePlan = useCallback(() => {
-    // Implementar lógica de alteração
     setModalVisible(false);
+    setPlanModalVisible(true);
   }, []);
 
   const handleToggleStatus = useCallback(() => {
     // Implementar lógica de ativação/inativação
     setModalVisible(false);
+  }, []);
+
+  const handleSelectNewPlan = useCallback((plan: (typeof MOCK_PLANS)[0]) => {
+    // Implementar lógica de mudança de plano
+    console.log('Novo plano selecionado:', plan);
+    setPlanModalVisible(false);
   }, []);
 
   return (
@@ -266,6 +280,56 @@ export default function PlansScreen() {
           </View>
         </Pressable>
       </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={planModalVisible}
+        onRequestClose={() => setPlanModalVisible(false)}
+      >
+        <View style={styles.planModalOverlay}>
+          <View style={styles.planModalView}>
+            <View style={styles.planModalHeader}>
+              <Text style={styles.planModalTitle}>Escolha um Plano</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setPlanModalVisible(false)}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.plansList}>
+              {MOCK_PLANS.map((plan, index) => (
+                <TouchableOpacity
+                  key={plan.frequency}
+                  style={[
+                    styles.planOption,
+                    index < MOCK_PLANS.length - 1 && styles.planOptionBorder,
+                  ]}
+                  onPress={() => handleSelectNewPlan(plan)}
+                >
+                  <View>
+                    <Text style={styles.planFrequency}>{plan.frequency}</Text>
+                    <Text style={styles.planDescription}>
+                      Acesso{' '}
+                      {plan.frequency === 'Ilimitado'
+                        ? 'ilimitado'
+                        : `${plan.frequency.split('x')[0]} vez${
+                            plan.frequency.startsWith('1') ? '' : 'es'
+                          } por semana`}
+                    </Text>
+                  </View>
+                  <View style={styles.planPriceContainer}>
+                    <Text style={styles.planPrice}>R$ {plan.price}</Text>
+                    <Text style={styles.planPriceLabel}>/mês</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 }
@@ -443,5 +507,62 @@ const styles = StyleSheet.create({
   toggleOption: {
     borderTopWidth: 1,
     borderTopColor: '#eee',
+  },
+  planModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  planModalView: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '80%',
+  },
+  planModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  planModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  closeButton: {
+    padding: 4,
+  },
+  plansList: {
+    padding: 16,
+  },
+  planOption: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 16,
+  },
+  planOptionBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  planFrequency: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  planDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  planPriceContainer: {
+    alignItems: 'flex-end',
+  },
+  planPriceLabel: {
+    fontSize: 14,
+    color: '#666',
   },
 });
