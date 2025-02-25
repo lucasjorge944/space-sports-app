@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
+import { Loading } from '../components/Loading';
 
 const MOCK_CLASSES = [
   {
@@ -56,6 +57,7 @@ export default function PlansScreen() {
   const [newPlan, setNewPlan] = React.useState<null | (typeof MOCK_PLANS)[0]>(
     null
   );
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleOpenOptions = useCallback((plan: (typeof MOCK_CLASSES)[0]) => {
     setSelectedPlan(plan);
@@ -78,10 +80,18 @@ export default function PlansScreen() {
     setConfirmModalVisible(true);
   }, []);
 
-  const handleConfirmPlanChange = useCallback(() => {
-    // Implementar lógica de mudança de plano
-    console.log('Confirmada troca para:', newPlan);
+  const handleConfirmPlanChange = useCallback(async () => {
     setConfirmModalVisible(false);
+    setIsLoading(true);
+
+    try {
+      // Simular uma chamada de API
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Implementar lógica de mudança de plano
+      console.log('Confirmada troca para:', newPlan);
+    } finally {
+      setIsLoading(false);
+    }
   }, [newPlan]);
 
   return (
@@ -411,6 +421,8 @@ export default function PlansScreen() {
           </View>
         </View>
       </Modal>
+
+      <Loading visible={isLoading} />
     </>
   );
 }
