@@ -50,6 +50,8 @@ const MOCK_TODAY_CLASSES = [
     duration: '1 hora',
     instructor: 'João Silva',
     image: 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6',
+    participants: 4,
+    maxParticipants: 6,
   },
   {
     id: '2',
@@ -59,6 +61,8 @@ const MOCK_TODAY_CLASSES = [
     duration: '1 hora',
     instructor: 'Maria Santos',
     image: 'https://images.unsplash.com/photo-1577412647305-991150c7d163',
+    participants: 3,
+    maxParticipants: 4,
   },
 ];
 
@@ -130,6 +134,12 @@ export default function MySpacesScreen() {
                     <Ionicons name="hourglass-outline" size={16} color="#666" />
                     <Text style={styles.detailText}>{class_.duration}</Text>
                   </View>
+                </View>
+                <View style={styles.participantsContainer}>
+                  <Ionicons name="people-outline" size={16} color="#666" />
+                  <Text style={styles.participantsText}>
+                    {class_.participants}/{class_.maxParticipants} alunos
+                  </Text>
                 </View>
               </View>
             </View>
@@ -503,5 +513,21 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+  },
+  participantsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 8,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    alignSelf: 'flex-start',
+  },
+  participantsText: {
+    color: '#666',
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
