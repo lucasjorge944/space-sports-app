@@ -165,7 +165,7 @@ export default function MySpacesScreen() {
 
         <Text style={styles.title}>Minhas Aulas</Text>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Aulas Inscritas</Text>
+          <Text style={styles.sectionTitle}>Planos Ativos</Text>
           {MOCK_CLASSES.map((class_) => (
             <TouchableOpacity key={class_.id} style={styles.card}>
               <Image
