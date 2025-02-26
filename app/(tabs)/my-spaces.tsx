@@ -128,21 +128,28 @@ export default function MySpacesScreen() {
     }
   }, []);
 
-  const handleToggleConfirmation = useCallback(async (classId: string) => {
-    setIsLoading(true);
-    try {
-      // Simular chamada à API
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+  const handleToggleConfirmation = useCallback(
+    async (class_: (typeof MOCK_TODAY_CLASSES)[0]) => {
+      setIsLoading(true);
+      try {
+        // Simular chamada à API
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      setConfirmedClasses((prev) =>
-        prev.includes(classId)
-          ? prev.filter((id) => id !== classId)
-          : [...prev, classId]
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        setConfirmedClasses((prev) =>
+          prev.includes(class_.id)
+            ? prev.filter((id) => id !== class_.id)
+            : [...prev, class_.id]
+        );
+
+        // Abrir lista de presença após confirmar/retirar presença
+        setSelectedClass(class_);
+        setStudentsModalVisible(true);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 
   const handleOpenStudentsList = useCallback(
     (class_: (typeof MOCK_TODAY_CLASSES)[0]) => {
@@ -199,7 +206,7 @@ export default function MySpacesScreen() {
                       confirmedClasses.includes(class_.id) &&
                         styles.confirmedButton,
                     ]}
-                    onPress={() => handleToggleConfirmation(class_.id)}
+                    onPress={() => handleToggleConfirmation(class_)}
                   >
                     <Ionicons
                       name={
@@ -381,9 +388,17 @@ export default function MySpacesScreen() {
         visible={studentsModalVisible}
         onRequestClose={() => setStudentsModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.studentsModalView}>
-            <View style={styles.modalHandle} />
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setStudentsModalVisible(false)}
+        >
+          <Pressable style={styles.studentsModalView}>
+            <Pressable
+              onPress={() => setStudentsModalVisible(false)}
+              style={styles.modalHandleContainer}
+            >
+              <View style={styles.modalHandle} />
+            </Pressable>
 
             <View style={styles.studentsModalHeader}>
               <Text style={styles.studentsModalTitle}>Lista de Presença</Text>
@@ -435,8 +450,8 @@ export default function MySpacesScreen() {
                 </View>
               </>
             )}
-          </View>
-        </View>
+          </Pressable>
+        </Pressable>
       </Modal>
 
       <Loading visible={isLoading} />
@@ -711,6 +726,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
+    paddingTop: 0,
     paddingBottom: 32,
     height: '70%',
   },
@@ -771,5 +787,9 @@ const styles = StyleSheet.create({
   },
   emptySlot: {
     color: '#999',
+  },
+  modalHandleContainer: {
+    paddingVertical: 12,
+    alignItems: 'center',
   },
 });
