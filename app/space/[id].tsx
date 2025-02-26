@@ -349,11 +349,11 @@ export default function SpaceDetailsScreen() {
                     setUserRating(0);
                     setUserComment('');
                   }}
-                  style={{ flex: 1 }}
                 />
                 <CustomButton
                   title="Enviar Avaliação"
                   variant="primary"
+                  size="small"
                   onPress={handleSubmitReview}
                   style={{ flex: 1 }}
                   disabled={userRating === 0 || !userComment.trim()}
