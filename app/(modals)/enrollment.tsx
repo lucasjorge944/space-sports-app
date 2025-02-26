@@ -28,6 +28,8 @@ export default function EnrollmentScreen() {
   const [experienceLevel, setExperienceLevel] = useState('Nunca joguei');
   const [showExperiencePicker, setShowExperiencePicker] = useState(false);
   const [experienceDetails, setExperienceDetails] = useState('');
+  const [selectedShift, setSelectedShift] = useState('Manhã');
+  const [showShiftPicker, setShowShiftPicker] = useState(false);
 
   const EXPERIENCE_LEVELS = [
     'Nunca joguei',
@@ -35,6 +37,8 @@ export default function EnrollmentScreen() {
     'Já treinei ou treino a algum tempo',
     'Já treino tem um bom tempo',
   ];
+
+  const SHIFTS = ['Manhã', 'Tarde', 'Noite'];
 
   const handleClose = () => {
     router.back();
@@ -55,6 +59,7 @@ export default function EnrollmentScreen() {
         `📍 Local: ${spaceName}\n` +
         `🎾 Esporte: ${selectedSport}\n` +
         `📅 Plano: ${frequency}\n` +
+        `⏰ Turno: ${selectedShift}\n` +
         `💪 Experiência: ${experienceLevel}\n` +
         (experienceDetails ? `📝 Detalhes: ${experienceDetails}\n` : '') +
         `💰 Valor mensal: R$ ${price.toFixed(2)}`;
@@ -114,6 +119,18 @@ export default function EnrollmentScreen() {
               onPress={() => setShowExperiencePicker(true)}
             >
               <Text style={styles.selectButtonText}>{experienceLevel}</Text>
+              <Ionicons name="chevron-down" size={20} color="#666" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Turno Preferido */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Turno Preferido</Text>
+            <TouchableOpacity
+              style={styles.selectButton}
+              onPress={() => setShowShiftPicker(true)}
+            >
+              <Text style={styles.selectButtonText}>{selectedShift}</Text>
               <Ionicons name="chevron-down" size={20} color="#666" />
             </TouchableOpacity>
           </View>
@@ -227,6 +244,47 @@ export default function EnrollmentScreen() {
         </View>
       </Modal>
 
+      {/* Shift Picker Modal */}
+      <Modal
+        visible={showShiftPicker}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowShiftPicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Selecione o Turno</Text>
+              <TouchableOpacity onPress={() => setShowShiftPicker(false)}>
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+            {SHIFTS.map((shift) => (
+              <TouchableOpacity
+                key={shift}
+                style={[
+                  styles.sportOption,
+                  selectedShift === shift && styles.selectedSportOption,
+                ]}
+                onPress={() => {
+                  setSelectedShift(shift);
+                  setShowShiftPicker(false);
+                }}
+              >
+                <Text
+                  style={[
+                    styles.sportOptionText,
+                    selectedShift === shift && styles.selectedSportOptionText,
+                  ]}
+                >
+                  {shift}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </Modal>
+
       {/* Receipt Modal */}
       <Modal
         visible={showReceipt}
@@ -274,6 +332,10 @@ export default function EnrollmentScreen() {
               <View style={styles.receiptItem}>
                 <Text style={styles.receiptLabel}>Plano</Text>
                 <Text style={styles.receiptValue}>{frequency}</Text>
+              </View>
+              <View style={styles.receiptItem}>
+                <Text style={styles.receiptLabel}>Turno Preferido</Text>
+                <Text style={styles.receiptValue}>{selectedShift}</Text>
               </View>
               <View style={styles.receiptItem}>
                 <Text style={styles.receiptLabel}>Experiência</Text>
