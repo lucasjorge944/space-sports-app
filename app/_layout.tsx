@@ -69,6 +69,13 @@ export default function RootLayout() {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="(modals)/enrollment"
+          options={{
+            presentation: 'modal',
+            headerShown: false,
+          }}
+        />
       </Stack>
       {!splashAnimationFinished && (
         <Animated.View

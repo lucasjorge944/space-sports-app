@@ -105,6 +105,18 @@ export default function SpaceDetailsScreen() {
     });
   };
 
+  const handleOpenEnrollment = (plan: { frequency: string; price: number }) => {
+    router.push({
+      pathname: '/enrollment',
+      params: {
+        frequency: plan.frequency,
+        price: plan.price,
+        spaceName: MOCK_SPACE.name,
+        sports: MOCK_SPACE.sports.join(','),
+      },
+    });
+  };
+
   const handleSubmitReview = () => {
     console.log({ rating: userRating, comment: userComment });
     setUserRating(0);
@@ -261,7 +273,10 @@ export default function SpaceDetailsScreen() {
                   <Text style={styles.planPrice}>
                     R$ {plan.price.toFixed(2)}/mês
                   </Text>
-                  <TouchableOpacity style={styles.enrollButton}>
+                  <TouchableOpacity
+                    style={styles.enrollButton}
+                    onPress={() => handleOpenEnrollment(plan)}
+                  >
                     <Text style={styles.enrollButtonText}>Matricular</Text>
                   </TouchableOpacity>
                 </TouchableOpacity>
