@@ -143,9 +143,16 @@ export default function PlansScreen() {
   }, [selectedPlan?.status]);
 
   const handleWhatsAppContact = () => {
-    const whatsappNumber = '+5531999325905';
+    const whatsappNumber = '5531999325905';
     const message = `Olá! Fiz uma matrícula para ${selectedPlan?.sport} na ${selectedPlan?.spaceName} e ainda não recebi contato.`;
+
+    // Tentar primeiro o deep link do WhatsApp
     const whatsappUrl = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(
+      message
+    )}`;
+
+    // URL alternativa para web/desktop
+    const webWhatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
       message
     )}`;
 
@@ -153,9 +160,18 @@ export default function PlansScreen() {
       .then((supported) => {
         if (supported) {
           return Linking.openURL(whatsappUrl);
+        } else {
+          // Se não suportar o deep link, tenta a URL web
+          return Linking.openURL(webWhatsappUrl);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log('Erro ao abrir WhatsApp:', err);
+        // Se falhar, tenta a URL web como fallback
+        Linking.openURL(webWhatsappUrl).catch((webErr) => {
+          console.log('Erro ao abrir WhatsApp web:', webErr);
+        });
+      });
   };
 
   return (
