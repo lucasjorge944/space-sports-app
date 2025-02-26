@@ -29,8 +29,8 @@ const MOCK_SPACE = {
     { hours: 3, price: 250 },
   ],
   classPlans: [
-    { frequency: '1x na semana', price: 240 },
-    { frequency: '2x na semana', price: 360 },
+    { frequency: '1x/sem', price: 240 },
+    { frequency: '2x/sem', price: 360 },
     { frequency: 'Ilimitado', price: 480 },
     { frequency: 'Experimental', price: 0 },
   ],
@@ -612,12 +612,12 @@ const styles = StyleSheet.create({
     borderColor: '#e8e8e8',
   },
   planFrequency: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     color: '#333',
   },
   planPrice: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#1a73e8',
   },
