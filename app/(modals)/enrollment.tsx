@@ -190,7 +190,7 @@ export default function EnrollmentScreen() {
 
             <View style={styles.receiptButtons}>
               <TouchableOpacity
-                style={[styles.button, styles.primaryButton]}
+                style={[styles.button, styles.shareButton]}
                 onPress={handleShare}
               >
                 <View style={styles.buttonContent}>
@@ -412,13 +412,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   shareButton: {
-    backgroundColor: '#1a73e8',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    borderRadius: 8,
-    gap: 8,
+    backgroundColor: '#25D366',
   },
   closeReceiptButton: {
     backgroundColor: '#1a73e8',
