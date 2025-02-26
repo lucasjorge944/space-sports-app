@@ -310,7 +310,7 @@ export default function SpaceDetailsScreen() {
           {!showReviewForm ? (
             <CustomButton
               title="Avaliar Espaço"
-              variant="primary"
+              variant="outline"
               onPress={() => setShowReviewForm(true)}
               style={styles.addReviewButton}
             />
@@ -693,14 +693,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   addReviewButton: {
-    backgroundColor: '#1a73e8',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 12,
-    borderRadius: 8,
     marginBottom: 20,
-    gap: 8,
   },
   reviewForm: {
     backgroundColor: '#fff',
