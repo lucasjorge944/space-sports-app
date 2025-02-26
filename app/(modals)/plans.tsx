@@ -312,46 +312,70 @@ export default function PlansScreen() {
           <View style={styles.modalView}>
             <View style={styles.modalHandle} />
 
-            {selectedPlan?.status === 'active' && (
+            {selectedPlan?.status === 'pending' ? (
+              <>
+                <TouchableOpacity
+                  style={styles.modalOption}
+                  onPress={() => {
+                    setModalVisible(false);
+                    setConfirmStatusModalVisible(true);
+                  }}
+                >
+                  <Ionicons
+                    name="alert-circle-outline"
+                    size={24}
+                    color="#f57c00"
+                  />
+                  <Text style={styles.modalOptionText}>Não recebi contato</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.modalOption}
+                  onPress={() => {
+                    setModalVisible(false);
+                    setConfirmStatusModalVisible(true);
+                  }}
+                >
+                  <Ionicons
+                    name="close-circle-outline"
+                    size={24}
+                    color="#c62828"
+                  />
+                  <Text style={styles.modalOptionText}>Cancelar matrícula</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
               <>
                 <TouchableOpacity
                   style={styles.modalOption}
                   onPress={handleChangePlan}
                 >
-                  <Ionicons name="sync-outline" size={24} color="#333" />
-                  <Text style={styles.modalOptionText}>Mudar Plano</Text>
+                  <Ionicons name="swap-horizontal" size={24} color="#1a73e8" />
+                  <Text style={styles.modalOptionText}>Trocar de Plano</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[styles.modalOption, styles.toggleOption]}
+                  style={styles.modalOption}
                   onPress={handleToggleStatus}
                 >
                   <Ionicons
-                    name="pause-circle-outline"
+                    name={
+                      selectedPlan?.status === 'inactive' ? 'play' : 'pause'
+                    }
                     size={24}
-                    color="#c62828"
+                    color={
+                      selectedPlan?.status === 'inactive'
+                        ? '#2e7d32'
+                        : '#c62828'
+                    }
                   />
-                  <Text style={[styles.modalOptionText, { color: '#c62828' }]}>
-                    Inativar Plano
+                  <Text style={styles.modalOptionText}>
+                    {selectedPlan?.status === 'inactive'
+                      ? 'Ativar Plano'
+                      : 'Pausar Plano'}
                   </Text>
                 </TouchableOpacity>
               </>
-            )}
-
-            {selectedPlan?.status === 'inactive' && (
-              <TouchableOpacity
-                style={styles.modalOption}
-                onPress={handleToggleStatus}
-              >
-                <Ionicons
-                  name="play-circle-outline"
-                  size={24}
-                  color="#2e7d32"
-                />
-                <Text style={[styles.modalOptionText, { color: '#2e7d32' }]}>
-                  Ativar Plano
-                </Text>
-              </TouchableOpacity>
             )}
           </View>
         </Pressable>
@@ -909,5 +933,11 @@ const styles = StyleSheet.create({
     color: '#f57c00',
     fontSize: 12,
     fontWeight: '500',
+  },
+  confirmModalButtonAlert: {
+    backgroundColor: '#f57c00',
+  },
+  confirmModalButtonDanger: {
+    backgroundColor: '#c62828',
   },
 });
