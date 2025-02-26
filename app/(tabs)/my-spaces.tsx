@@ -62,7 +62,7 @@ const MOCK_TODAY_CLASSES = [
     duration: '1 hora',
     instructor: 'João Silva',
     image: 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6',
-    participants: 4,
+    participants: 3,
     maxParticipants: 6,
     confirmed: true,
   },
@@ -74,8 +74,8 @@ const MOCK_TODAY_CLASSES = [
     duration: '1 hora',
     instructor: 'Maria Santos',
     image: 'https://images.unsplash.com/photo-1577412647305-991150c7d163',
-    participants: 3,
-    maxParticipants: 4,
+    participants: 7,
+    maxParticipants: 9,
     confirmed: false,
   },
 ];
@@ -96,6 +96,26 @@ const MOCK_STUDENTS = {
 
 // Adicionar constante para o usuário atual
 const CURRENT_USER = 'Lucas Jorge';
+
+const getParticipantsColor = (
+  participants: number,
+  maxParticipants: number
+) => {
+  const ratio = participants / maxParticipants;
+  if (ratio === 1) return '#d32f2f'; // Vermelho mais escuro e vibrante
+  if (ratio >= 0.7) return '#f57c00'; // Laranja mais escuro e vibrante
+  return '#2e7d32'; // Verde escuro para status normal
+};
+
+const getParticipantsBackground = (
+  participants: number,
+  maxParticipants: number
+) => {
+  const ratio = participants / maxParticipants;
+  if (ratio === 1) return '#ffcdd2'; // Vermelho claro mais vibrante
+  if (ratio >= 0.7) return '#ffe0b2'; // Laranja claro mais vibrante
+  return '#c8e6c9'; // Verde claro para status normal
+};
 
 export default function MySpacesScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -209,9 +229,36 @@ export default function MySpacesScreen() {
                   </View>
                 </View>
                 <View style={styles.classFooter}>
-                  <View style={styles.participantsContainer}>
-                    <Ionicons name="people-outline" size={16} color="#666" />
-                    <Text style={styles.participantsText}>
+                  <View
+                    style={[
+                      styles.participantsContainer,
+                      {
+                        backgroundColor: getParticipantsBackground(
+                          class_.participants,
+                          class_.maxParticipants
+                        ),
+                      },
+                    ]}
+                  >
+                    <Ionicons
+                      name="people-outline"
+                      size={16}
+                      color={getParticipantsColor(
+                        class_.participants,
+                        class_.maxParticipants
+                      )}
+                    />
+                    <Text
+                      style={[
+                        styles.participantsText,
+                        {
+                          color: getParticipantsColor(
+                            class_.participants,
+                            class_.maxParticipants
+                          ),
+                        },
+                      ]}
+                    >
                       {class_.participants}/{class_.maxParticipants} alunos
                     </Text>
                   </View>
@@ -616,7 +663,7 @@ const styles = StyleSheet.create({
   pricePerPersonText: {
     color: '#666',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   priceTag: {
     alignSelf: 'flex-end',
@@ -743,16 +790,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
     marginTop: 8,
-    backgroundColor: '#f5f5f5',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
     alignSelf: 'flex-start',
   },
   participantsText: {
-    color: '#666',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   classFooter: {
     flexDirection: 'row',
