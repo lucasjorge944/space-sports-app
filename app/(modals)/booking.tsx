@@ -106,7 +106,7 @@ export default function BookingScreen() {
         `🏐 Reserva confirmada!\n\n` +
         `📍 Local: ${spaceName}\n` +
         `📅 Data: ${date.toLocaleDateString('pt-BR')}\n` +
-        `🕒 Horário: ${selectedTime}\n` +
+        `🕒 Horário: ${getTimeInterval(selectedTime.split(':')[0])}\n` +
         `⚽ Esporte: ${
           SPORTS_OPTIONS.find((s) => s.value === sport)?.label
         }\n` +
@@ -119,6 +119,10 @@ export default function BookingScreen() {
         message,
         title: 'Compartilhar Reserva',
       });
+
+      // Fechar o modal de recibo após compartilhar
+      setShowReceipt(false);
+      router.back();
     } catch (error) {
       console.error(error);
     }
@@ -465,17 +469,29 @@ export default function BookingScreen() {
               </View>
             </View>
 
-            <TouchableOpacity
-              style={[styles.finishButton, { backgroundColor: '#25D366' }]}
-              onPress={handleShare}
-            >
-              <View style={styles.shareButtonContent}>
-                <Ionicons name="share-social" size={24} color="#fff" />
-                <Text style={styles.finishButtonText}>
-                  Compartilhar com amigos
-                </Text>
-              </View>
-            </TouchableOpacity>
+            <View style={styles.receiptButtons}>
+              <TouchableOpacity
+                style={[styles.finishButton, { backgroundColor: '#25D366' }]}
+                onPress={handleShare}
+              >
+                <View style={styles.shareButtonContent}>
+                  <Ionicons name="share-social" size={24} color="#fff" />
+                  <Text style={styles.finishButtonText}>
+                    Compartilhar com amigos
+                  </Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.finishButton, { marginTop: 10 }]}
+                onPress={() => {
+                  setShowReceipt(false);
+                  router.back();
+                }}
+              >
+                <Text style={styles.finishButtonText}>Concluir</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -742,12 +758,14 @@ const styles = StyleSheet.create({
     color: '#1a73e8',
     fontWeight: 'bold',
   },
+  receiptButtons: {
+    marginTop: 20,
+  },
   finishButton: {
     backgroundColor: '#1a73e8',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
-    marginTop: 10,
   },
   finishButtonText: {
     color: 'white',
