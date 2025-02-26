@@ -76,11 +76,14 @@ const MOCK_STUDENTS = {
     { id: '4', name: 'João Santos' },
   ],
   '2': [
-    { id: '1', name: 'Bruno Costa' },
+    { id: '1', name: 'Lucas Jorge' },
     { id: '2', name: 'Mariana Lima' },
     { id: '3', name: 'Rafael Torres' },
   ],
 };
+
+// Adicionar constante para o usuário atual
+const CURRENT_USER = 'Lucas Jorge';
 
 export default function MySpacesScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -463,19 +466,29 @@ export default function MySpacesScreen() {
                           MOCK_STUDENTS[
                             selectedClass.id as keyof typeof MOCK_STUDENTS
                           ]?.[index];
+                        const isCurrentUser = student?.name === CURRENT_USER;
+
                         return (
                           <View key={index} style={styles.studentItem}>
-                            <Text style={styles.studentNumber}>
-                              {index + 1}
-                            </Text>
-                            <Text
-                              style={[
-                                styles.studentName,
-                                !student && styles.emptySlot,
-                              ]}
-                            >
-                              {student?.name || '-'}
-                            </Text>
+                            <View style={styles.studentNumberContainer}>
+                              <Text style={styles.studentNumber}>
+                                {index + 1}
+                              </Text>
+                            </View>
+                            <View style={styles.studentNameContainer}>
+                              <Text
+                                style={[
+                                  styles.studentName,
+                                  !student && styles.emptySlot,
+                                  isCurrentUser && styles.currentUserName,
+                                ]}
+                              >
+                                {student?.name || '-'}
+                              </Text>
+                              {isCurrentUser && (
+                                <Text style={styles.currentUserTag}>Você</Text>
+                              )}
+                            </View>
                           </View>
                         );
                       }
@@ -807,13 +820,21 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
-    gap: 12,
+  },
+  studentNumberContainer: {
+    width: 40,
+    alignItems: 'center',
   },
   studentNumber: {
     fontSize: 16,
     fontWeight: '600',
     color: '#1a73e8',
-    width: 24,
+  },
+  studentNameContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   studentName: {
     fontSize: 16,
@@ -821,6 +842,18 @@ const styles = StyleSheet.create({
   },
   emptySlot: {
     color: '#999',
+  },
+  currentUserName: {
+    color: '#1a73e8',
+    fontWeight: '700',
+  },
+  currentUserTag: {
+    fontSize: 12,
+    color: '#1a73e8',
+    backgroundColor: '#e8f0fe',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
   },
   modalHandleContainer: {
     paddingVertical: 12,
