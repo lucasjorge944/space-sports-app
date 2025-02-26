@@ -31,6 +31,18 @@ type Plan = {
 // Atualizar o MOCK_CLASSES para incluir um plano pendente
 const MOCK_CLASSES: Plan[] = [
   {
+    id: '2',
+    spaceName: 'Arena Sports',
+    sport: 'Futevôlei',
+    schedule: 'Segunda, Quarta e Sexta',
+    time: '18:00 - 19:00',
+    plan: '3x na semana',
+    price: 420,
+    image: 'https://images.unsplash.com/photo-1577412647305-991150c7d163',
+    instructor: 'Prof. Goiano',
+    status: 'active',
+  },
+  {
     id: '3',
     spaceName: 'Arena Sports',
     sport: 'Beach Tennis',
@@ -42,18 +54,6 @@ const MOCK_CLASSES: Plan[] = [
     instructor: 'Prof. Rafael Silva',
     status: 'pending',
     pendingMessage: 'Aguardando confirmação do professor',
-  },
-  {
-    id: '2',
-    spaceName: 'Arena Sports',
-    sport: 'Futevôlei',
-    schedule: 'Segunda, Quarta e Sexta',
-    time: '18:00 - 19:00',
-    plan: '3x na semana',
-    price: 420,
-    image: 'https://images.unsplash.com/photo-1577412647305-991150c7d163',
-    instructor: 'Prof. Goiano',
-    status: 'active',
   },
   {
     id: '1',
