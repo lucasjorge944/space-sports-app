@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   Modal,
   Share,
   TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -39,6 +41,8 @@ export default function EnrollmentScreen() {
   ];
 
   const SHIFTS = ['Manhã', 'Tarde', 'Noite'];
+
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const handleClose = () => {
     router.back();
@@ -76,91 +80,116 @@ export default function EnrollmentScreen() {
     }
   };
 
+  const handleTextAreaFocus = () => {
+    // Pequeno delay para garantir que o teclado já esteja aberto
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+      // Adicionar um padding extra temporário para garantir que o input fique bem visível
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollTo({
+          y: 1000, // Valor alto para garantir que role até o final
+          animated: true,
+        });
+      }
+    }, 500);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleClose}>
-          <Ionicons name="close" size={24} color="#666" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Fazer Matrícula</Text>
-        <View style={{ width: 24 }} />
-      </View>
-
-      <ScrollView style={styles.content}>
-        {/* Informações do Espaço */}
-        <View style={styles.spaceInfo}>
-          <Text style={styles.spaceName}>{spaceName}</Text>
-          <View style={styles.priceContainer}>
-            <Text style={styles.frequency}>{frequency}</Text>
-            <Text style={styles.price}>R$ {price.toFixed(2)}/mês</Text>
-          </View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={handleClose}>
+            <Ionicons name="close" size={24} color="#666" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Fazer Matrícula</Text>
+          <View style={{ width: 24 }} />
         </View>
 
-        {/* Formulário */}
-        <View style={styles.form}>
-          {/* Esporte */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Esporte</Text>
-            <TouchableOpacity
-              style={styles.selectButton}
-              onPress={() => setShowSportPicker(true)}
-            >
-              <Text style={styles.selectButtonText}>{selectedSport}</Text>
-              <Ionicons name="chevron-down" size={20} color="#666" />
-            </TouchableOpacity>
-          </View>
-
-          {/* Nível de Experiência */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Nível de Experiência</Text>
-            <TouchableOpacity
-              style={styles.selectButton}
-              onPress={() => setShowExperiencePicker(true)}
-            >
-              <Text style={styles.selectButtonText}>{experienceLevel}</Text>
-              <Ionicons name="chevron-down" size={20} color="#666" />
-            </TouchableOpacity>
-          </View>
-
-          {/* Turno Preferido */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Turno Preferido</Text>
-            <TouchableOpacity
-              style={styles.selectButton}
-              onPress={() => setShowShiftPicker(true)}
-            >
-              <Text style={styles.selectButtonText}>{selectedShift}</Text>
-              <Ionicons name="chevron-down" size={20} color="#666" />
-            </TouchableOpacity>
-          </View>
-
-          {/* Detalhes da Experiência */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Detalhes da Experiência</Text>
-            <TextInput
-              style={styles.textArea}
-              placeholder="Conte um pouco mais sobre sua experiência com o esporte..."
-              placeholderTextColor="#999"
-              value={experienceDetails}
-              onChangeText={setExperienceDetails}
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-            />
-          </View>
-        </View>
-      </ScrollView>
-
-      {/* Botão de Confirmar */}
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={[styles.button, styles.primaryButton]}
-          onPress={handleSubmit}
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.content}
+          keyboardShouldPersistTaps="handled"
         >
-          <Text style={styles.primaryButtonText}>Confirmar Matrícula</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Informações do Espaço */}
+          <View style={styles.spaceInfo}>
+            <Text style={styles.spaceName}>{spaceName}</Text>
+            <View style={styles.priceContainer}>
+              <Text style={styles.frequency}>{frequency}</Text>
+              <Text style={styles.price}>R$ {price.toFixed(2)}/mês</Text>
+            </View>
+          </View>
+
+          {/* Formulário */}
+          <View style={styles.form}>
+            {/* Esporte */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Esporte</Text>
+              <TouchableOpacity
+                style={styles.selectButton}
+                onPress={() => setShowSportPicker(true)}
+              >
+                <Text style={styles.selectButtonText}>{selectedSport}</Text>
+                <Ionicons name="chevron-down" size={20} color="#666" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Nível de Experiência */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Nível de Experiência</Text>
+              <TouchableOpacity
+                style={styles.selectButton}
+                onPress={() => setShowExperiencePicker(true)}
+              >
+                <Text style={styles.selectButtonText}>{experienceLevel}</Text>
+                <Ionicons name="chevron-down" size={20} color="#666" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Turno Preferido */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Turno Preferido</Text>
+              <TouchableOpacity
+                style={styles.selectButton}
+                onPress={() => setShowShiftPicker(true)}
+              >
+                <Text style={styles.selectButtonText}>{selectedShift}</Text>
+                <Ionicons name="chevron-down" size={20} color="#666" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Detalhes da Experiência */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Detalhes da Experiência</Text>
+              <TextInput
+                style={styles.textArea}
+                placeholder="Conte um pouco mais sobre sua experiência com o esporte..."
+                placeholderTextColor="#999"
+                value={experienceDetails}
+                onChangeText={setExperienceDetails}
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+                onFocus={handleTextAreaFocus}
+              />
+            </View>
+          </View>
+        </ScrollView>
+
+        {/* Botão de Confirmar */}
+        <View style={styles.footer}>
+          <TouchableOpacity
+            style={[styles.button, styles.primaryButton]}
+            onPress={handleSubmit}
+          >
+            <Text style={styles.primaryButtonText}>Confirmar Matrícula</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
 
       {/* Sport Picker Modal */}
       <Modal
