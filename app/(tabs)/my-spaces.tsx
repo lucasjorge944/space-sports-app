@@ -68,6 +68,20 @@ const MOCK_TODAY_CLASSES = [
   },
 ];
 
+const MOCK_STUDENTS = {
+  '1': [
+    { id: '1', name: 'Lucas Jorge' },
+    { id: '2', name: 'Gabriel Morais' },
+    { id: '3', name: 'Maria Silva' },
+    { id: '4', name: 'João Santos' },
+  ],
+  '2': [
+    { id: '1', name: 'Bruno Costa' },
+    { id: '2', name: 'Mariana Lima' },
+    { id: '3', name: 'Rafael Torres' },
+  ],
+};
+
 export default function MySpacesScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = React.useState(false);
@@ -78,6 +92,10 @@ export default function MySpacesScreen() {
   const [confirmedClasses, setConfirmedClasses] = React.useState<string[]>(
     MOCK_TODAY_CLASSES.filter((c) => c.confirmed).map((c) => c.id)
   );
+  const [studentsModalVisible, setStudentsModalVisible] = React.useState(false);
+  const [selectedClass, setSelectedClass] = React.useState<
+    null | (typeof MOCK_TODAY_CLASSES)[0]
+  >(null);
 
   const handleOpenOptions = useCallback(
     (reservation: (typeof MOCK_RESERVATIONS)[0]) => {
@@ -126,6 +144,14 @@ export default function MySpacesScreen() {
     }
   }, []);
 
+  const handleOpenStudentsList = useCallback(
+    (class_: (typeof MOCK_TODAY_CLASSES)[0]) => {
+      setSelectedClass(class_);
+      setStudentsModalVisible(true);
+    },
+    []
+  );
+
   return (
     <>
       <ScrollView style={styles.container}>
@@ -134,7 +160,11 @@ export default function MySpacesScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Aulas de Hoje</Text>
           {MOCK_TODAY_CLASSES.map((class_) => (
-            <View key={class_.id} style={styles.card}>
+            <TouchableOpacity
+              key={class_.id}
+              style={styles.card}
+              onPress={() => handleOpenStudentsList(class_)}
+            >
               <Image
                 source={{ uri: class_.image }}
                 style={styles.cardImage}
@@ -198,7 +228,7 @@ export default function MySpacesScreen() {
                   </TouchableOpacity>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
 
@@ -341,6 +371,70 @@ export default function MySpacesScreen() {
                 </Text>
               </TouchableOpacity>
             </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={studentsModalVisible}
+        onRequestClose={() => setStudentsModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.studentsModalView}>
+            <View style={styles.modalHandle} />
+
+            <View style={styles.studentsModalHeader}>
+              <Text style={styles.studentsModalTitle}>Lista de Presença</Text>
+              <TouchableOpacity
+                onPress={() => setStudentsModalVisible(false)}
+                style={styles.closeButton}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+
+            {selectedClass && (
+              <>
+                <View style={styles.classInfo}>
+                  <Text style={styles.classInfoTitle}>
+                    {selectedClass.sport}
+                  </Text>
+                  <Text style={styles.classInfoDetails}>
+                    {selectedClass.time} • {selectedClass.instructor}
+                  </Text>
+                </View>
+
+                <View style={styles.studentsListContainer}>
+                  <ScrollView>
+                    {Array.from({ length: selectedClass.maxParticipants }).map(
+                      (_, index) => {
+                        const student =
+                          MOCK_STUDENTS[
+                            selectedClass.id as keyof typeof MOCK_STUDENTS
+                          ]?.[index];
+                        return (
+                          <View key={index} style={styles.studentItem}>
+                            <Text style={styles.studentNumber}>
+                              {index + 1}
+                            </Text>
+                            <Text
+                              style={[
+                                styles.studentName,
+                                !student && styles.emptySlot,
+                              ]}
+                            >
+                              {student?.name || '-'}
+                            </Text>
+                          </View>
+                        );
+                      }
+                    )}
+                  </ScrollView>
+                </View>
+              </>
+            )}
           </View>
         </View>
       </Modal>
@@ -611,5 +705,71 @@ const styles = StyleSheet.create({
   },
   confirmedButtonText: {
     color: '#dc3545',
+  },
+  studentsModalView: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 16,
+    paddingBottom: 32,
+    height: '70%',
+  },
+  studentsModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  studentsModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  closeButton: {
+    padding: 4,
+  },
+  classInfo: {
+    marginBottom: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  classInfoTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  classInfoDetails: {
+    fontSize: 14,
+    color: '#666',
+  },
+  studentsListContainer: {
+    flex: 1,
+    marginTop: 8,
+  },
+  studentsList: {
+    flexGrow: 1,
+  },
+  studentItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    gap: 12,
+  },
+  studentNumber: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a73e8',
+    width: 24,
+  },
+  studentName: {
+    fontSize: 16,
+    color: '#333',
+  },
+  emptySlot: {
+    color: '#999',
   },
 });
