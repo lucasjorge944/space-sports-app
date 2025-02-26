@@ -40,7 +40,7 @@ export default function EnrollmentScreen() {
   const handleShare = async () => {
     try {
       const message =
-        `🏋️‍♂️ Matrícula confirmada!\n\n` +
+        `🏋️‍♂️ Matrícula solicitada!\n\n` +
         `📍 Local: ${spaceName}\n` +
         `🎾 Esporte: ${selectedSport}\n` +
         `📅 Plano: ${frequency}\n` +
@@ -164,10 +164,22 @@ export default function EnrollmentScreen() {
               </View>
             </View>
 
-            <Text style={styles.receiptTitle}>Matrícula Confirmada!</Text>
+            <Text style={styles.receiptTitle}>Matrícula Solicitada!</Text>
             <Text style={styles.receiptSubtitle}>
-              Sua matrícula foi realizada com sucesso
+              Sua matrícula foi solicitada com sucesso
             </Text>
+
+            <View style={styles.contactMessage}>
+              <Ionicons
+                name="information-circle-outline"
+                size={24}
+                color="#1a73e8"
+              />
+              <Text style={styles.contactMessageText}>
+                Um professor entrará em contato em breve para agendar sua
+                primeira aula e passar todas as informações necessárias.
+              </Text>
+            </View>
 
             <View style={styles.receiptDetails}>
               <View style={styles.receiptItem}>
@@ -419,5 +431,20 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
+  },
+  contactMessage: {
+    flexDirection: 'row',
+    backgroundColor: '#e8f0fe',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 24,
+    gap: 12,
+    alignItems: 'flex-start',
+  },
+  contactMessageText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#1a73e8',
+    lineHeight: 20,
   },
 });
