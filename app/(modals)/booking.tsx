@@ -124,6 +124,15 @@ export default function BookingScreen() {
     }
   };
 
+  // Função auxiliar para obter o intervalo de horário
+  const getTimeInterval = (startTime: string) => {
+    const startHour = parseInt(startTime);
+    const endHour = startHour + hours;
+    return `${startHour.toString().padStart(2, '0')}:00 às ${endHour
+      .toString()
+      .padStart(2, '0')}:00`;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
@@ -168,7 +177,7 @@ export default function BookingScreen() {
               style={styles.dateButton}
               onPress={() => setShowTimePicker(true)}
             >
-              <Text>{selectedTime}</Text>
+              <Text>{getTimeInterval(selectedTime.split(':')[0])}</Text>
               <Ionicons name="time-outline" size={20} color="#666" />
             </TouchableOpacity>
           </View>
@@ -415,7 +424,9 @@ export default function BookingScreen() {
 
               <View style={styles.receiptItem}>
                 <Text style={styles.receiptLabel}>Horário</Text>
-                <Text style={styles.receiptValue}>{selectedTime}</Text>
+                <Text style={styles.receiptValue}>
+                  {getTimeInterval(selectedTime.split(':')[0])}
+                </Text>
               </View>
 
               <View style={styles.receiptItem}>
