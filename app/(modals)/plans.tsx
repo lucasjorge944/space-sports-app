@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Modal,
   Pressable,
+  Linking,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
@@ -87,6 +88,7 @@ export default function PlansScreen() {
     null
   );
   const [isLoading, setIsLoading] = React.useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
 
   const handleOpenOptions = useCallback((plan: Plan) => {
     setSelectedPlan(plan);
@@ -139,6 +141,22 @@ export default function PlansScreen() {
       setIsLoading(false);
     }
   }, [selectedPlan?.status]);
+
+  const handleWhatsAppContact = () => {
+    const whatsappNumber = '+5531999325905';
+    const message = `Olá! Fiz uma matrícula para ${selectedPlan?.sport} na ${selectedPlan?.spaceName} e ainda não recebi contato.`;
+    const whatsappUrl = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(
+      message
+    )}`;
+
+    Linking.canOpenURL(whatsappUrl)
+      .then((supported) => {
+        if (supported) {
+          return Linking.openURL(whatsappUrl);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <>
@@ -318,7 +336,7 @@ export default function PlansScreen() {
                   style={styles.modalOption}
                   onPress={() => {
                     setModalVisible(false);
-                    setConfirmStatusModalVisible(true);
+                    setShowContactModal(true);
                   }}
                 >
                   <Ionicons
@@ -570,6 +588,48 @@ export default function PlansScreen() {
             </View>
           </View>
         </View>
+      </Modal>
+
+      <Modal
+        visible={showContactModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowContactModal(false)}
+      >
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setShowContactModal(false)}
+        >
+          <View style={styles.contactModalView}>
+            <View style={styles.modalHandle} />
+
+            <View style={styles.contactModalContent}>
+              <View style={styles.contactIconContainer}>
+                <Ionicons name="logo-whatsapp" size={32} color="#25D366" />
+              </View>
+
+              <Text style={styles.contactModalTitle}>
+                Entrar em contato via WhatsApp
+              </Text>
+
+              <Text style={styles.contactModalText}>
+                Vamos te conectar a um dos professores para verificar o status
+                da sua matrícula.
+              </Text>
+
+              <TouchableOpacity
+                style={styles.whatsappButton}
+                onPress={() => {
+                  handleWhatsAppContact();
+                  setShowContactModal(false);
+                }}
+              >
+                <Ionicons name="logo-whatsapp" size={24} color="#fff" />
+                <Text style={styles.whatsappButtonText}>Abrir WhatsApp</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Pressable>
       </Modal>
 
       <Loading visible={isLoading} />
@@ -939,5 +999,56 @@ const styles = StyleSheet.create({
   },
   confirmModalButtonDanger: {
     backgroundColor: '#c62828',
+  },
+  contactModalView: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    width: '100%',
+    position: 'absolute',
+    bottom: 0,
+  },
+  contactModalContent: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  contactIconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#e6f3eb',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  contactModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  contactModalText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 24,
+    paddingHorizontal: 20,
+  },
+  whatsappButton: {
+    backgroundColor: '#25D366',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    borderRadius: 8,
+    width: '100%',
+    gap: 8,
+  },
+  whatsappButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
