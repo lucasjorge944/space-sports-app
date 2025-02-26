@@ -419,6 +419,40 @@ export default function MySpacesScreen() {
                   <Text style={styles.classInfoDetails}>
                     {selectedClass.time} • {selectedClass.instructor}
                   </Text>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.modalConfirmButton,
+                      confirmedClasses.includes(selectedClass.id) &&
+                        styles.modalConfirmedButton,
+                    ]}
+                    onPress={() => handleToggleConfirmation(selectedClass)}
+                  >
+                    <Ionicons
+                      name={
+                        confirmedClasses.includes(selectedClass.id)
+                          ? 'close-circle-outline'
+                          : 'checkmark-circle-outline'
+                      }
+                      size={20}
+                      color={
+                        confirmedClasses.includes(selectedClass.id)
+                          ? '#dc3545'
+                          : '#1a73e8'
+                      }
+                    />
+                    <Text
+                      style={[
+                        styles.modalConfirmButtonText,
+                        confirmedClasses.includes(selectedClass.id) &&
+                          styles.modalConfirmedButtonText,
+                      ]}
+                    >
+                      {confirmedClasses.includes(selectedClass.id)
+                        ? 'Retirar Presença'
+                        : 'Confirmar Presença'}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
 
                 <View style={styles.studentsListContainer}>
@@ -791,5 +825,27 @@ const styles = StyleSheet.create({
   modalHandleContainer: {
     paddingVertical: 12,
     alignItems: 'center',
+  },
+  modalConfirmButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#e8f0fe',
+    alignSelf: 'flex-start',
+    marginTop: 16,
+  },
+  modalConfirmedButton: {
+    backgroundColor: '#ffebee',
+  },
+  modalConfirmButtonText: {
+    color: '#1a73e8',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  modalConfirmedButtonText: {
+    color: '#dc3545',
   },
 });
