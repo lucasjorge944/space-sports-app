@@ -333,9 +333,6 @@ export default function EnrollmentScreen() {
             </View>
 
             <Text style={styles.receiptTitle}>Matrícula Solicitada!</Text>
-            <Text style={styles.receiptSubtitle}>
-              Sua matrícula foi solicitada com sucesso
-            </Text>
 
             <View style={styles.contactMessage}>
               <Ionicons
@@ -370,14 +367,6 @@ export default function EnrollmentScreen() {
                 <Text style={styles.receiptLabel}>Experiência</Text>
                 <Text style={styles.receiptValue}>{experienceLevel}</Text>
               </View>
-              {experienceDetails && (
-                <View style={styles.receiptDetailsText}>
-                  <Text style={styles.receiptLabel}>Detalhes</Text>
-                  <Text style={styles.receiptDetailsValue}>
-                    {experienceDetails}
-                  </Text>
-                </View>
-              )}
               <View style={styles.receiptItem}>
                 <Text style={styles.receiptLabel}>Valor Mensal</Text>
                 <Text style={styles.receiptValue}>R$ {price.toFixed(2)}</Text>
@@ -409,7 +398,7 @@ export default function EnrollmentScreen() {
         </View>
       </Modal>
 
-      <Loading visible={isLoading} message="Confirmando matrícula..." />
+      <Loading visible={isLoading} message="Solicitando matrícula..." />
     </SafeAreaView>
   );
 }

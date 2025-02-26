@@ -13,7 +13,36 @@ import { Ionicons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
 import { Loading } from '../components/Loading';
 
-const MOCK_CLASSES = [
+// Definir o tipo do plano
+type Plan = {
+  id: string;
+  spaceName: string;
+  sport: string;
+  schedule: string;
+  time: string;
+  plan: string;
+  price: number;
+  image: string;
+  instructor: string;
+  status: 'active' | 'inactive' | 'pending';
+  pendingMessage?: string;
+};
+
+// Atualizar o MOCK_CLASSES para incluir um plano pendente
+const MOCK_CLASSES: Plan[] = [
+  {
+    id: '3',
+    spaceName: 'Arena Sports',
+    sport: 'Beach Tennis',
+    schedule: 'Segunda e Quarta',
+    time: '19:00 - 20:00',
+    plan: '2x na semana',
+    price: 360,
+    image: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8',
+    instructor: 'Prof. Rafael Silva',
+    status: 'pending',
+    pendingMessage: 'Aguardando confirmação do professor',
+  },
   {
     id: '2',
     spaceName: 'Arena Sports',
@@ -53,15 +82,13 @@ export default function PlansScreen() {
   const [confirmModalVisible, setConfirmModalVisible] = React.useState(false);
   const [confirmStatusModalVisible, setConfirmStatusModalVisible] =
     React.useState(false);
-  const [selectedPlan, setSelectedPlan] = React.useState<
-    null | (typeof MOCK_CLASSES)[0]
-  >(null);
+  const [selectedPlan, setSelectedPlan] = React.useState<Plan | null>(null);
   const [newPlan, setNewPlan] = React.useState<null | (typeof MOCK_PLANS)[0]>(
     null
   );
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const handleOpenOptions = useCallback((plan: (typeof MOCK_CLASSES)[0]) => {
+  const handleOpenOptions = useCallback((plan: Plan) => {
     setSelectedPlan(plan);
     setModalVisible(true);
   }, []);
@@ -133,13 +160,17 @@ export default function PlansScreen() {
               style={[
                 styles.card,
                 class_.status === 'inactive' && styles.inactiveCard,
+                class_.status === 'pending' && styles.pendingPlanCard,
               ]}
+              onPress={() => handleOpenOptions(class_)}
             >
               <View
                 style={[
                   styles.statusBadge,
                   class_.status === 'inactive'
                     ? styles.inactiveBadge
+                    : class_.status === 'pending'
+                    ? styles.pendingBadge
                     : styles.activeBadge,
                 ]}
               >
@@ -148,10 +179,16 @@ export default function PlansScreen() {
                     styles.statusText,
                     class_.status === 'inactive'
                       ? styles.inactiveStatusText
+                      : class_.status === 'pending'
+                      ? styles.pendingStatusText
                       : styles.activeStatusText,
                   ]}
                 >
-                  {class_.status === 'inactive' ? 'Inativo' : 'Ativo'}
+                  {class_.status === 'inactive'
+                    ? 'Inativo'
+                    : class_.status === 'pending'
+                    ? 'Pendente'
+                    : 'Ativo'}
                 </Text>
               </View>
               <Image
@@ -852,5 +889,25 @@ const styles = StyleSheet.create({
   },
   deactivateButton: {
     backgroundColor: '#c62828',
+  },
+  pendingPlanCard: {
+    borderColor: '#f57c00',
+  },
+  pendingBadge: {
+    backgroundColor: '#fff3e0',
+    borderColor: '#f57c00',
+    borderWidth: 1,
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    zIndex: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+  pendingStatusText: {
+    color: '#f57c00',
+    fontSize: 12,
+    fontWeight: '500',
   },
 });
