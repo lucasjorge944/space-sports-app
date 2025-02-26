@@ -817,6 +817,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 16,
     backgroundColor: '#e8f0fe',
+    marginTop: 4,
   },
   confirmedButton: {
     backgroundColor: '#ffebee',
