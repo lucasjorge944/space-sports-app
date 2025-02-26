@@ -24,6 +24,15 @@ export default function EnrollmentScreen() {
   const [showSportPicker, setShowSportPicker] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [experienceLevel, setExperienceLevel] = useState('Nunca joguei');
+  const [showExperiencePicker, setShowExperiencePicker] = useState(false);
+
+  const EXPERIENCE_LEVELS = [
+    'Nunca joguei',
+    'Já joguei algumas vezes',
+    'Já treinei ou treino a algum tempo',
+    'Já treino tem um bom tempo',
+  ];
 
   const handleClose = () => {
     router.back();
@@ -44,6 +53,7 @@ export default function EnrollmentScreen() {
         `📍 Local: ${spaceName}\n` +
         `🎾 Esporte: ${selectedSport}\n` +
         `📅 Plano: ${frequency}\n` +
+        `💪 Experiência: ${experienceLevel}\n` +
         `💰 Valor mensal: R$ ${price.toFixed(2)}`;
 
       await Share.share({
@@ -89,6 +99,18 @@ export default function EnrollmentScreen() {
               onPress={() => setShowSportPicker(true)}
             >
               <Text style={styles.selectButtonText}>{selectedSport}</Text>
+              <Ionicons name="chevron-down" size={20} color="#666" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Nível de Experiência */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Nível de Experiência</Text>
+            <TouchableOpacity
+              style={styles.selectButton}
+              onPress={() => setShowExperiencePicker(true)}
+            >
+              <Text style={styles.selectButtonText}>{experienceLevel}</Text>
               <Ionicons name="chevron-down" size={20} color="#666" />
             </TouchableOpacity>
           </View>
@@ -146,6 +168,47 @@ export default function EnrollmentScreen() {
         </View>
       </Modal>
 
+      {/* Experience Picker Modal */}
+      <Modal
+        visible={showExperiencePicker}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowExperiencePicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Nível de Experiência</Text>
+              <TouchableOpacity onPress={() => setShowExperiencePicker(false)}>
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+            {EXPERIENCE_LEVELS.map((level) => (
+              <TouchableOpacity
+                key={level}
+                style={[
+                  styles.sportOption,
+                  experienceLevel === level && styles.selectedSportOption,
+                ]}
+                onPress={() => {
+                  setExperienceLevel(level);
+                  setShowExperiencePicker(false);
+                }}
+              >
+                <Text
+                  style={[
+                    styles.sportOptionText,
+                    experienceLevel === level && styles.selectedSportOptionText,
+                  ]}
+                >
+                  {level}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </Modal>
+
       {/* Receipt Modal */}
       <Modal
         visible={showReceipt}
@@ -193,6 +256,10 @@ export default function EnrollmentScreen() {
               <View style={styles.receiptItem}>
                 <Text style={styles.receiptLabel}>Plano</Text>
                 <Text style={styles.receiptValue}>{frequency}</Text>
+              </View>
+              <View style={styles.receiptItem}>
+                <Text style={styles.receiptLabel}>Experiência</Text>
+                <Text style={styles.receiptValue}>{experienceLevel}</Text>
               </View>
               <View style={styles.receiptItem}>
                 <Text style={styles.receiptLabel}>Valor Mensal</Text>
