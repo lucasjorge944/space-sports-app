@@ -310,7 +310,7 @@ export default function SpaceDetailsScreen() {
           {!showReviewForm ? (
             <CustomButton
               title="Avaliar Espaço"
-              variant="outline"
+              variant="primary"
               onPress={() => setShowReviewForm(true)}
               style={styles.addReviewButton}
             />
