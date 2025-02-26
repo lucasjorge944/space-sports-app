@@ -86,11 +86,25 @@ const MOCK_STUDENTS = {
     { id: '2', name: 'Gabriel Morais' },
     { id: '3', name: 'Maria Silva' },
     { id: '4', name: 'João Santos' },
+    { id: '5', name: 'Ana Paula' },
+    { id: '6', name: 'Pedro Costa' },
+    { id: '7', name: 'Carla Souza' },
   ],
   '2': [
     { id: '1', name: 'Lucas Jorge' },
     { id: '2', name: 'Mariana Lima' },
     { id: '3', name: 'Rafael Torres' },
+  ],
+  '3': [
+    { id: '1', name: 'Lucas Jorge' },
+    { id: '2', name: 'Felipe Santos' },
+    { id: '3', name: 'Amanda Silva' },
+    { id: '4', name: 'Bruno Costa' },
+    { id: '5', name: 'Carolina Mendes' },
+    { id: '6', name: 'Diego Oliveira' },
+    { id: '7', name: 'Elena Martins' },
+    { id: '8', name: 'Fernando Pereira' },
+    { id: '9', name: 'Gabriel Morais' },
   ],
 };
 
