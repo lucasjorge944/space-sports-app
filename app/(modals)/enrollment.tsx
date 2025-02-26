@@ -97,8 +97,11 @@ export default function EnrollmentScreen() {
 
       {/* Botão de Confirmar */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.confirmButton} onPress={handleSubmit}>
-          <Text style={styles.confirmButtonText}>Confirmar Matrícula</Text>
+        <TouchableOpacity
+          style={[styles.button, styles.primaryButton]}
+          onPress={handleSubmit}
+        >
+          <Text style={styles.primaryButtonText}>Confirmar Matrícula</Text>
         </TouchableOpacity>
       </View>
 
@@ -187,21 +190,23 @@ export default function EnrollmentScreen() {
 
             <View style={styles.receiptButtons}>
               <TouchableOpacity
-                style={[styles.shareButton]}
+                style={[styles.button, styles.primaryButton]}
                 onPress={handleShare}
               >
-                <Ionicons name="share-social" size={24} color="#fff" />
-                <Text style={styles.shareButtonText}>Compartilhar</Text>
+                <View style={styles.buttonContent}>
+                  <Ionicons name="share-social" size={24} color="#fff" />
+                  <Text style={styles.primaryButtonText}>Compartilhar</Text>
+                </View>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.closeReceiptButton]}
+                style={[styles.button, styles.primaryButton]}
                 onPress={() => {
                   setShowReceipt(false);
                   router.back();
                 }}
               >
-                <Text style={styles.closeReceiptButtonText}>Concluir</Text>
+                <Text style={styles.primaryButtonText}>Concluir</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -289,16 +294,24 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#eee',
   },
-  confirmButton: {
-    backgroundColor: '#1a73e8',
+  button: {
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  confirmButtonText: {
+  primaryButton: {
+    backgroundColor: '#1a73e8',
+  },
+  primaryButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '500',
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   modalOverlay: {
     flex: 1,
@@ -326,19 +339,22 @@ const styles = StyleSheet.create({
   },
   sportOption: {
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    marginBottom: 10,
+    alignItems: 'center',
   },
   selectedSportOption: {
-    backgroundColor: '#e8f0fe',
+    backgroundColor: '#1a73e8',
+    borderColor: '#1a73e8',
   },
   sportOptionText: {
     fontSize: 16,
     color: '#333',
   },
   selectedSportOptionText: {
-    color: '#1a73e8',
-    fontWeight: '500',
+    color: '#fff',
   },
   receiptContent: {
     backgroundColor: '#fff',
@@ -396,7 +412,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   shareButton: {
-    backgroundColor: '#25D366',
+    backgroundColor: '#1a73e8',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -404,20 +420,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     gap: 8,
   },
-  shareButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   closeReceiptButton: {
     backgroundColor: '#1a73e8',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
-  },
-  closeReceiptButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });
