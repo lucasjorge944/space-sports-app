@@ -103,8 +103,6 @@ const MOCK_STUDENTS = {
     { id: '5', name: 'Carolina Mendes' },
     { id: '6', name: 'Diego Oliveira' },
     { id: '7', name: 'Elena Martins' },
-    { id: '8', name: 'Fernando Pereira' },
-    { id: '9', name: 'Gabriel Morais' },
   ],
 };
 
@@ -464,17 +462,11 @@ export default function MySpacesScreen() {
         visible={studentsModalVisible}
         onRequestClose={() => setStudentsModalVisible(false)}
       >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setStudentsModalVisible(false)}
-        >
-          <Pressable style={styles.studentsModalView}>
-            <Pressable
-              onPress={() => setStudentsModalVisible(false)}
-              style={styles.modalHandleContainer}
-            >
+        <View style={styles.modalOverlay}>
+          <View style={styles.studentsModalView}>
+            <View style={styles.modalHandleContainer}>
               <View style={styles.modalHandle} />
-            </Pressable>
+            </View>
 
             <View style={styles.studentsModalHeader}>
               <Text style={styles.studentsModalTitle}>Lista de Presença</Text>
@@ -531,47 +523,45 @@ export default function MySpacesScreen() {
                   </TouchableOpacity>
                 </View>
 
-                <View style={styles.studentsListContainer}>
-                  <ScrollView>
-                    {Array.from({ length: selectedClass.maxParticipants }).map(
-                      (_, index) => {
-                        const student =
-                          MOCK_STUDENTS[
-                            selectedClass.id as keyof typeof MOCK_STUDENTS
-                          ]?.[index];
-                        const isCurrentUser = student?.name === CURRENT_USER;
+                <ScrollView style={styles.studentsListContainer}>
+                  {Array.from({ length: selectedClass.maxParticipants }).map(
+                    (_, index) => {
+                      const student =
+                        MOCK_STUDENTS[
+                          selectedClass.id as keyof typeof MOCK_STUDENTS
+                        ]?.[index];
+                      const isCurrentUser = student?.name === CURRENT_USER;
 
-                        return (
-                          <View key={index} style={styles.studentItem}>
-                            <View style={styles.studentNumberContainer}>
-                              <Text style={styles.studentNumber}>
-                                {index + 1}
-                              </Text>
-                            </View>
-                            <View style={styles.studentNameContainer}>
-                              <Text
-                                style={[
-                                  styles.studentName,
-                                  !student && styles.emptySlot,
-                                  isCurrentUser && styles.currentUserName,
-                                ]}
-                              >
-                                {student?.name || '-'}
-                              </Text>
-                              {isCurrentUser && (
-                                <Text style={styles.currentUserTag}>Você</Text>
-                              )}
-                            </View>
+                      return (
+                        <View key={index} style={styles.studentItem}>
+                          <View style={styles.studentNumberContainer}>
+                            <Text style={styles.studentNumber}>
+                              {index + 1}
+                            </Text>
                           </View>
-                        );
-                      }
-                    )}
-                  </ScrollView>
-                </View>
+                          <View style={styles.studentNameContainer}>
+                            <Text
+                              style={[
+                                styles.studentName,
+                                !student && styles.emptySlot,
+                                isCurrentUser && styles.currentUserName,
+                              ]}
+                            >
+                              {student?.name || '-'}
+                            </Text>
+                            {isCurrentUser && (
+                              <Text style={styles.currentUserTag}>Você</Text>
+                            )}
+                          </View>
+                        </View>
+                      );
+                    }
+                  )}
+                </ScrollView>
               </>
             )}
-          </Pressable>
-        </Pressable>
+          </View>
+        </View>
       </Modal>
 
       <Loading visible={isLoading} />
@@ -843,15 +833,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    padding: 16,
-    paddingTop: 0,
-    paddingBottom: 32,
-    height: '70%',
+    height: '80%',
+    width: '100%',
+  },
+  modalHandleContainer: {
+    paddingVertical: 12,
+    alignItems: 'center',
   },
   studentsModalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 16,
     marginBottom: 16,
   },
   studentsModalTitle: {
@@ -863,10 +856,8 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   classInfo: {
+    paddingHorizontal: 16,
     marginBottom: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
   },
   classInfoTitle: {
     fontSize: 18,
@@ -880,10 +871,7 @@ const styles = StyleSheet.create({
   },
   studentsListContainer: {
     flex: 1,
-    marginTop: 8,
-  },
-  studentsList: {
-    flexGrow: 1,
+    paddingHorizontal: 16,
   },
   studentItem: {
     flexDirection: 'row',
@@ -925,10 +913,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 12,
-  },
-  modalHandleContainer: {
-    paddingVertical: 12,
-    alignItems: 'center',
   },
   modalConfirmButton: {
     flexDirection: 'row',
