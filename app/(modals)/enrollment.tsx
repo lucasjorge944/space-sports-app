@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Modal,
   Share,
+  TextInput,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -26,6 +27,7 @@ export default function EnrollmentScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [experienceLevel, setExperienceLevel] = useState('Nunca joguei');
   const [showExperiencePicker, setShowExperiencePicker] = useState(false);
+  const [experienceDetails, setExperienceDetails] = useState('');
 
   const EXPERIENCE_LEVELS = [
     'Nunca joguei',
@@ -54,6 +56,7 @@ export default function EnrollmentScreen() {
         `🎾 Esporte: ${selectedSport}\n` +
         `📅 Plano: ${frequency}\n` +
         `💪 Experiência: ${experienceLevel}\n` +
+        (experienceDetails ? `📝 Detalhes: ${experienceDetails}\n` : '') +
         `💰 Valor mensal: R$ ${price.toFixed(2)}`;
 
       await Share.share({
@@ -113,6 +116,21 @@ export default function EnrollmentScreen() {
               <Text style={styles.selectButtonText}>{experienceLevel}</Text>
               <Ionicons name="chevron-down" size={20} color="#666" />
             </TouchableOpacity>
+          </View>
+
+          {/* Detalhes da Experiência */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Detalhes da Experiência</Text>
+            <TextInput
+              style={styles.textArea}
+              placeholder="Conte um pouco mais sobre sua experiência com o esporte..."
+              placeholderTextColor="#999"
+              value={experienceDetails}
+              onChangeText={setExperienceDetails}
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+            />
           </View>
         </View>
       </ScrollView>
@@ -261,6 +279,14 @@ export default function EnrollmentScreen() {
                 <Text style={styles.receiptLabel}>Experiência</Text>
                 <Text style={styles.receiptValue}>{experienceLevel}</Text>
               </View>
+              {experienceDetails && (
+                <View style={styles.receiptDetailsText}>
+                  <Text style={styles.receiptLabel}>Detalhes</Text>
+                  <Text style={styles.receiptDetailsValue}>
+                    {experienceDetails}
+                  </Text>
+                </View>
+              )}
               <View style={styles.receiptItem}>
                 <Text style={styles.receiptLabel}>Valor Mensal</Text>
                 <Text style={styles.receiptValue}>R$ {price.toFixed(2)}</Text>
@@ -512,6 +538,27 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     color: '#1a73e8',
+    lineHeight: 20,
+  },
+  textArea: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    minHeight: 100,
+    fontSize: 16,
+    color: '#333',
+    textAlignVertical: 'top',
+  },
+  receiptDetailsText: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  receiptDetailsValue: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 8,
     lineHeight: 20,
   },
 });
