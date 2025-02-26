@@ -17,6 +17,7 @@ import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Loading } from '../components/Loading';
+import { CustomButton } from '../components/CustomButton';
 
 export default function BookingScreen() {
   const params = useLocalSearchParams();
@@ -231,9 +232,12 @@ export default function BookingScreen() {
 
       {/* Botões */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.confirmButton} onPress={handleSubmit}>
-          <Text style={styles.confirmText}>Confirmar Reserva</Text>
-        </TouchableOpacity>
+        <CustomButton
+          title="Confirmar Reserva"
+          variant="primary"
+          size="large"
+          onPress={handleSubmit}
+        />
       </View>
 
       {/* Calendar Modal */}

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { CustomButton } from '../components/CustomButton';
 
 export default function ProfileScreen() {
   const handleLogout = () => {
@@ -48,9 +49,12 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Sair</Text>
-      </TouchableOpacity>
+      <CustomButton
+        title="Sair"
+        variant="outline"
+        onPress={handleLogout}
+        style={styles.logoutButton}
+      />
     </View>
   );
 }
@@ -102,14 +106,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   logoutButton: {
-    padding: 16,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  logoutText: {
-    color: '#e53935',
-    fontSize: 16,
-    fontWeight: 'bold',
+    marginTop: 20,
   },
 });

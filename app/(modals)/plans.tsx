@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
 import { Loading } from '../components/Loading';
+import { CustomButton } from '../components/CustomButton';
 
 // Definir o tipo do plano
 type Plan = {
@@ -1066,5 +1067,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  cancelButton: {
+    backgroundColor: '#f5f5f5',
+    borderColor: '#ddd',
+    borderWidth: 1,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

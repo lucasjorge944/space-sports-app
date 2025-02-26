@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { CustomButton } from '../components/CustomButton';
 
 const MOCK_SPACE = {
   id: '1',
@@ -256,12 +257,12 @@ export default function SpaceDetailsScreen() {
                     {price.hours} hora{price.hours > 1 ? 's' : ''}
                   </Text>
                   <Text style={styles.price}>R$ {price.price.toFixed(2)}</Text>
-                  <TouchableOpacity
-                    style={styles.reserveButton}
+                  <CustomButton
+                    title="Reservar"
+                    variant="primary"
+                    size="small"
                     onPress={() => handleOpenBooking(price)}
-                  >
-                    <Text style={styles.reserveButtonText}>Reservar</Text>
-                  </TouchableOpacity>
+                  />
                 </TouchableOpacity>
               ))}
             </View>
@@ -273,12 +274,12 @@ export default function SpaceDetailsScreen() {
                   <Text style={styles.planPrice}>
                     R$ {plan.price.toFixed(2)}/mês
                   </Text>
-                  <TouchableOpacity
-                    style={styles.enrollButton}
+                  <CustomButton
+                    title="Matricular"
+                    variant="primary"
+                    size="small"
                     onPress={() => handleOpenEnrollment(plan)}
-                  >
-                    <Text style={styles.enrollButtonText}>Matricular</Text>
-                  </TouchableOpacity>
+                  />
                 </TouchableOpacity>
               ))}
             </View>
@@ -307,13 +308,12 @@ export default function SpaceDetailsScreen() {
           </View>
 
           {!showReviewForm ? (
-            <TouchableOpacity
-              style={styles.addReviewButton}
+            <CustomButton
+              title="Avaliar Espaço"
+              variant="primary"
               onPress={() => setShowReviewForm(true)}
-            >
-              <Ionicons name="star-outline" size={20} color="#fff" />
-              <Text style={styles.addReviewButtonText}>Avaliar Espaço</Text>
-            </TouchableOpacity>
+              style={styles.addReviewButton}
+            />
           ) : (
             <View style={styles.reviewForm}>
               <Text style={styles.reviewFormTitle}>Sua Avaliação</Text>
@@ -341,23 +341,23 @@ export default function SpaceDetailsScreen() {
                 textAlignVertical="top"
               />
               <View style={styles.reviewFormButtons}>
-                <TouchableOpacity
-                  style={[styles.reviewFormButton, styles.cancelButton]}
+                <CustomButton
+                  title="Cancelar"
+                  variant="outline"
                   onPress={() => {
                     setShowReviewForm(false);
                     setUserRating(0);
                     setUserComment('');
                   }}
-                >
-                  <Text style={styles.cancelButtonText}>Cancelar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.reviewFormButton, styles.submitButton]}
+                  style={{ flex: 1 }}
+                />
+                <CustomButton
+                  title="Enviar Avaliação"
+                  variant="primary"
                   onPress={handleSubmitReview}
+                  style={{ flex: 1 }}
                   disabled={userRating === 0 || !userComment.trim()}
-                >
-                  <Text style={styles.submitButtonText}>Enviar Avaliação</Text>
-                </TouchableOpacity>
+                />
               </View>
             </View>
           )}
@@ -602,17 +602,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#1a73e8',
   },
-  reserveButton: {
-    backgroundColor: '#1a73e8',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  reserveButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
-  },
   plansContainer: {
     gap: 12,
   },
@@ -635,29 +624,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1a73e8',
-  },
-  enrollButton: {
-    backgroundColor: '#1a73e8',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  enrollButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  bookButton: {
-    backgroundColor: '#1a73e8',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  bookButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   reviewsContainer: {
     marginBottom: 24,
@@ -736,11 +702,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     gap: 8,
   },
-  addReviewButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '500',
-  },
   reviewForm: {
     backgroundColor: '#fff',
     borderRadius: 12,
@@ -774,27 +735,5 @@ const styles = StyleSheet.create({
   reviewFormButtons: {
     flexDirection: 'row',
     gap: 12,
-  },
-  reviewFormButton: {
-    flex: 1,
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: '#f5f5f5',
-  },
-  cancelButtonText: {
-    color: '#666',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  submitButton: {
-    backgroundColor: '#1a73e8',
-  },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
   },
 });
