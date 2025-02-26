@@ -18,21 +18,28 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Loading } from '../components/Loading';
 
-// Criar array de horários disponíveis
-const AVAILABLE_HOURS = Array.from({ length: 18 }, (_, i) => {
-  const hour = i + 6; // Começa às 6h
-  return {
-    label: `${hour.toString().padStart(2, '0')}:00`,
-    value: `${hour.toString().padStart(2, '0')}:00`,
-    disabled: hour >= 17 && hour <= 20,
-  };
-});
-
 export default function BookingScreen() {
   const params = useLocalSearchParams();
   const spaceName = params.spaceName as string;
   const hours = Number(params.hours);
   const price = Number(params.price);
+
+  // Mover a criação do array de horários disponíveis para dentro do componente
+  const AVAILABLE_HOURS = Array.from({ length: 18 }, (_, i) => {
+    const startHour = i + 6; // Começa às 6h
+    const endHour = startHour + hours; // Adiciona a duração selecionada
+    return {
+      label: `${startHour.toString().padStart(2, '0')}:00 às ${endHour
+        .toString()
+        .padStart(2, '0')}:00`,
+      value: `${startHour.toString().padStart(2, '0')}:00`,
+      disabled: startHour >= 17 && startHour <= 20,
+    };
+  }).filter((hour) => {
+    // Filtra horários que ultrapassariam as 24h
+    const [startHour] = hour.value.split(':').map(Number);
+    return startHour + hours <= 24;
+  });
 
   // Definir as opções de esporte fixas
   const SPORTS_OPTIONS = [
@@ -597,7 +604,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   timeOption: {
-    width: '30%',
+    width: '48%',
     padding: 12,
     borderRadius: 8,
     borderWidth: 1,
