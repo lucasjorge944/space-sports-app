@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Loading } from '../components/Loading';
+import { PageHeader } from '../components/PageHeader';
 
 const MOCK_RESERVATIONS = [
   {
@@ -208,9 +209,12 @@ export default function MySpacesScreen() {
 
   return (
     <>
+      <PageHeader
+        title="Reservas"
+        rightIcon="filter"
+        onRightIconPress={() => console.log('Filter pressed')}
+      />
       <ScrollView style={styles.container}>
-        <Text style={styles.title}>Minhas Reservas</Text>
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Aulas de Hoje</Text>
           {MOCK_TODAY_CLASSES.map((class_) => (
@@ -573,14 +577,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    marginTop: 60,
-    paddingHorizontal: 20,
-    color: '#1a73e8',
+    paddingTop: 18,
   },
   section: {
     marginBottom: 30,

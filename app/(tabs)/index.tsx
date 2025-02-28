@@ -47,53 +47,55 @@ const MOCK_SPACES = [
 
 export default function ExploreScreen() {
   return (
-    <ScrollView style={styles.container}>
+    <View style={{ flex: 1 }}>
       <PageHeader
         title="Explorar"
         rightIcon="filter"
         onRightIconPress={() => console.log('Filter pressed')}
       />
 
-      <View style={styles.spacesList}>
-        {MOCK_SPACES.map((space) => (
-          <TouchableOpacity
-            key={space.id}
-            style={styles.spaceCard}
-            onPress={() => router.push(`/space/${space.id}`)}
-          >
-            <Image
-              source={{ uri: space.image }}
-              style={styles.spaceImage}
-              resizeMode="cover"
-            />
-            <View style={styles.spaceInfo}>
-              <View style={styles.spaceTitleRow}>
-                <Text style={styles.spaceName}>{space.name}</Text>
-                <View style={styles.ratingContainer}>
-                  <Ionicons name="star" size={16} color="#FFD700" />
-                  <Text style={styles.ratingText}>{space.rating}</Text>
-                  <Text style={styles.reviewCount}>({space.reviews})</Text>
+      <ScrollView style={styles.container}>
+        <View style={styles.spacesList}>
+          {MOCK_SPACES.map((space) => (
+            <TouchableOpacity
+              key={space.id}
+              style={styles.spaceCard}
+              onPress={() => router.push(`/space/${space.id}`)}
+            >
+              <Image
+                source={{ uri: space.image }}
+                style={styles.spaceImage}
+                resizeMode="cover"
+              />
+              <View style={styles.spaceInfo}>
+                <View style={styles.spaceTitleRow}>
+                  <Text style={styles.spaceName}>{space.name}</Text>
+                  <View style={styles.ratingContainer}>
+                    <Ionicons name="star" size={16} color="#FFD700" />
+                    <Text style={styles.ratingText}>{space.rating}</Text>
+                    <Text style={styles.reviewCount}>({space.reviews})</Text>
+                  </View>
+                </View>
+                <Text style={styles.spaceDescription}>{space.description}</Text>
+                <View style={styles.sportsTagsContainer}>
+                  {space.sports.map((sport) => (
+                    <View key={sport} style={styles.sportTag}>
+                      <Text style={styles.sportTagText}>{sport}</Text>
+                    </View>
+                  ))}
+                </View>
+                <View style={styles.priceContainer}>
+                  <Text style={styles.priceLabel}>A partir de</Text>
+                  <Text style={styles.price}>
+                    R$ {space.price.toFixed(2)}/hora
+                  </Text>
                 </View>
               </View>
-              <Text style={styles.spaceDescription}>{space.description}</Text>
-              <View style={styles.sportsTagsContainer}>
-                {space.sports.map((sport) => (
-                  <View key={sport} style={styles.sportTag}>
-                    <Text style={styles.sportTagText}>{sport}</Text>
-                  </View>
-                ))}
-              </View>
-              <View style={styles.priceContainer}>
-                <Text style={styles.priceLabel}>A partir de</Text>
-                <Text style={styles.price}>
-                  R$ {space.price.toFixed(2)}/hora
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 

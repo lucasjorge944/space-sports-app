@@ -16,15 +16,8 @@ export function PageHeader({
   rightIcon,
   onRightIconPress,
 }: PageHeaderProps) {
-  const isExploreScreen = title === 'Explorar';
-
   return (
-    <View
-      style={[
-        styles.header,
-        isExploreScreen ? styles.exploreHeader : styles.modalHeader,
-      ]}
-    >
+    <View style={[styles.header, styles.exploreHeader]}>
       <View style={styles.leftContainer}>
         {showBackButton && (
           <TouchableOpacity
@@ -34,14 +27,7 @@ export function PageHeader({
             <Ionicons name="close" size={24} color="#666" />
           </TouchableOpacity>
         )}
-        <Text
-          style={[
-            styles.title,
-            isExploreScreen ? styles.exploreTitle : styles.modalTitle,
-          ]}
-        >
-          {title}
-        </Text>
+        <Text style={[styles.title, styles.exploreTitle]}>{title}</Text>
       </View>
 
       {rightIcon ? (
@@ -74,11 +60,7 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 60,
   },
-  modalHeader: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
+
   title: {
     fontWeight: 'bold',
   },
@@ -86,10 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     color: '#1a73e8',
   },
-  modalTitle: {
-    fontSize: 18,
-    color: '#333',
-  },
+
   rightButton: {
     padding: 8,
   },
