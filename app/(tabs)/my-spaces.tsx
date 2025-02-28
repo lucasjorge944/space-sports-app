@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Loading } from '../components/Loading';
 import { PageHeader } from '../components/PageHeader';
+import { Tag } from '../components/Tag';
 
 const MOCK_RESERVATIONS = [
   {
@@ -245,39 +246,14 @@ export default function MySpacesScreen() {
                   </View>
                 </View>
                 <View style={styles.classFooter}>
-                  <View
-                    style={[
-                      styles.participantsContainer,
-                      {
-                        backgroundColor: getParticipantsBackground(
-                          class_.participants,
-                          class_.maxParticipants
-                        ),
-                      },
-                    ]}
-                  >
-                    <Ionicons
-                      name="people-outline"
-                      size={16}
-                      color={getParticipantsColor(
-                        class_.participants,
-                        class_.maxParticipants
-                      )}
-                    />
-                    <Text
-                      style={[
-                        styles.participantsText,
-                        {
-                          color: getParticipantsColor(
-                            class_.participants,
-                            class_.maxParticipants
-                          ),
-                        },
-                      ]}
-                    >
-                      {class_.participants}/{class_.maxParticipants} alunos
-                    </Text>
-                  </View>
+                  <Tag
+                    label={`${class_.participants}/${class_.maxParticipants} alunos`}
+                    variant="participants"
+                    icon="people-outline"
+                    participantsRatio={
+                      class_.participants / class_.maxParticipants
+                    }
+                  />
                   <TouchableOpacity
                     style={[
                       styles.confirmButton,
@@ -784,20 +760,6 @@ const styles = StyleSheet.create({
   confirmModalButtonTextConfirm: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',
-  },
-  participantsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    alignSelf: 'flex-start',
-  },
-  participantsText: {
-    fontSize: 14,
     fontWeight: '600',
   },
   classFooter: {
