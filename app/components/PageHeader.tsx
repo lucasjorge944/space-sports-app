@@ -47,6 +47,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
+    padding: 20,
+    paddingTop: 60,
   },
   leftContainer: {
     flexDirection: 'row',
@@ -62,7 +64,9 @@ const styles = StyleSheet.create({
   },
 
   title: {
+    fontSize: 32,
     fontWeight: 'bold',
+    color: '#1a73e8',
   },
   exploreTitle: {
     fontSize: 32,
