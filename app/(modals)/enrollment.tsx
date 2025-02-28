@@ -15,6 +15,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Loading } from '../components/Loading';
+import { SelectInput } from '../components/SelectInput';
 
 export default function EnrollmentScreen() {
   const params = useLocalSearchParams();
@@ -127,40 +128,25 @@ export default function EnrollmentScreen() {
           {/* Formulário */}
           <View style={styles.form}>
             {/* Esporte */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Esporte</Text>
-              <TouchableOpacity
-                style={styles.selectButton}
-                onPress={() => setShowSportPicker(true)}
-              >
-                <Text style={styles.selectButtonText}>{selectedSport}</Text>
-                <Ionicons name="chevron-down" size={20} color="#666" />
-              </TouchableOpacity>
-            </View>
+            <SelectInput
+              label="Esporte"
+              value={selectedSport}
+              onPress={() => setShowSportPicker(true)}
+            />
 
             {/* Nível de Experiência */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Nível de Experiência</Text>
-              <TouchableOpacity
-                style={styles.selectButton}
-                onPress={() => setShowExperiencePicker(true)}
-              >
-                <Text style={styles.selectButtonText}>{experienceLevel}</Text>
-                <Ionicons name="chevron-down" size={20} color="#666" />
-              </TouchableOpacity>
-            </View>
+            <SelectInput
+              label="Nível de Experiência"
+              value={experienceLevel}
+              onPress={() => setShowExperiencePicker(true)}
+            />
 
             {/* Turno Preferido */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Turno Preferido</Text>
-              <TouchableOpacity
-                style={styles.selectButton}
-                onPress={() => setShowShiftPicker(true)}
-              >
-                <Text style={styles.selectButtonText}>{selectedShift}</Text>
-                <Ionicons name="chevron-down" size={20} color="#666" />
-              </TouchableOpacity>
-            </View>
+            <SelectInput
+              label="Turno Preferido"
+              value={selectedShift}
+              onPress={() => setShowShiftPicker(true)}
+            />
 
             {/* Detalhes da Experiência */}
             <View style={styles.inputContainer}>
@@ -452,28 +438,6 @@ const styles = StyleSheet.create({
   form: {
     padding: 20,
   },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#333',
-    fontWeight: '500',
-  },
-  selectButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-  },
-  selectButtonText: {
-    fontSize: 16,
-    color: '#333',
-  },
   footer: {
     padding: 20,
     borderTopWidth: 1,
@@ -492,11 +456,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '500',
-  },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
   },
   modalOverlay: {
     flex: 1,
@@ -640,5 +599,19 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 8,
     lineHeight: 20,
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: '#333',
+    fontWeight: '500',
   },
 });
