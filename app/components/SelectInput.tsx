@@ -6,15 +6,28 @@ interface SelectInputProps {
   label: string;
   value: string;
   onPress: () => void;
+  icon?: keyof typeof Ionicons.glyphMap;
+  iconRight?: keyof typeof Ionicons.glyphMap;
 }
 
-export function SelectInput({ label, value, onPress }: SelectInputProps) {
+export function SelectInput({
+  label,
+  value,
+  onPress,
+  icon,
+  iconRight = 'chevron-down',
+}: SelectInputProps) {
   return (
     <View style={styles.inputContainer}>
       <Text style={styles.label}>{label}</Text>
       <TouchableOpacity style={styles.selectButton} onPress={onPress}>
-        <Text style={styles.selectButtonText}>{value}</Text>
-        <Ionicons name="chevron-down" size={20} color="#666" />
+        <View style={styles.valueContainer}>
+          {icon && (
+            <Ionicons name={icon} size={20} color="#666" style={styles.icon} />
+          )}
+          <Text style={styles.selectButtonText}>{value}</Text>
+        </View>
+        {iconRight && <Ionicons name={iconRight} size={20} color="#666" />}
       </TouchableOpacity>
     </View>
   );
@@ -38,6 +51,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
+  },
+  valueContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 8,
   },
   selectButtonText: {
     fontSize: 16,

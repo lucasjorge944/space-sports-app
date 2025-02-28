@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Loading } from '../components/Loading';
 import { CustomButton } from '../components/CustomButton';
+import { SelectInput } from '../components/SelectInput';
 
 export default function BookingScreen() {
   const params = useLocalSearchParams();
@@ -164,42 +165,28 @@ export default function BookingScreen() {
         {/* Formulário */}
         <View style={styles.form}>
           {/* Data */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Data</Text>
-            <TouchableOpacity
-              style={styles.dateButton}
-              onPress={() => setShowCalendar(true)}
-            >
-              <Text>{date.toLocaleDateString('pt-BR')}</Text>
-              <Ionicons name="calendar-outline" size={20} color="#666" />
-            </TouchableOpacity>
-          </View>
+          <SelectInput
+            label="Data"
+            value={date.toLocaleDateString('pt-BR')}
+            onPress={() => setShowCalendar(true)}
+            iconRight="calendar-outline"
+          />
 
           {/* Hora */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Hora</Text>
-            <TouchableOpacity
-              style={styles.dateButton}
-              onPress={() => setShowTimePicker(true)}
-            >
-              <Text>{getTimeInterval(selectedTime.split(':')[0])}</Text>
-              <Ionicons name="time-outline" size={20} color="#666" />
-            </TouchableOpacity>
-          </View>
+          <SelectInput
+            label="Hora"
+            value={getTimeInterval(selectedTime.split(':')[0])}
+            onPress={() => setShowTimePicker(true)}
+            iconRight="time-outline"
+          />
 
           {/* Esporte */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Esporte</Text>
-            <TouchableOpacity
-              style={styles.dateButton}
-              onPress={() => setShowSportPicker(true)}
-            >
-              <Text>
-                {SPORTS_OPTIONS.find((s) => s.value === sport)?.label}
-              </Text>
-              <Ionicons name="chevron-down" size={20} color="#666" />
-            </TouchableOpacity>
-          </View>
+          <SelectInput
+            label="Esporte"
+            value={SPORTS_OPTIONS.find((s) => s.value === sport)?.label || ''}
+            onPress={() => setShowSportPicker(true)}
+            iconRight="chevron-down"
+          />
 
           {/* Quantidade de Pessoas */}
           <View style={styles.inputContainer}>
