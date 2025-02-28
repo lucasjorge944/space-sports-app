@@ -12,6 +12,7 @@ import {
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { CustomButton } from '../components/CustomButton';
+import { TextAreaInput } from '../components/TextAreaInput';
 
 const MOCK_SPACE = {
   id: '1',
@@ -331,14 +332,12 @@ export default function SpaceDetailsScreen() {
                   </TouchableOpacity>
                 ))}
               </View>
-              <TextInput
-                style={styles.commentInput}
-                placeholder="Conte sua experiência neste espaço..."
+              <TextAreaInput
+                label="Comentário"
                 value={userComment}
                 onChangeText={setUserComment}
-                multiline
+                placeholder="Conte sua experiência neste espaço..."
                 numberOfLines={4}
-                textAlignVertical="top"
               />
               <View style={styles.reviewFormButtons}>
                 <CustomButton

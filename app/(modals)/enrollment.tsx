@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Loading } from '../components/Loading';
 import { SelectInput } from '../components/SelectInput';
+import { TextAreaInput } from '../components/TextAreaInput';
 
 export default function EnrollmentScreen() {
   const params = useLocalSearchParams();
@@ -149,20 +150,13 @@ export default function EnrollmentScreen() {
             />
 
             {/* Detalhes da Experiência */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Detalhes da Experiência</Text>
-              <TextInput
-                style={styles.textArea}
-                placeholder="Conte um pouco mais sobre sua experiência com o esporte..."
-                placeholderTextColor="#999"
-                value={experienceDetails}
-                onChangeText={setExperienceDetails}
-                multiline
-                numberOfLines={4}
-                textAlignVertical="top"
-                onFocus={handleTextAreaFocus}
-              />
-            </View>
+            <TextAreaInput
+              label="Detalhes da Experiência"
+              value={experienceDetails}
+              onChangeText={setExperienceDetails}
+              placeholder="Conte um pouco mais sobre sua experiência com o esporte..."
+              onFocus={handleTextAreaFocus}
+            />
           </View>
         </ScrollView>
 
@@ -579,39 +573,9 @@ const styles = StyleSheet.create({
     color: '#1a73e8',
     lineHeight: 20,
   },
-  textArea: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    minHeight: 100,
-    fontSize: 16,
-    color: '#333',
-    textAlignVertical: 'top',
-  },
-  receiptDetailsText: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  receiptDetailsValue: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 8,
-    lineHeight: 20,
-  },
   buttonContent: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#333',
-    fontWeight: '500',
   },
 });
