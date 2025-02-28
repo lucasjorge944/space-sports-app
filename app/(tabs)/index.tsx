@@ -10,6 +10,7 @@ import {
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { PageHeader } from '../components/PageHeader';
+import { Tag } from '../components/Tag';
 
 const MOCK_SPACES = [
   {
@@ -78,9 +79,7 @@ export default function ExploreScreen() {
                 <Text style={styles.spaceDescription}>{space.description}</Text>
                 <View style={styles.sportsTagsContainer}>
                   {space.sports.map((sport) => (
-                    <View key={sport} style={styles.sportTag}>
-                      <Text style={styles.sportTagText}>{sport}</Text>
-                    </View>
+                    <Tag key={sport} label={sport} />
                   ))}
                 </View>
                 <View style={styles.priceContainer}>
@@ -163,17 +162,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 8,
     marginBottom: 12,
-  },
-  sportTag: {
-    backgroundColor: '#e8f0fe',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  sportTagText: {
-    color: '#1a73e8',
-    fontSize: 14,
-    fontWeight: '500',
   },
   priceContainer: {
     flexDirection: 'row',
