@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { PageHeader } from '../components/PageHeader';
 
 const MOCK_SPACES = [
   {
@@ -47,17 +48,16 @@ const MOCK_SPACES = [
 export default function ExploreScreen() {
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Explorar</Text>
-        <TouchableOpacity style={styles.filterButton}>
-          <Ionicons name="filter" size={24} color="#1a73e8" />
-        </TouchableOpacity>
-      </View>
+      <PageHeader
+        title="Explorar"
+        rightIcon="filter"
+        onRightIconPress={() => console.log('Filter pressed')}
+      />
 
       <View style={styles.spacesList}>
         {MOCK_SPACES.map((space) => (
-          <TouchableOpacity 
-            key={space.id} 
+          <TouchableOpacity
+            key={space.id}
             style={styles.spaceCard}
             onPress={() => router.push(`/space/${space.id}`)}
           >
@@ -101,22 +101,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    paddingTop: 60,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1a73e8',
-  },
-  filterButton: {
-    padding: 8,
   },
   spacesList: {
     padding: 16,

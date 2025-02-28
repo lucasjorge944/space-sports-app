@@ -17,6 +17,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Loading } from '../components/Loading';
 import { SelectInput } from '../components/SelectInput';
 import { TextAreaInput } from '../components/TextAreaInput';
+import { PageHeader } from '../components/PageHeader';
 
 export default function EnrollmentScreen() {
   const params = useLocalSearchParams();
@@ -98,20 +99,13 @@ export default function EnrollmentScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <PageHeader title="Fazer Matrícula" showBackButton />
+
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleClose}>
-            <Ionicons name="close" size={24} color="#666" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Fazer Matrícula</Text>
-          <View style={{ width: 24 }} />
-        </View>
-
         <ScrollView
           ref={scrollViewRef}
           style={styles.content}
@@ -387,19 +381,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
   },
   content: {
     flex: 1,
