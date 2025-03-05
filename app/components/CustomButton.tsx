@@ -3,12 +3,14 @@ import {
   Text,
   StyleSheet,
   TouchableOpacityProps,
+  View,
 } from 'react-native';
 
 interface CustomButtonProps extends TouchableOpacityProps {
   title: string;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'success';
   size?: 'small' | 'medium' | 'large';
+  icon?: React.ReactNode;
 }
 
 export function CustomButton({
@@ -16,6 +18,7 @@ export function CustomButton({
   variant = 'primary',
   size = 'medium',
   style,
+  icon,
   ...rest
 }: CustomButtonProps) {
   return (
@@ -23,9 +26,18 @@ export function CustomButton({
       style={[styles.button, styles[variant], styles[size], style]}
       {...rest}
     >
-      <Text style={[styles.text, variant === 'outline' && styles.outlineText]}>
-        {title}
-      </Text>
+      <View style={styles.content}>
+        {icon}
+        <Text
+          style={[
+            styles.text,
+            variant === 'outline' ? styles.outlineText : null,
+            icon ? styles.textWithIcon : null,
+          ]}
+        >
+          {title}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -66,5 +78,16 @@ const styles = StyleSheet.create({
   },
   outlineText: {
     color: '#007AFF',
+  },
+  success: {
+    backgroundColor: '#25D366',
+  },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textWithIcon: {
+    marginLeft: 8,
   },
 });

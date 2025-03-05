@@ -18,6 +18,7 @@ import { Loading } from '../components/Loading';
 import { SelectInput } from '../components/SelectInput';
 import { TextAreaInput } from '../components/TextAreaInput';
 import { PageHeader } from '../components/PageHeader';
+import { CustomButton } from '../components/CustomButton';
 
 export default function EnrollmentScreen() {
   const params = useLocalSearchParams();
@@ -348,25 +349,22 @@ export default function EnrollmentScreen() {
             </View>
 
             <View style={styles.receiptButtons}>
-              <TouchableOpacity
-                style={[styles.button, styles.shareButton]}
+              <CustomButton
+                title="Compartilhar"
+                variant="success"
+                size="large"
+                icon={<Ionicons name="share-social" size={24} color="#fff" />}
                 onPress={handleShare}
-              >
-                <View style={styles.buttonContent}>
-                  <Ionicons name="share-social" size={24} color="#fff" />
-                  <Text style={styles.primaryButtonText}>Compartilhar</Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.button, styles.primaryButton]}
+              />
+              <CustomButton
+                title="Concluir"
+                variant="primary"
+                size="large"
                 onPress={() => {
                   setShowReceipt(false);
                   router.back();
                 }}
-              >
-                <Text style={styles.primaryButtonText}>Concluir</Text>
-              </TouchableOpacity>
+              />
             </View>
           </View>
         </View>

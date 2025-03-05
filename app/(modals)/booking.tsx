@@ -461,27 +461,24 @@ export default function BookingScreen() {
             </View>
 
             <View style={styles.receiptButtons}>
-              <TouchableOpacity
-                style={[styles.finishButton, { backgroundColor: '#25D366' }]}
+              <CustomButton
+                title="Compartilhar com amigos"
+                variant="success"
+                size="large"
+                icon={<Ionicons name="share-social" size={24} color="#fff" />}
                 onPress={handleShare}
-              >
-                <View style={styles.shareButtonContent}>
-                  <Ionicons name="share-social" size={24} color="#fff" />
-                  <Text style={styles.finishButtonText}>
-                    Compartilhar com amigos
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                style={{ marginBottom: 10 }}
+              />
 
-              <TouchableOpacity
-                style={[styles.finishButton, { marginTop: 10 }]}
+              <CustomButton
+                title="Concluir"
+                variant="primary"
+                size="large"
                 onPress={() => {
                   setShowReceipt(false);
                   router.back();
                 }}
-              >
-                <Text style={styles.finishButtonText}>Concluir</Text>
-              </TouchableOpacity>
+              />
             </View>
           </View>
         </View>
@@ -752,17 +749,6 @@ const styles = StyleSheet.create({
   receiptButtons: {
     marginTop: 20,
   },
-  finishButton: {
-    backgroundColor: '#1a73e8',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  finishButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   successIconContainer: {
     alignItems: 'center',
     marginBottom: 24,
@@ -774,10 +760,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  shareButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
   },
 });
