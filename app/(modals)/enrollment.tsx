@@ -100,7 +100,14 @@ export default function EnrollmentScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <PageHeader title="Fazer Matrícula" showBackButton />
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={handleClose}>
+          <Ionicons name="close" size={24} color="#666" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Fazer Matrícula</Text>
+        <View style={{ width: 24 }} />
+      </View>
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -382,6 +389,20 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
   },
   spaceInfo: {
     padding: 20,
