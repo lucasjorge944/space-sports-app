@@ -248,11 +248,9 @@ export default function MySpacesScreen() {
                 <View style={styles.classFooter}>
                   <Tag
                     label={`${class_.participants}/${class_.maxParticipants} alunos`}
-                    variant="participants"
+                    variant="ratio"
                     icon="people-outline"
-                    participantsRatio={
-                      class_.participants / class_.maxParticipants
-                    }
+                    ratio={class_.participants / class_.maxParticipants}
                   />
                   <TouchableOpacity
                     style={[
@@ -772,11 +770,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: 16,
     backgroundColor: '#e8f0fe',
-    marginTop: 4,
   },
   confirmedButton: {
     backgroundColor: '#ffebee',
