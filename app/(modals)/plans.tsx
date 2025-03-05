@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
 import { Loading } from '../components/Loading';
 import { CustomButton } from '../components/CustomButton';
+import { PlanCard } from '../components/PlanCard';
 
 // Definir o tipo do plano
 type Plan = {
@@ -190,146 +191,11 @@ export default function PlansScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Planos</Text>
           {MOCK_CLASSES.map((class_) => (
-            <TouchableOpacity
+            <PlanCard
               key={class_.id}
-              style={[
-                styles.card,
-                class_.status === 'inactive' && styles.inactiveCard,
-                class_.status === 'pending' && styles.pendingPlanCard,
-              ]}
-              onPress={() => handleOpenOptions(class_)}
-            >
-              <View
-                style={[
-                  styles.statusBadge,
-                  class_.status === 'inactive'
-                    ? styles.inactiveBadge
-                    : class_.status === 'pending'
-                    ? styles.pendingBadge
-                    : styles.activeBadge,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.statusText,
-                    class_.status === 'inactive'
-                      ? styles.inactiveStatusText
-                      : class_.status === 'pending'
-                      ? styles.pendingStatusText
-                      : styles.activeStatusText,
-                  ]}
-                >
-                  {class_.status === 'inactive'
-                    ? 'Inativo'
-                    : class_.status === 'pending'
-                    ? 'Pendente'
-                    : 'Ativo'}
-                </Text>
-              </View>
-              <Image
-                source={{ uri: class_.image }}
-                style={[
-                  styles.cardImage,
-                  class_.status === 'inactive' && styles.inactiveImage,
-                ]}
-                resizeMode="cover"
-              />
-              <View style={styles.cardContent}>
-                <View style={styles.cardHeader}>
-                  <Text
-                    style={[
-                      styles.cardTitle,
-                      class_.status === 'inactive' && styles.inactiveText,
-                    ]}
-                  >
-                    {class_.spaceName}
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.moreButton}
-                    onPress={() => handleOpenOptions(class_)}
-                  >
-                    <Ionicons
-                      name="ellipsis-horizontal"
-                      size={24}
-                      color={class_.status === 'inactive' ? '#999' : '#666'}
-                    />
-                  </TouchableOpacity>
-                </View>
-                <Text
-                  style={[
-                    styles.sportName,
-                    class_.status === 'inactive' && styles.inactiveText,
-                  ]}
-                >
-                  {class_.sport}
-                </Text>
-                <Text
-                  style={[
-                    styles.instructorName,
-                    class_.status === 'inactive' && styles.inactiveInstructor,
-                  ]}
-                >
-                  {class_.instructor}
-                </Text>
-                <View style={styles.detailsContainer}>
-                  <View style={styles.detailItem}>
-                    <Ionicons
-                      name="calendar-outline"
-                      size={16}
-                      color={class_.status === 'inactive' ? '#999' : '#666'}
-                    />
-                    <Text
-                      style={[
-                        styles.detailText,
-                        class_.status === 'inactive' && styles.inactiveText,
-                      ]}
-                    >
-                      {class_.schedule}
-                    </Text>
-                  </View>
-                  <View style={styles.detailItem}>
-                    <Ionicons
-                      name="time-outline"
-                      size={16}
-                      color={class_.status === 'inactive' ? '#999' : '#666'}
-                    />
-                    <Text
-                      style={[
-                        styles.detailText,
-                        class_.status === 'inactive' && styles.inactiveText,
-                      ]}
-                    >
-                      {class_.time}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.planContainer}>
-                  <View
-                    style={[
-                      styles.planTag,
-                      class_.status === 'inactive' && styles.inactivePlanTag,
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.planText,
-                        class_.status === 'inactive' && styles.inactivePlanText,
-                      ]}
-                    >
-                      {class_.plan}
-                    </Text>
-                  </View>
-                  <Text
-                    style={[
-                      styles.planPrice,
-                      class_.status === 'inactive' && styles.inactivePlanText,
-                    ]}
-                  >
-                    R$ {class_.price.toFixed(2)}/mês
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
+              data={class_}
+              onMorePress={() => handleOpenOptions(class_)}
+            />
           ))}
         </View>
       </ScrollView>
@@ -670,130 +536,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     color: '#333',
   },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 16,
-    overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  cardImage: {
-    width: '100%',
-    height: 150,
-  },
-  cardContent: {
-    padding: 16,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  moreButton: {
-    padding: 4,
-  },
-  sportName: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 12,
-  },
-  instructorName: {
-    fontSize: 14,
-    color: '#1a73e8',
-    marginBottom: 12,
-  },
-  detailsContainer: {
-    flexDirection: 'row',
-    gap: 16,
-    marginBottom: 12,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  detailText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  planContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  planTag: {
-    backgroundColor: '#e8f0fe',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  planText: {
-    color: '#1a73e8',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  planPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1a73e8',
-  },
-  inactiveCard: {
-    opacity: 0.8,
-  },
-  inactiveImage: {
-    opacity: 0.6,
-  },
-  inactiveText: {
-    color: '#999',
-  },
-  inactiveInstructor: {
-    color: '#999',
-  },
-  inactivePlanTag: {
-    backgroundColor: '#f5f5f5',
-  },
-  inactivePlanText: {
-    color: '#999',
-  },
-  statusBadge: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-    zIndex: 1,
-  },
-  activeBadge: {
-    backgroundColor: '#e8f5e9',
-  },
-  inactiveBadge: {
-    backgroundColor: '#ffebee',
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  activeStatusText: {
-    color: '#2e7d32',
-  },
-  inactiveStatusText: {
-    color: '#c62828',
-  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -1076,5 +818,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  planPrice: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1a73e8',
   },
 });
