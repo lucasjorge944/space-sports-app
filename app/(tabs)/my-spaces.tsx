@@ -252,39 +252,21 @@ export default function MySpacesScreen() {
                     icon="people-outline"
                     ratio={class_.participants / class_.maxParticipants}
                   />
-                  <TouchableOpacity
-                    style={[
-                      styles.confirmButton,
-                      confirmedClasses.includes(class_.id) &&
-                        styles.confirmedButton,
-                    ]}
-                    onPress={() => handleToggleConfirmation(class_)}
-                  >
-                    <Ionicons
-                      name={
-                        confirmedClasses.includes(class_.id)
-                          ? 'close-circle-outline'
-                          : 'checkmark-circle-outline'
-                      }
-                      size={20}
-                      color={
-                        confirmedClasses.includes(class_.id)
-                          ? '#dc3545'
-                          : '#1a73e8'
-                      }
-                    />
-                    <Text
-                      style={[
-                        styles.confirmButtonText,
-                        confirmedClasses.includes(class_.id) &&
-                          styles.confirmedButtonText,
-                      ]}
-                    >
-                      {confirmedClasses.includes(class_.id)
+                  <Tag
+                    label={
+                      confirmedClasses.includes(class_.id)
                         ? 'Retirar Presença'
-                        : 'Confirmar Presença'}
-                    </Text>
-                  </TouchableOpacity>
+                        : 'Confirmar Presença'
+                    }
+                    variant="action"
+                    icon={
+                      confirmedClasses.includes(class_.id)
+                        ? 'close-circle-outline'
+                        : 'checkmark-circle-outline'
+                    }
+                    isActive={confirmedClasses.includes(class_.id)}
+                    onPress={() => handleToggleConfirmation(class_)}
+                  />
                 </View>
               </View>
             </TouchableOpacity>
@@ -465,40 +447,23 @@ export default function MySpacesScreen() {
                   <Text style={styles.classInfoDetails}>
                     {selectedClass.time} • {selectedClass.instructor}
                   </Text>
-
-                  <TouchableOpacity
-                    style={[
-                      styles.modalConfirmButton,
-                      confirmedClasses.includes(selectedClass.id) &&
-                        styles.modalConfirmedButton,
-                    ]}
-                    onPress={() => handleToggleConfirmation(selectedClass)}
-                  >
-                    <Ionicons
-                      name={
+                  <View style={{ alignSelf: 'flex-start', marginTop: 16 }}>
+                    <Tag
+                      label={
+                        confirmedClasses.includes(selectedClass.id)
+                          ? 'Retirar Presença'
+                          : 'Confirmar Presença'
+                      }
+                      variant="action"
+                      icon={
                         confirmedClasses.includes(selectedClass.id)
                           ? 'close-circle-outline'
                           : 'checkmark-circle-outline'
                       }
-                      size={20}
-                      color={
-                        confirmedClasses.includes(selectedClass.id)
-                          ? '#dc3545'
-                          : '#1a73e8'
-                      }
+                      isActive={confirmedClasses.includes(selectedClass.id)}
+                      onPress={() => handleToggleConfirmation(selectedClass)}
                     />
-                    <Text
-                      style={[
-                        styles.modalConfirmButtonText,
-                        confirmedClasses.includes(selectedClass.id) &&
-                          styles.modalConfirmedButtonText,
-                      ]}
-                    >
-                      {confirmedClasses.includes(selectedClass.id)
-                        ? 'Retirar Presença'
-                        : 'Confirmar Presença'}
-                    </Text>
-                  </TouchableOpacity>
+                  </View>
                 </View>
 
                 <ScrollView style={styles.studentsListContainer}>
@@ -766,26 +731,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 8,
   },
-  confirmButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 16,
-    backgroundColor: '#e8f0fe',
-  },
-  confirmedButton: {
-    backgroundColor: '#ffebee',
-  },
-  confirmButtonText: {
-    color: '#1a73e8',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  confirmedButtonText: {
-    color: '#dc3545',
-  },
   studentsModalView: {
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
@@ -870,27 +815,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 12,
-  },
-  modalConfirmButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#e8f0fe',
-    alignSelf: 'flex-start',
-    marginTop: 16,
-  },
-  modalConfirmedButton: {
-    backgroundColor: '#ffebee',
-  },
-  modalConfirmButtonText: {
-    color: '#1a73e8',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  modalConfirmedButtonText: {
-    color: '#dc3545',
   },
 });

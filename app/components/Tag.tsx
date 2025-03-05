@@ -1,15 +1,24 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface TagProps {
   label: string;
-  variant?: 'default' | 'neutral' | 'ratio';
+  variant?: 'default' | 'neutral' | 'ratio' | 'action';
   icon?: keyof typeof Ionicons.glyphMap;
   ratio?: number;
+  isActive?: boolean;
+  onPress?: () => void;
 }
 
-export function Tag({ label, variant = 'default', icon, ratio }: TagProps) {
+export function Tag({
+  label,
+  variant = 'default',
+  icon,
+  ratio,
+  isActive,
+  onPress,
+}: TagProps) {
   const getRatioColor = () => {
     if (!ratio) return '#666';
     if (ratio === 1) return '#d32f2f';
@@ -38,6 +47,31 @@ export function Tag({ label, variant = 'default', icon, ratio }: TagProps) {
           text: styles.neutralText,
           icon: '#666',
         };
+      case 'action':
+        const activeStyles = isActive
+          ? {
+              backgroundColor: '#ffebee',
+              color: '#dc3545',
+              iconColor: '#dc3545',
+            }
+          : {
+              backgroundColor: '#e8f0fe',
+              color: '#1a73e8',
+              iconColor: '#1a73e8',
+            };
+        return {
+          container: {
+            flexDirection: 'row' as const,
+            alignItems: 'center' as const,
+            paddingHorizontal: 12,
+            paddingVertical: 6,
+            borderRadius: 16,
+            gap: 4,
+            backgroundColor: activeStyles.backgroundColor,
+          },
+          text: { color: activeStyles.color },
+          icon: activeStyles.iconColor,
+        };
       default:
         return {
           container: styles.tag,
@@ -48,6 +82,28 @@ export function Tag({ label, variant = 'default', icon, ratio }: TagProps) {
   };
 
   const variantStyles = getStyles();
+
+  if (variant === 'action') {
+    return (
+      <TouchableOpacity
+        style={[
+          styles.container,
+          { backgroundColor: variantStyles.container.backgroundColor },
+        ]}
+        onPress={onPress}
+      >
+        {icon && (
+          <Ionicons
+            name={icon}
+            size={16}
+            color={variantStyles.icon}
+            style={styles.icon}
+          />
+        )}
+        <Text style={[styles.text, variantStyles.text]}>{label}</Text>
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <View style={[styles.tag, variantStyles.container]}>
@@ -86,5 +142,13 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 4,
+  },
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    gap: 4,
   },
 });
