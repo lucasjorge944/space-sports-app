@@ -16,6 +16,7 @@ import { Tag } from '../components/Tag';
 import { AttendanceListModal } from '../components/AttendanceListModal';
 import { ConfirmationModal } from '../components/ConfirmationModal';
 import { OptionModalType, OptionsModal } from '../components/OptionsModal';
+import { ClassCard } from '../components/ClassCard';
 
 const MOCK_RESERVATIONS = [
   {
@@ -223,57 +224,13 @@ export default function MySpacesScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Aulas de Hoje</Text>
           {MOCK_TODAY_CLASSES.map((class_) => (
-            <TouchableOpacity
+            <ClassCard
               key={class_.id}
-              style={styles.card}
+              data={class_}
+              isConfirmed={confirmedClasses.includes(class_.id)}
               onPress={() => handleOpenStudentsList(class_)}
-            >
-              <Image
-                source={{ uri: class_.image }}
-                style={styles.cardImage}
-                resizeMode="cover"
-              />
-              <View style={styles.cardContent}>
-                <Text style={styles.cardTitle}>{class_.spaceName}</Text>
-                <Text style={styles.sportName}>{class_.sport}</Text>
-                <Text style={styles.instructorName}>
-                  Professor: {class_.instructor}
-                </Text>
-                <View style={styles.detailsContainer}>
-                  <View style={styles.detailItem}>
-                    <Ionicons name="time-outline" size={16} color="#666" />
-                    <Text style={styles.detailText}>{class_.time}</Text>
-                  </View>
-                  <View style={styles.detailItem}>
-                    <Ionicons name="hourglass-outline" size={16} color="#666" />
-                    <Text style={styles.detailText}>{class_.duration}</Text>
-                  </View>
-                </View>
-                <View style={styles.classFooter}>
-                  <Tag
-                    label={`${class_.participants}/${class_.maxParticipants} alunos`}
-                    variant="ratio"
-                    icon="people-outline"
-                    ratio={class_.participants / class_.maxParticipants}
-                  />
-                  <Tag
-                    label={
-                      confirmedClasses.includes(class_.id)
-                        ? 'Retirar Presença'
-                        : 'Confirmar Presença'
-                    }
-                    variant="action"
-                    icon={
-                      confirmedClasses.includes(class_.id)
-                        ? 'close-circle-outline'
-                        : 'checkmark-circle-outline'
-                    }
-                    isActive={confirmedClasses.includes(class_.id)}
-                    onPress={() => handleToggleConfirmation(class_)}
-                  />
-                </View>
-              </View>
-            </TouchableOpacity>
+              onToggleConfirmation={() => handleToggleConfirmation(class_)}
+            />
           ))}
         </View>
 
