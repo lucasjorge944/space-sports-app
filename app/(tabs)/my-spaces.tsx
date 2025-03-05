@@ -111,26 +111,6 @@ const MOCK_STUDENTS = {
 // Adicionar constante para o usuário atual
 const CURRENT_USER = 'Lucas Jorge';
 
-const getParticipantsColor = (
-  participants: number,
-  maxParticipants: number
-) => {
-  const ratio = participants / maxParticipants;
-  if (ratio === 1) return '#d32f2f'; // Vermelho mais escuro e vibrante
-  if (ratio >= 0.7) return '#f57c00'; // Laranja mais escuro e vibrante
-  return '#2e7d32'; // Verde escuro para status normal
-};
-
-const getParticipantsBackground = (
-  participants: number,
-  maxParticipants: number
-) => {
-  const ratio = participants / maxParticipants;
-  if (ratio === 1) return '#ffcdd2'; // Vermelho claro mais vibrante
-  if (ratio >= 0.7) return '#ffe0b2'; // Laranja claro mais vibrante
-  return '#c8e6c9'; // Verde claro para status normal
-};
-
 export default function MySpacesScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = React.useState(false);
