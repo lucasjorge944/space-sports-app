@@ -17,6 +17,7 @@ import { AttendanceListModal } from '../components/AttendanceListModal';
 import { ConfirmationModal } from '../components/ConfirmationModal';
 import { OptionModalType, OptionsModal } from '../components/OptionsModal';
 import { ClassCard } from '../components/ClassCard';
+import { ReservationCard } from '../components/ReservationCard';
 
 const MOCK_RESERVATIONS = [
   {
@@ -237,65 +238,11 @@ export default function MySpacesScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Próximas Reservas</Text>
           {MOCK_RESERVATIONS.map((reservation) => (
-            <TouchableOpacity key={reservation.id} style={styles.card}>
-              <Image
-                source={{ uri: reservation.image }}
-                style={styles.cardImage}
-                resizeMode="cover"
-              />
-              <View style={styles.cardContent}>
-                <View style={styles.cardHeader}>
-                  <Text style={styles.cardTitle}>{reservation.spaceName}</Text>
-                  <TouchableOpacity
-                    style={styles.moreButton}
-                    onPress={() => handleOpenOptions(reservation)}
-                  >
-                    <Ionicons
-                      name="ellipsis-horizontal"
-                      size={24}
-                      color="#666"
-                    />
-                  </TouchableOpacity>
-                </View>
-                <Text style={styles.sportName}>{reservation.sport}</Text>
-                <View style={styles.detailsContainer}>
-                  <View style={styles.detailItem}>
-                    <Ionicons name="calendar-outline" size={16} color="#666" />
-                    <Text style={styles.detailText}>{reservation.date}</Text>
-                  </View>
-                  <View style={styles.detailItem}>
-                    <Ionicons name="time-outline" size={16} color="#666" />
-                    <Text style={styles.detailText}>{reservation.time}</Text>
-                  </View>
-                </View>
-                <View style={styles.detailsContainer}>
-                  <View style={styles.detailItem}>
-                    <Ionicons name="hourglass-outline" size={16} color="#666" />
-                    <Text style={styles.detailText}>
-                      {reservation.duration}
-                    </Text>
-                  </View>
-                  <View style={styles.detailItem}>
-                    <Ionicons name="people-outline" size={16} color="#666" />
-                    <Text style={styles.detailText}>
-                      {reservation.people} pessoas
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.priceContainer}>
-                  <View style={styles.pricePerPersonTag}>
-                    <Text style={styles.pricePerPersonText}>
-                      R$ {reservation.pricePerPerson.toFixed(2)}/pessoa
-                    </Text>
-                  </View>
-                  <View style={styles.priceTag}>
-                    <Text style={styles.priceText}>
-                      R$ {reservation.price.toFixed(2)}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </TouchableOpacity>
+            <ReservationCard
+              key={reservation.id}
+              data={reservation}
+              onMorePress={() => handleOpenOptions(reservation)}
+            />
           ))}
         </View>
       </ScrollView>
@@ -357,95 +304,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 16,
     color: '#333',
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 16,
-    overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  cardImage: {
-    width: '100%',
-    height: 150,
-  },
-  cardContent: {
-    padding: 16,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  moreButton: {
-    padding: 4,
-  },
-  sportName: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 12,
-  },
-  instructorName: {
-    fontSize: 14,
-    color: '#1a73e8',
-    marginBottom: 12,
-  },
-  detailsContainer: {
-    flexDirection: 'row',
-    gap: 16,
-    marginBottom: 12,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  detailText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  priceContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 8,
-  },
-  pricePerPersonTag: {
-    backgroundColor: '#f5f5f5',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  pricePerPersonText: {
-    color: '#666',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  priceTag: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#e8f0fe',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  priceText: {
-    color: '#1a73e8',
-    fontSize: 16,
-    fontWeight: '600',
   },
   planContainer: {
     flexDirection: 'row',
