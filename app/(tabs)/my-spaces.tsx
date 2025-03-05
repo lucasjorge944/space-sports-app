@@ -14,6 +14,7 @@ import { Loading } from '../components/Loading';
 import { PageHeader } from '../components/PageHeader';
 import { Tag } from '../components/Tag';
 import { AttendanceListModal } from '../components/AttendanceListModal';
+import { ConfirmationModal } from '../components/ConfirmationModal';
 
 const MOCK_RESERVATIONS = [
   {
@@ -354,48 +355,17 @@ export default function MySpacesScreen() {
         </Pressable>
       </Modal>
 
-      <Modal
-        animationType="fade"
-        transparent={true}
+      <ConfirmationModal
         visible={confirmModalVisible}
-        onRequestClose={() => setConfirmModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.confirmModalView}>
-            <View style={styles.confirmModalContent}>
-              <Ionicons name="alert-circle-outline" size={48} color="#dc3545" />
-              <Text style={styles.confirmModalTitle}>Cancelar Reserva</Text>
-              <Text style={styles.confirmModalText}>
-                Tem certeza que deseja cancelar esta reserva?
-              </Text>
-            </View>
-
-            <View style={styles.confirmModalButtons}>
-              <TouchableOpacity
-                style={[
-                  styles.confirmModalButton,
-                  styles.confirmModalButtonCancel,
-                ]}
-                onPress={() => setConfirmModalVisible(false)}
-              >
-                <Text style={styles.confirmModalButtonTextCancel}>Voltar</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.confirmModalButton,
-                  styles.confirmModalButtonConfirm,
-                ]}
-                onPress={handleConfirmCancel}
-              >
-                <Text style={styles.confirmModalButtonTextConfirm}>
-                  Confirmar
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setConfirmModalVisible(false)}
+        onConfirm={handleConfirmCancel}
+        title="Cancelar Reserva"
+        message="Tem certeza que deseja cancelar esta reserva?"
+        confirmText="Confirmar"
+        cancelText="Voltar"
+        icon={{ name: 'alert-circle-outline', color: '#dc3545' }}
+        confirmButtonStyle="danger"
+      />
 
       <AttendanceListModal
         visible={studentsModalVisible}
