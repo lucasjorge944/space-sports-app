@@ -15,6 +15,7 @@ import { PageHeader } from '../components/PageHeader';
 import { Tag } from '../components/Tag';
 import { AttendanceListModal } from '../components/AttendanceListModal';
 import { ConfirmationModal } from '../components/ConfirmationModal';
+import { OptionModalType, OptionsModal } from '../components/OptionsModal';
 
 const MOCK_RESERVATIONS = [
   {
@@ -190,6 +191,27 @@ export default function MySpacesScreen() {
     []
   );
 
+  const handleSelectOption = useCallback((option: OptionModalType) => {
+    if (option.label === 'Alterar') {
+      handleChangeReservation();
+    } else if (option.label === 'Cancelar') {
+      handleCancelReservation();
+    }
+  }, []);
+
+  const reservationOptions = [
+    {
+      icon: 'calendar-outline',
+      label: 'Alterar',
+    },
+    {
+      icon: 'close-circle-outline',
+      label: 'Cancelar',
+      variant: 'danger',
+      showSeparator: true,
+    },
+  ] as OptionModalType[];
+
   return (
     <>
       <PageHeader
@@ -321,39 +343,12 @@ export default function MySpacesScreen() {
         </View>
       </ScrollView>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
+      <OptionsModal
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setModalVisible(false)}
-        >
-          <View style={styles.modalView}>
-            <View style={styles.modalHandle} />
-
-            <TouchableOpacity
-              style={styles.modalOption}
-              onPress={handleChangeReservation}
-            >
-              <Ionicons name="calendar-outline" size={24} color="#333" />
-              <Text style={styles.modalOptionText}>Alterar</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.modalOption, styles.cancelOption]}
-              onPress={handleCancelReservation}
-            >
-              <Ionicons name="close-circle-outline" size={24} color="#dc3545" />
-              <Text style={[styles.modalOptionText, styles.cancelText]}>
-                Cancelar
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </Pressable>
-      </Modal>
+        onClose={() => setModalVisible(false)}
+        options={reservationOptions}
+        onSelectOption={handleSelectOption}
+      />
 
       <ConfirmationModal
         visible={confirmModalVisible}
@@ -516,92 +511,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1a73e8',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalView: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 16,
-    paddingBottom: 32,
-  },
-  modalHandle: {
-    width: 40,
-    height: 4,
-    backgroundColor: '#DDD',
-    borderRadius: 2,
-    alignSelf: 'center',
-    marginBottom: 16,
-  },
-  modalOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    gap: 12,
-  },
-  modalOptionText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  cancelOption: {
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  cancelText: {
-    color: '#dc3545',
-  },
-  confirmModalView: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 24,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  confirmModalContent: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  confirmModalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  confirmModalText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-  },
-  confirmModalButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  confirmModalButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  confirmModalButtonCancel: {
-    backgroundColor: '#f5f5f5',
-  },
-  confirmModalButtonConfirm: {
-    backgroundColor: '#dc3545',
-  },
-  confirmModalButtonTextCancel: {
-    color: '#666',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  confirmModalButtonTextConfirm: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
   },
   classFooter: {
     flexDirection: 'row',
