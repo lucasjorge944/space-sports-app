@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Loading } from '../components/Loading';
 import { PageHeader } from '../components/PageHeader';
 import { Tag } from '../components/Tag';
+import { AttendanceListModal } from '../components/AttendanceListModal';
 
 const MOCK_RESERVATIONS = [
   {
@@ -396,96 +397,23 @@ export default function MySpacesScreen() {
         </View>
       </Modal>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
+      <AttendanceListModal
         visible={studentsModalVisible}
-        onRequestClose={() => setStudentsModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.studentsModalView}>
-            <View style={styles.modalHandleContainer}>
-              <View style={styles.modalHandle} />
-            </View>
-
-            <View style={styles.studentsModalHeader}>
-              <Text style={styles.studentsModalTitle}>Lista de Presença</Text>
-              <TouchableOpacity
-                onPress={() => setStudentsModalVisible(false)}
-                style={styles.closeButton}
-              >
-                <Ionicons name="close" size={24} color="#666" />
-              </TouchableOpacity>
-            </View>
-
-            {selectedClass && (
-              <>
-                <View style={styles.classInfo}>
-                  <Text style={styles.classInfoTitle}>
-                    {selectedClass.sport}
-                  </Text>
-                  <Text style={styles.classInfoDetails}>
-                    {selectedClass.time} • {selectedClass.instructor}
-                  </Text>
-                  <View style={{ alignSelf: 'flex-start', marginTop: 16 }}>
-                    <Tag
-                      label={
-                        confirmedClasses.includes(selectedClass.id)
-                          ? 'Retirar Presença'
-                          : 'Confirmar Presença'
-                      }
-                      variant="action"
-                      icon={
-                        confirmedClasses.includes(selectedClass.id)
-                          ? 'close-circle-outline'
-                          : 'checkmark-circle-outline'
-                      }
-                      isActive={confirmedClasses.includes(selectedClass.id)}
-                      onPress={() => handleToggleConfirmation(selectedClass)}
-                    />
-                  </View>
-                </View>
-
-                <ScrollView style={styles.studentsListContainer}>
-                  {Array.from({ length: selectedClass.maxParticipants }).map(
-                    (_, index) => {
-                      const student =
-                        MOCK_STUDENTS[
-                          selectedClass.id as keyof typeof MOCK_STUDENTS
-                        ]?.[index];
-                      const isCurrentUser = student?.name === CURRENT_USER;
-
-                      return (
-                        <View key={index} style={styles.studentItem}>
-                          <View style={styles.studentNumberContainer}>
-                            <Text style={styles.studentNumber}>
-                              {index + 1}
-                            </Text>
-                          </View>
-                          <View style={styles.studentNameContainer}>
-                            <Text
-                              style={[
-                                styles.studentName,
-                                !student && styles.emptySlot,
-                                isCurrentUser && styles.currentUserName,
-                              ]}
-                            >
-                              {student?.name || '-'}
-                            </Text>
-                            {isCurrentUser && (
-                              <Text style={styles.currentUserTag}>Você</Text>
-                            )}
-                          </View>
-                        </View>
-                      );
-                    }
-                  )}
-                </ScrollView>
-              </>
-            )}
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setStudentsModalVisible(false)}
+        classData={selectedClass}
+        students={
+          selectedClass
+            ? MOCK_STUDENTS[selectedClass.id as keyof typeof MOCK_STUDENTS]
+            : []
+        }
+        currentUser={CURRENT_USER}
+        isConfirmed={
+          selectedClass ? confirmedClasses.includes(selectedClass.id) : false
+        }
+        onToggleConfirmation={() =>
+          selectedClass && handleToggleConfirmation(selectedClass)
+        }
+      />
 
       <Loading visible={isLoading} />
     </>
