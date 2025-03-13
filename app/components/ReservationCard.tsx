@@ -20,7 +20,7 @@ interface ReservationCardProps {
 
 export function ReservationCard({ data, onMorePress }: ReservationCardProps) {
   return (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={onMorePress}>
       <Image
         source={{ uri: data.image }}
         style={styles.image}
@@ -29,9 +29,6 @@ export function ReservationCard({ data, onMorePress }: ReservationCardProps) {
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.title}>{data.spaceName}</Text>
-          <TouchableOpacity style={styles.moreButton} onPress={onMorePress}>
-            <Ionicons name="ellipsis-horizontal" size={24} color="#666" />
-          </TouchableOpacity>
         </View>
 
         <Text style={styles.sport}>{data.sport}</Text>
@@ -105,9 +102,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
-  },
-  moreButton: {
-    padding: 4,
   },
   sport: {
     fontSize: 16,
