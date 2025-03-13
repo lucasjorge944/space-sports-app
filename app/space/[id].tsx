@@ -14,6 +14,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { CustomButton } from '../components/CustomButton';
 import { TextAreaInput } from '../components/TextAreaInput';
 import { IconButton } from '../components/IconButton';
+import { SpaceAmenities } from '../components/SpaceAmenities';
+import { SpaceSchedule } from '../components/SpaceSchedule';
+import { SpaceBasicInfo } from '../components/SpaceBasicInfo';
+import { SpaceServices } from '../components/SpaceServices';
 
 const MOCK_SPACE = {
   id: '1',
@@ -96,30 +100,6 @@ export default function SpaceDetailsScreen() {
   const [userComment, setUserComment] = useState('');
   const { id } = useLocalSearchParams();
 
-  const handleOpenBooking = (price: { hours: number; price: number }) => {
-    router.push({
-      pathname: '/booking',
-      params: {
-        hours: price.hours,
-        price: price.price,
-        spaceName: MOCK_SPACE.name,
-        sports: MOCK_SPACE.sports.join(','),
-      },
-    });
-  };
-
-  const handleOpenEnrollment = (plan: { frequency: string; price: number }) => {
-    router.push({
-      pathname: '/enrollment',
-      params: {
-        frequency: plan.frequency,
-        price: plan.price,
-        spaceName: MOCK_SPACE.name,
-        sports: MOCK_SPACE.sports.join(','),
-      },
-    });
-  };
-
   const handleSubmitReview = () => {
     console.log({ rating: userRating, comment: userComment });
     setUserRating(0);
@@ -155,135 +135,26 @@ export default function SpaceDetailsScreen() {
       </ScrollView>
 
       <View style={styles.content}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>{MOCK_SPACE.name}</Text>
-          <View style={styles.ratingContainer}>
-            <Ionicons name="star" size={20} color="#FFD700" />
-            <Text style={styles.rating}>{MOCK_SPACE.rating}</Text>
-            <Text style={styles.reviews}>({MOCK_SPACE.reviews})</Text>
-          </View>
-        </View>
+        <SpaceBasicInfo
+          name={MOCK_SPACE.name}
+          rating={MOCK_SPACE.rating}
+          reviews={MOCK_SPACE.reviews}
+          address={MOCK_SPACE.address}
+          distance={MOCK_SPACE.distance}
+          description={MOCK_SPACE.description}
+          sports={MOCK_SPACE.sports}
+        />
 
-        <View style={styles.locationContainer}>
-          <Ionicons name="location-outline" size={20} color="#666" />
-          <Text style={styles.address}>{MOCK_SPACE.address}</Text>
-          <Text style={styles.distance}>• {MOCK_SPACE.distance}</Text>
-        </View>
+        <SpaceSchedule schedule={MOCK_SPACE.schedule} />
 
-        <Text style={styles.description}>{MOCK_SPACE.description}</Text>
+        <SpaceAmenities amenities={MOCK_SPACE.amenities} />
 
-        <View style={styles.sportsContainer}>
-          {MOCK_SPACE.sports.map((sport) => (
-            <View key={sport} style={styles.sportTag}>
-              <Text style={styles.sportText}>{sport}</Text>
-            </View>
-          ))}
-        </View>
-
-        <View style={styles.scheduleContainer}>
-          <Text style={styles.sectionTitle}>Horário de Funcionamento</Text>
-          <View style={styles.scheduleItem}>
-            <Text style={styles.scheduleDay}>Segunda à Sexta</Text>
-            <Text style={styles.scheduleTime}>
-              {MOCK_SPACE.schedule.weekdays}
-            </Text>
-          </View>
-          <View style={styles.scheduleItem}>
-            <Text style={styles.scheduleDay}>Sábado e Domingo</Text>
-            <Text style={styles.scheduleTime}>
-              {MOCK_SPACE.schedule.weekends}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.amenitiesContainer}>
-          <Text style={styles.sectionTitle}>Comodidades</Text>
-          <View style={styles.amenitiesList}>
-            {MOCK_SPACE.amenities.map((amenity) => (
-              <View key={amenity} style={styles.amenityItem}>
-                <Ionicons
-                  name="checkmark-circle-outline"
-                  size={20}
-                  color="#1a73e8"
-                />
-                <Text style={styles.amenityText}>{amenity}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        <View style={styles.servicesContainer}>
-          <View style={styles.tabsContainer}>
-            <TouchableOpacity
-              style={[
-                styles.tab,
-                selectedTab === 'reserve' && styles.activeTab,
-              ]}
-              onPress={() => setSelectedTab('reserve')}
-            >
-              <Text
-                style={[
-                  styles.tabText,
-                  selectedTab === 'reserve' && styles.activeTabText,
-                ]}
-              >
-                Reservar Espaço
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.tab,
-                selectedTab === 'classes' && styles.activeTab,
-              ]}
-              onPress={() => setSelectedTab('classes')}
-            >
-              <Text
-                style={[
-                  styles.tabText,
-                  selectedTab === 'classes' && styles.activeTabText,
-                ]}
-              >
-                Aulas
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {selectedTab === 'reserve' ? (
-            <View style={styles.pricesContainer}>
-              {MOCK_SPACE.hourlyPrices.map((price) => (
-                <TouchableOpacity key={price.hours} style={styles.priceCard}>
-                  <Text style={styles.hours}>
-                    {price.hours} hora{price.hours > 1 ? 's' : ''}
-                  </Text>
-                  <Text style={styles.price}>R$ {price.price.toFixed(2)}</Text>
-                  <CustomButton
-                    title="Reservar"
-                    variant="primary"
-                    size="small"
-                    onPress={() => handleOpenBooking(price)}
-                  />
-                </TouchableOpacity>
-              ))}
-            </View>
-          ) : (
-            <View style={styles.plansContainer}>
-              {MOCK_SPACE.classPlans.map((plan) => (
-                <TouchableOpacity key={plan.frequency} style={styles.planCard}>
-                  <Text style={styles.planFrequency}>{plan.frequency}</Text>
-                  <Text style={styles.planPrice}>
-                    R$ {plan.price.toFixed(2)}/mês
-                  </Text>
-                  <CustomButton
-                    title="Matricular"
-                    variant="primary"
-                    size="small"
-                    onPress={() => handleOpenEnrollment(plan)}
-                  />
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-        </View>
+        <SpaceServices
+          hourlyPrices={MOCK_SPACE.hourlyPrices}
+          classPlans={MOCK_SPACE.classPlans}
+          spaceName={MOCK_SPACE.name}
+          sports={MOCK_SPACE.sports}
+        />
 
         <View style={styles.reviewsContainer}>
           <Text style={styles.sectionTitle}>Avaliações</Text>
@@ -522,24 +393,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
     fontWeight: '500',
-  },
-  amenitiesContainer: {
-    marginBottom: 24,
-  },
-  amenitiesList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-  },
-  amenityItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    width: '45%',
-  },
-  amenityText: {
-    fontSize: 14,
-    color: '#333',
   },
   servicesContainer: {
     marginBottom: 24,
