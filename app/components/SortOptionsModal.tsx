@@ -41,22 +41,44 @@ export function SortOptionsModal({
           styles.sortOptionText,
           selectedOption === value && styles.sortOptionTextSelected,
         ]}
+        numberOfLines={1}
       >
         {title}
       </Text>
     </View>
   );
 
+  // Divide options into rows of 3
+  const rows = options.reduce((acc, curr, i) => {
+    const rowIndex = Math.floor(i / 3);
+    if (!acc[rowIndex]) {
+      acc[rowIndex] = [];
+    }
+    acc[rowIndex].push(curr);
+    return acc;
+  }, [] as SortOptionConfig[][]);
+
   return (
     <BottomSheetModal
       visible={visible}
       onClose={onClose}
       title="Ordenar por"
-      height={33}
+      height={50}
     >
       <View style={styles.optionsContainer}>
-        {options.map((option) => (
-          <SortOption key={option.value} {...option} />
+        {rows.map((row, rowIndex) => (
+          <View key={rowIndex} style={styles.optionsRow}>
+            {row.map((option) => (
+              <SortOption key={option.value} {...option} />
+            ))}
+            {/* Add empty views to maintain grid alignment if row is not complete */}
+            {row.length < 3 &&
+              Array(3 - row.length)
+                .fill(null)
+                .map((_, i) => (
+                  <View key={`empty-${i}`} style={styles.emptySlot} />
+                ))}
+          </View>
         ))}
       </View>
     </BottomSheetModal>
@@ -65,18 +87,25 @@ export function SortOptionsModal({
 
 const styles = StyleSheet.create({
   optionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
     paddingVertical: 20,
+  },
+  optionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
   },
   sortOption: {
     alignItems: 'center',
-    gap: 8,
+    width: '30%', // Slightly less than 33.33% to account for spacing
+  },
+  emptySlot: {
+    width: '30%', // Same width as sortOption
   },
   sortOptionText: {
     fontSize: 14,
     color: '#666',
-    marginTop: 4,
+    marginTop: 8,
+    textAlign: 'center',
   },
   sortOptionTextSelected: {
     color: '#1a73e8',

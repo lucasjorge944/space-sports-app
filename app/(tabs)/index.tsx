@@ -18,6 +18,11 @@ import {
 
 const SORT_OPTIONS: SortOptionConfig[] = [
   {
+    title: 'Ordenar padrão',
+    value: 'default',
+    icon: 'arrow-down-outline',
+  },
+  {
     title: 'Avaliação',
     value: 'rating',
     icon: 'star-outline',
@@ -36,6 +41,11 @@ const SORT_OPTIONS: SortOptionConfig[] = [
     title: 'Distância',
     value: 'distance',
     icon: 'location-outline',
+  },
+  {
+    title: 'Esporte',
+    value: 'sport',
+    icon: 'basketball-outline',
   },
 ];
 
