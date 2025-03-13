@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { PageHeader } from '../components/PageHeader';
 import { SpaceCard } from '../components/SpaceCard';
 import {
@@ -92,6 +92,7 @@ export default function ExploreScreen() {
 
       <ScrollView style={styles.container}>
         <View style={styles.spacesList}>
+          <Text style={styles.containerTitle}>Espaços</Text>
           {sortedSpaces.map((space) => (
             <SpaceCard key={space.id} data={space} />
           ))}
@@ -114,7 +115,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
+  containerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 16,
+    color: '#333',
+  },
   spacesList: {
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingTop: 18,
   },
 });
