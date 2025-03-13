@@ -1,10 +1,6 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Loading } from '../components/Loading';
 import { PageHeader } from '../components/PageHeader';
-import { AttendanceListModal } from '../components/AttendanceListModal';
-import { ConfirmationModal } from '../components/ConfirmationModal';
-import { OptionModalType, OptionsModal } from '../components/OptionsModal';
 import { ClassCard } from '../components/ClassCard';
 import { ReservationCard } from '../components/ReservationCard';
 
@@ -106,102 +102,9 @@ const MOCK_STUDENTS = {
 const CURRENT_USER = 'Lucas Jorge';
 
 export default function MySpacesScreen() {
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [confirmModalVisible, setConfirmModalVisible] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [selectedReservation, setSelectedReservation] = React.useState<
-    null | (typeof MOCK_RESERVATIONS)[0]
-  >(null);
   const [confirmedClasses, setConfirmedClasses] = React.useState<string[]>(
     MOCK_TODAY_CLASSES.filter((c) => c.confirmed).map((c) => c.id)
   );
-  const [studentsModalVisible, setStudentsModalVisible] = React.useState(false);
-  const [selectedClass, setSelectedClass] = React.useState<
-    null | (typeof MOCK_TODAY_CLASSES)[0]
-  >(null);
-
-  const handleOpenOptions = useCallback(
-    (reservation: (typeof MOCK_RESERVATIONS)[0]) => {
-      setSelectedReservation(reservation);
-      setModalVisible(true);
-    },
-    []
-  );
-
-  const handleChangeReservation = useCallback(() => {
-    // Implementar lógica de alteração
-    setModalVisible(false);
-  }, []);
-
-  const handleCancelReservation = useCallback(() => {
-    setModalVisible(false);
-    setConfirmModalVisible(true);
-  }, []);
-
-  const handleConfirmCancel = useCallback(async () => {
-    setConfirmModalVisible(false);
-    setIsLoading(true);
-
-    try {
-      // Simular uma chamada de API
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      // Implementar lógica de cancelamento aqui
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  const handleToggleConfirmation = useCallback(
-    async (class_: (typeof MOCK_TODAY_CLASSES)[0]) => {
-      setIsLoading(true);
-      try {
-        // Simular chamada à API
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        setConfirmedClasses((prev) =>
-          prev.includes(class_.id)
-            ? prev.filter((id) => id !== class_.id)
-            : [...prev, class_.id]
-        );
-
-        // Abrir lista de presença após confirmar/retirar presença
-        setSelectedClass(class_);
-        setStudentsModalVisible(true);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    []
-  );
-
-  const handleOpenStudentsList = useCallback(
-    (class_: (typeof MOCK_TODAY_CLASSES)[0]) => {
-      setSelectedClass(class_);
-      setStudentsModalVisible(true);
-    },
-    []
-  );
-
-  const handleSelectOption = useCallback((option: OptionModalType) => {
-    if (option.label === 'Alterar') {
-      handleChangeReservation();
-    } else if (option.label === 'Cancelar') {
-      handleCancelReservation();
-    }
-  }, []);
-
-  const reservationOptions = [
-    {
-      icon: 'calendar-outline',
-      label: 'Alterar',
-    },
-    {
-      icon: 'close-circle-outline',
-      label: 'Cancelar',
-      variant: 'danger',
-      showSeparator: true,
-    },
-  ] as OptionModalType[];
 
   return (
     <>
@@ -218,8 +121,15 @@ export default function MySpacesScreen() {
               key={class_.id}
               data={class_}
               isConfirmed={confirmedClasses.includes(class_.id)}
-              onPress={() => handleOpenStudentsList(class_)}
-              onToggleConfirmation={() => handleToggleConfirmation(class_)}
+              currentUser={CURRENT_USER}
+              students={MOCK_STUDENTS[class_.id as keyof typeof MOCK_STUDENTS]}
+              onConfirmationSuccess={() => {
+                setConfirmedClasses((prev) =>
+                  prev.includes(class_.id)
+                    ? prev.filter((id) => id !== class_.id)
+                    : [...prev, class_.id]
+                );
+              }}
             />
           ))}
         </View>
@@ -230,50 +140,14 @@ export default function MySpacesScreen() {
             <ReservationCard
               key={reservation.id}
               data={reservation}
-              onMorePress={() => handleOpenOptions(reservation)}
+              onMorePress={() => {
+                // Implementar atualização da lista de reservas
+                console.log('Reservation changed:', reservation.id);
+              }}
             />
           ))}
         </View>
       </ScrollView>
-
-      <OptionsModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        options={reservationOptions}
-        onSelectOption={handleSelectOption}
-      />
-
-      <ConfirmationModal
-        visible={confirmModalVisible}
-        onClose={() => setConfirmModalVisible(false)}
-        onConfirm={handleConfirmCancel}
-        title="Cancelar Reserva"
-        message="Tem certeza que deseja cancelar esta reserva?"
-        confirmText="Confirmar"
-        cancelText="Voltar"
-        icon={{ name: 'alert-circle-outline', color: '#dc3545' }}
-        confirmButtonStyle="danger"
-      />
-
-      <AttendanceListModal
-        visible={studentsModalVisible}
-        onClose={() => setStudentsModalVisible(false)}
-        classData={selectedClass}
-        students={
-          selectedClass
-            ? MOCK_STUDENTS[selectedClass.id as keyof typeof MOCK_STUDENTS]
-            : []
-        }
-        currentUser={CURRENT_USER}
-        isConfirmed={
-          selectedClass ? confirmedClasses.includes(selectedClass.id) : false
-        }
-        onToggleConfirmation={() =>
-          selectedClass && handleToggleConfirmation(selectedClass)
-        }
-      />
-
-      <Loading visible={isLoading} />
     </>
   );
 }

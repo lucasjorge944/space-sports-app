@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Tag } from './Tag';
+import { AttendanceListModal } from './AttendanceListModal';
+import { Loading } from './Loading';
+
+interface Student {
+  id: string;
+  name: string;
+}
 
 interface ClassCardProps {
   data: {
@@ -16,58 +23,93 @@ interface ClassCardProps {
     maxParticipants: number;
   };
   isConfirmed: boolean;
-  onPress: () => void;
-  onToggleConfirmation: () => void;
+  currentUser: string;
+  students: Student[];
+  onConfirmationSuccess?: () => void;
 }
 
 export function ClassCard({
   data,
   isConfirmed,
-  onPress,
-  onToggleConfirmation,
+  currentUser,
+  students,
+  onConfirmationSuccess,
 }: ClassCardProps) {
+  const [studentsModalVisible, setStudentsModalVisible] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleToggleConfirmation = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      // Simular chamada à API
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      onConfirmationSuccess?.();
+    } finally {
+      setIsLoading(false);
+    }
+  }, [onConfirmationSuccess]);
+
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      <Image
-        source={{ uri: data.image }}
-        style={styles.image}
-        resizeMode="cover"
+    <>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => setStudentsModalVisible(true)}
+      >
+        <Image
+          source={{ uri: data.image }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+        <View style={styles.content}>
+          <Text style={styles.title}>{data.spaceName}</Text>
+          <Text style={styles.sport}>{data.sport}</Text>
+          <Text style={styles.instructor}>Professor: {data.instructor}</Text>
+
+          <View style={styles.details}>
+            <View style={styles.detailItem}>
+              <Ionicons name="time-outline" size={16} color="#666" />
+              <Text style={styles.detailText}>{data.time}</Text>
+            </View>
+            <View style={styles.detailItem}>
+              <Ionicons name="hourglass-outline" size={16} color="#666" />
+              <Text style={styles.detailText}>{data.duration}</Text>
+            </View>
+          </View>
+
+          <View style={styles.footer}>
+            <Tag
+              label={`${data.participants}/${data.maxParticipants} alunos`}
+              variant="ratio"
+              icon="people-outline"
+              ratio={data.participants / data.maxParticipants}
+            />
+            <Tag
+              label={isConfirmed ? 'Retirar Presença' : 'Confirmar Presença'}
+              variant="action"
+              icon={
+                isConfirmed
+                  ? 'close-circle-outline'
+                  : 'checkmark-circle-outline'
+              }
+              isActive={isConfirmed}
+              onPress={handleToggleConfirmation}
+            />
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      <AttendanceListModal
+        visible={studentsModalVisible}
+        onClose={() => setStudentsModalVisible(false)}
+        classData={data}
+        students={students}
+        currentUser={currentUser}
+        isConfirmed={isConfirmed}
+        onToggleConfirmation={handleToggleConfirmation}
       />
-      <View style={styles.content}>
-        <Text style={styles.title}>{data.spaceName}</Text>
-        <Text style={styles.sport}>{data.sport}</Text>
-        <Text style={styles.instructor}>Professor: {data.instructor}</Text>
 
-        <View style={styles.details}>
-          <View style={styles.detailItem}>
-            <Ionicons name="time-outline" size={16} color="#666" />
-            <Text style={styles.detailText}>{data.time}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Ionicons name="hourglass-outline" size={16} color="#666" />
-            <Text style={styles.detailText}>{data.duration}</Text>
-          </View>
-        </View>
-
-        <View style={styles.footer}>
-          <Tag
-            label={`${data.participants}/${data.maxParticipants} alunos`}
-            variant="ratio"
-            icon="people-outline"
-            ratio={data.participants / data.maxParticipants}
-          />
-          <Tag
-            label={isConfirmed ? 'Retirar Presença' : 'Confirmar Presença'}
-            variant="action"
-            icon={
-              isConfirmed ? 'close-circle-outline' : 'checkmark-circle-outline'
-            }
-            isActive={isConfirmed}
-            onPress={onToggleConfirmation}
-          />
-        </View>
-      </View>
-    </TouchableOpacity>
+      <Loading visible={isLoading} />
+    </>
   );
 }
 
