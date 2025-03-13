@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { BottomSheetModal } from './BottomSheetModal';
 interface ConfirmationModalProps {
   visible: boolean;
   onClose: () => void;
@@ -42,41 +42,36 @@ export function ConfirmationModal({
   };
 
   return (
-    <Modal
-      animationType="fade"
-      transparent
+    <BottomSheetModal
       visible={visible}
-      onRequestClose={onClose}
+      onClose={onClose}
+      height={30}
+      header={false}
     >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalView}>
-          <View style={styles.modalContent}>
-            <Ionicons name={icon.name} size={48} color={icon.color} />
-            <Text style={styles.modalTitle}>{title}</Text>
-            <Text style={styles.modalText}>{message}</Text>
-          </View>
-
-          <View style={styles.modalButtons}>
-            <TouchableOpacity
-              style={[styles.modalButton, styles.buttonCancel]}
-              onPress={onClose}
-            >
-              <Text style={styles.buttonTextCancel}>{cancelText}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.modalButton,
-                { backgroundColor: getConfirmButtonColor() },
-              ]}
-              onPress={onConfirm}
-            >
-              <Text style={styles.buttonTextConfirm}>{confirmText}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+      <View style={styles.modalContent}>
+        <Ionicons name={icon.name} size={48} color={icon.color} />
+        <Text style={styles.modalTitle}>{title}</Text>
+        <Text style={styles.modalText}>{message}</Text>
       </View>
-    </Modal>
+      <View style={styles.modalButtons}>
+        <TouchableOpacity
+          style={[styles.modalButton, styles.buttonCancel]}
+          onPress={onClose}
+        >
+          <Text style={styles.buttonTextCancel}>{cancelText}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.modalButton,
+            { backgroundColor: getConfirmButtonColor() },
+          ]}
+          onPress={onConfirm}
+        >
+          <Text style={styles.buttonTextConfirm}>{confirmText}</Text>
+        </TouchableOpacity>
+      </View>
+    </BottomSheetModal>
   );
 }
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, Modal, StyleSheet, Pressable } from 'react-native';
 import { IconButton } from './IconButton';
-type ModalHeight = 20 | 33 | 50 | 80;
+type ModalHeight = 20 | 30 | 33 | 50 | 80;
 
 interface BottomSheetModalProps {
   visible: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   children: React.ReactNode;
   height?: ModalHeight;
   header?: boolean;

@@ -34,7 +34,6 @@ export function OptionsModal({
     <BottomSheetModal
       visible={visible}
       onClose={onClose}
-      title="Ordenar por"
       height={20}
       header={false}
     >
