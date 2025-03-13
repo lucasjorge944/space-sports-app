@@ -13,6 +13,7 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { CustomButton } from '../components/CustomButton';
 import { TextAreaInput } from '../components/TextAreaInput';
+import { IconButton } from '../components/IconButton';
 
 const MOCK_SPACE = {
   id: '1',
@@ -129,15 +130,12 @@ export default function SpaceDetailsScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
+        <IconButton
+          name="arrow-back"
           onPress={() => router.back()}
-        >
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.shareButton}>
-          <Ionicons name="share-outline" size={24} color="#fff" />
-        </TouchableOpacity>
+          color="#666"
+        />
+        <IconButton name="share-outline" onPress={() => {}} color="#666" />
       </View>
 
       <ScrollView
