@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Tag } from './Tag';
+import { IconButton } from './IconButton';
 
 interface Student {
   id: string;
@@ -58,9 +59,7 @@ export function AttendanceListModal({
 
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Lista de Presença</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color="#666" />
-            </TouchableOpacity>
+            <IconButton name="close" onPress={onClose} />
           </View>
 
           <View style={styles.classInfo}>
@@ -154,9 +153,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
-  closeButton: {
-    padding: 4,
-  },
+
   classInfo: {
     paddingHorizontal: 16,
     marginBottom: 16,
