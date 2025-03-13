@@ -1,17 +1,7 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  ScrollView,
-  TouchableOpacity,
-  Pressable,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Tag } from './Tag';
-import { IconButton } from './IconButton';
-
+import { BottomSheetModal } from './BottomSheetModal';
 interface Student {
   id: string;
   name: string;
@@ -45,76 +35,58 @@ export function AttendanceListModal({
   if (!classData) return null;
 
   return (
-    <Modal
-      animationType="slide"
-      transparent
+    <BottomSheetModal
       visible={visible}
-      onRequestClose={onClose}
+      onClose={onClose}
+      height={80}
+      title="Lista de Presença"
     >
-      <Pressable style={styles.modalOverlay} onPress={onClose}>
-        <View style={styles.modalView}>
-          <View style={styles.modalHandleContainer}>
-            <View style={styles.modalHandle} />
-          </View>
-
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Lista de Presença</Text>
-            <IconButton name="close" onPress={onClose} />
-          </View>
-
-          <View style={styles.classInfo}>
-            <Text style={styles.classInfoTitle}>{classData.sport}</Text>
-            <Text style={styles.classInfoDetails}>
-              {classData.time} • {classData.instructor}
-            </Text>
-            <View style={{ alignSelf: 'flex-start', marginTop: 16 }}>
-              <Tag
-                label={isConfirmed ? 'Retirar Presença' : 'Confirmar Presença'}
-                variant="action"
-                icon={
-                  isConfirmed
-                    ? 'close-circle-outline'
-                    : 'checkmark-circle-outline'
-                }
-                isActive={isConfirmed}
-                onPress={onToggleConfirmation}
-              />
-            </View>
-          </View>
-
-          <ScrollView style={styles.studentsListContainer}>
-            {Array.from({ length: classData.maxParticipants }).map(
-              (_, index) => {
-                const student = students[index];
-                const isCurrentUser = student?.name === currentUser;
-
-                return (
-                  <View key={index} style={styles.studentItem}>
-                    <View style={styles.studentNumberContainer}>
-                      <Text style={styles.studentNumber}>{index + 1}</Text>
-                    </View>
-                    <View style={styles.studentNameContainer}>
-                      <Text
-                        style={[
-                          styles.studentName,
-                          !student && styles.emptySlot,
-                          isCurrentUser && styles.currentUserName,
-                        ]}
-                      >
-                        {student?.name || '-'}
-                      </Text>
-                      {isCurrentUser && (
-                        <Text style={styles.currentUserTag}>Você</Text>
-                      )}
-                    </View>
-                  </View>
-                );
-              }
-            )}
-          </ScrollView>
+      <View style={styles.classInfo}>
+        <Text style={styles.classInfoTitle}>{classData.sport}</Text>
+        <Text style={styles.classInfoDetails}>
+          {classData.time} • {classData.instructor}
+        </Text>
+        <View style={{ alignSelf: 'flex-start', marginTop: 16 }}>
+          <Tag
+            label={isConfirmed ? 'Retirar Presença' : 'Confirmar Presença'}
+            variant="action"
+            icon={
+              isConfirmed ? 'close-circle-outline' : 'checkmark-circle-outline'
+            }
+            isActive={isConfirmed}
+            onPress={onToggleConfirmation}
+          />
         </View>
-      </Pressable>
-    </Modal>
+      </View>
+      <ScrollView style={styles.studentsListContainer}>
+        {Array.from({ length: classData.maxParticipants }).map((_, index) => {
+          const student = students[index];
+          const isCurrentUser = student?.name === currentUser;
+
+          return (
+            <View key={index} style={styles.studentItem}>
+              <View style={styles.studentNumberContainer}>
+                <Text style={styles.studentNumber}>{index + 1}</Text>
+              </View>
+              <View style={styles.studentNameContainer}>
+                <Text
+                  style={[
+                    styles.studentName,
+                    !student && styles.emptySlot,
+                    isCurrentUser && styles.currentUserName,
+                  ]}
+                >
+                  {student?.name || '-'}
+                </Text>
+                {isCurrentUser && (
+                  <Text style={styles.currentUserTag}>Você</Text>
+                )}
+              </View>
+            </View>
+          );
+        })}
+      </ScrollView>
+    </BottomSheetModal>
   );
 }
 
@@ -155,7 +127,7 @@ const styles = StyleSheet.create({
   },
 
   classInfo: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 0,
     marginBottom: 16,
   },
   classInfoTitle: {
@@ -170,7 +142,6 @@ const styles = StyleSheet.create({
   },
   studentsListContainer: {
     flex: 1,
-    paddingHorizontal: 16,
   },
   studentItem: {
     flexDirection: 'row',
