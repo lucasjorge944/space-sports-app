@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { IconButton } from './IconButton';
 
 interface PageHeaderProps {
   title: string;
@@ -20,20 +21,17 @@ export function PageHeader({
     <View style={[styles.header, styles.exploreHeader]}>
       <View style={styles.leftContainer}>
         {showBackButton && (
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Ionicons name="close" size={24} color="#666" />
-          </TouchableOpacity>
+          <IconButton name="close" onPress={() => router.back()} color="#666" />
         )}
         <Text style={[styles.title, styles.exploreTitle]}>{title}</Text>
       </View>
 
       {rightIcon ? (
-        <TouchableOpacity style={styles.rightButton} onPress={onRightIconPress}>
-          <Ionicons name={rightIcon} size={24} color="#1a73e8" />
-        </TouchableOpacity>
+        <IconButton
+          name={rightIcon}
+          onPress={onRightIconPress}
+          color="#1a73e8"
+        />
       ) : (
         <View style={{ width: 24 }} />
       )}
@@ -55,14 +53,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  backButton: {
-    marginRight: 8,
-  },
   exploreHeader: {
     padding: 20,
     paddingTop: 60,
   },
-
   title: {
     fontSize: 32,
     fontWeight: 'bold',
@@ -71,9 +65,5 @@ const styles = StyleSheet.create({
   exploreTitle: {
     fontSize: 32,
     color: '#1a73e8',
-  },
-
-  rightButton: {
-    padding: 8,
   },
 });
