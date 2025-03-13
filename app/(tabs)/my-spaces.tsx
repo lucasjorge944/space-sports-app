@@ -1,8 +1,18 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Modal,
+  TouchableOpacity,
+  Pressable,
+} from 'react-native';
 import { PageHeader } from '../components/PageHeader';
 import { ClassCard } from '../components/ClassCard';
 import { ReservationCard } from '../components/ReservationCard';
+import { Ionicons } from '@expo/vector-icons';
+import { SortOptionsModal } from '../components/SortOptionsModal';
 
 const MOCK_RESERVATIONS = [
   {
@@ -105,13 +115,35 @@ export default function MySpacesScreen() {
   const [confirmedClasses, setConfirmedClasses] = React.useState<string[]>(
     MOCK_TODAY_CLASSES.filter((c) => c.confirmed).map((c) => c.id)
   );
+  const [showSortModal, setShowSortModal] = React.useState(false);
+  const [sortOption, setSortOption] = React.useState<
+    'date' | 'price' | 'sport'
+  >('date');
+
+  const sortedReservations = React.useMemo(() => {
+    return [...MOCK_RESERVATIONS].sort((a, b) => {
+      switch (sortOption) {
+        case 'date':
+          return (
+            new Date(a.date.split('/').reverse().join('-')).getTime() -
+            new Date(b.date.split('/').reverse().join('-')).getTime()
+          );
+        case 'price':
+          return a.price - b.price;
+        case 'sport':
+          return a.sport.localeCompare(b.sport);
+        default:
+          return 0;
+      }
+    });
+  }, [MOCK_RESERVATIONS, sortOption]);
 
   return (
     <>
       <PageHeader
         title="Reservas"
         rightIcon="filter"
-        onRightIconPress={() => console.log('Filter pressed')}
+        onRightIconPress={() => setShowSortModal(true)}
       />
       <ScrollView style={styles.container}>
         <View style={styles.section}>
@@ -136,22 +168,27 @@ export default function MySpacesScreen() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Próximas Reservas</Text>
-          {MOCK_RESERVATIONS.map((reservation) => (
+          {sortedReservations.map((reservation) => (
             <ReservationCard
               key={reservation.id}
               data={reservation}
               onCancelSuccess={() => {
-                // Implementar atualização da lista de reservas
                 console.log('Reservation cancelled:', reservation.id);
               }}
               onChangeSuccess={() => {
-                // Implementar atualização da lista de reservas
                 console.log('Reservation changed:', reservation.id);
               }}
             />
           ))}
         </View>
       </ScrollView>
+
+      <SortOptionsModal
+        visible={showSortModal}
+        onClose={() => setShowSortModal(false)}
+        selectedOption={sortOption}
+        onOptionSelect={setSortOption}
+      />
     </>
   );
 }
@@ -284,5 +321,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 12,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#DDD',
+    borderRadius: 2,
+  },
+  sortOptionsContainer: {
+    padding: 20,
+  },
+  sortOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  sortOptionSelected: {
+    backgroundColor: '#1a73e8',
+  },
+  sortOptionText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  sortOptionTextSelected: {
+    color: '#fff',
   },
 });

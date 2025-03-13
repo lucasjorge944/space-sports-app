@@ -9,11 +9,14 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+type ModalHeight = 33 | 50 | 80;
+
 interface BottomSheetModalProps {
   visible: boolean;
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  height?: ModalHeight;
 }
 
 export function BottomSheetModal({
@@ -21,6 +24,7 @@ export function BottomSheetModal({
   onClose,
   title,
   children,
+  height = 80,
 }: BottomSheetModalProps) {
   return (
     <Modal
@@ -30,7 +34,7 @@ export function BottomSheetModal({
       onRequestClose={onClose}
     >
       <Pressable style={styles.modalOverlay} onPress={onClose}>
-        <View style={styles.modalView}>
+        <View style={[styles.modalView, { height: `${height}%` }]}>
           <View style={styles.modalHandleContainer}>
             <View style={styles.modalHandle} />
           </View>
@@ -59,7 +63,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    height: '80%',
     width: '100%',
   },
   modalHandleContainer: {
@@ -81,7 +84,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: '#333',
   },
   closeButton: {

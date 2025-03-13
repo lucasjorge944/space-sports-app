@@ -1,38 +1,64 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+
+type IconButtonSize = 'normal' | 'large';
 
 interface IconButtonProps {
   name: keyof typeof Ionicons.glyphMap;
-  size?: number;
+  onPress?: () => void;
   color?: string;
-  onPress: () => void;
-  style?: ViewStyle;
+  size?: IconButtonSize;
+  selected?: boolean;
 }
+
+const BUTTON_SIZES = {
+  normal: {
+    button: 40,
+    icon: 20,
+  },
+  large: {
+    button: 56,
+    icon: 24,
+  },
+};
 
 export function IconButton({
   name,
-  size = 24,
-  color = '#666',
   onPress,
-  style,
+  color = '#666',
+  size = 'normal',
+  selected = false,
 }: IconButtonProps) {
   return (
     <TouchableOpacity
+      style={[
+        styles.button,
+        {
+          width: BUTTON_SIZES[size].button,
+          height: BUTTON_SIZES[size].button,
+        },
+        selected && styles.selectedButton,
+      ]}
       onPress={onPress}
-      style={[styles.button, style]}
-      activeOpacity={0.7}
     >
-      <Ionicons name={name} size={size} color={color} />
+      <Ionicons
+        name={name}
+        size={BUTTON_SIZES[size].icon}
+        color={selected ? '#fff' : color}
+      />
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    padding: 8,
-    borderRadius: 8,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: '#f5f5f5',
+  },
+  selectedButton: {
+    backgroundColor: '#1a73e8',
   },
 });
