@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { OptionModalType, OptionsModal } from './OptionsModal';
 import { ConfirmationModal } from './ConfirmationModal';
 import { Loading } from './Loading';
+import { Tag } from './Tag';
 
 interface ReservationCardProps {
   data: {
@@ -122,14 +123,16 @@ export function ReservationCard({
           </View>
 
           <View style={styles.priceContainer}>
-            <View style={styles.pricePerPersonTag}>
-              <Text style={styles.pricePerPersonText}>
-                R$ {data.pricePerPerson.toFixed(2)}/pessoa
-              </Text>
-            </View>
-            <View style={styles.priceTag}>
-              <Text style={styles.priceText}>R$ {data.price.toFixed(2)}</Text>
-            </View>
+            <Tag
+              label={`R$ ${data.pricePerPerson.toFixed(2)}/pessoa`}
+              variant="neutral"
+              icon="person-outline"
+            />
+            <Tag
+              label={`R$ ${data.price.toFixed(2)}`}
+              variant="action"
+              icon="cash-outline"
+            />
           </View>
         </View>
       </TouchableOpacity>
@@ -216,27 +219,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     marginTop: 8,
-  },
-  pricePerPersonTag: {
-    backgroundColor: '#f5f5f5',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  pricePerPersonText: {
-    color: '#666',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  priceTag: {
-    backgroundColor: '#e8f0fe',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  priceText: {
-    color: '#1a73e8',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });
