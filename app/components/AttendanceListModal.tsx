@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
 
   classInfo: {
-    paddingHorizontal: 0,
+    paddingHorizontal: 16,
     marginBottom: 16,
   },
   classInfoTitle: {
@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
   },
   studentsListContainer: {
     flex: 1,
+    paddingHorizontal: 8,
   },
   studentItem: {
     flexDirection: 'row',
