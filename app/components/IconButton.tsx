@@ -14,8 +14,8 @@ interface IconButtonProps {
 
 const BUTTON_SIZES = {
   normal: {
-    button: 40,
-    icon: 20,
+    button: 44,
+    icon: 26,
   },
   large: {
     button: 56,

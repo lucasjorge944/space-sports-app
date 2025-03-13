@@ -1,14 +1,6 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-  TouchableOpacity,
-  Pressable,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-
+import { View, Text, Modal, StyleSheet, Pressable } from 'react-native';
+import { IconButton } from './IconButton';
 type ModalHeight = 33 | 50 | 80;
 
 interface BottomSheetModalProps {
@@ -41,9 +33,7 @@ export function BottomSheetModal({
 
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>{title}</Text>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Ionicons name="close" size={24} color="#666" />
-            </TouchableOpacity>
+            <IconButton name="close" onPress={onClose} color="#666" />
           </View>
 
           <View style={styles.contentContainer}>{children}</View>
