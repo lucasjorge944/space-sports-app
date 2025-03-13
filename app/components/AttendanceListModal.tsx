@@ -6,6 +6,7 @@ import {
   Modal,
   ScrollView,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Tag } from './Tag';
@@ -49,7 +50,7 @@ export function AttendanceListModal({
       visible={visible}
       onRequestClose={onClose}
     >
-      <View style={styles.modalOverlay}>
+      <Pressable style={styles.modalOverlay} onPress={onClose}>
         <View style={styles.modalView}>
           <View style={styles.modalHandleContainer}>
             <View style={styles.modalHandle} />
@@ -113,7 +114,7 @@ export function AttendanceListModal({
             )}
           </ScrollView>
         </View>
-      </View>
+      </Pressable>
     </Modal>
   );
 }
