@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { CustomButton } from './CustomButton';
+import { Tabs } from './Tabs';
 
 interface PriceOption {
   hours: number;
@@ -30,6 +31,11 @@ export function SpaceServices({
     'reserve'
   );
 
+  const tabs = [
+    { key: 'reserve', label: 'Reservar Espaço' },
+    { key: 'classes', label: 'Aulas' },
+  ];
+
   const handleOpenBooking = (price: PriceOption) => {
     router.push({
       pathname: '/booking',
@@ -56,41 +62,18 @@ export function SpaceServices({
 
   return (
     <View style={styles.container}>
-      <View style={styles.tabsContainer}>
-        <TouchableOpacity
-          style={[styles.tab, selectedTab === 'reserve' && styles.activeTab]}
-          onPress={() => setSelectedTab('reserve')}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              selectedTab === 'reserve' && styles.activeTabText,
-            ]}
-          >
-            Reservar Espaço
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, selectedTab === 'classes' && styles.activeTab]}
-          onPress={() => setSelectedTab('classes')}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              selectedTab === 'classes' && styles.activeTabText,
-            ]}
-          >
-            Aulas
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <Tabs
+        tabs={tabs}
+        selectedTab={selectedTab}
+        onTabChange={(tab) => setSelectedTab(tab as 'reserve' | 'classes')}
+      />
 
       {selectedTab === 'reserve' ? (
         <View style={styles.pricesContainer}>
           {hourlyPrices.map((price) => (
-            <TouchableOpacity key={price.hours} style={styles.priceCard}>
+            <View key={price.hours} style={styles.priceCard}>
               <Text style={styles.hours}>
-                {price.hours} hora{price.hours > 1 ? 's' : ''}
+                {price.hours} horas{price.hours > 1 ? 's' : ''}
               </Text>
               <Text style={styles.price}>R$ {price.price.toFixed(2)}</Text>
               <CustomButton
@@ -99,13 +82,13 @@ export function SpaceServices({
                 size="small"
                 onPress={() => handleOpenBooking(price)}
               />
-            </TouchableOpacity>
+            </View>
           ))}
         </View>
       ) : (
         <View style={styles.plansContainer}>
           {classPlans.map((plan) => (
-            <TouchableOpacity key={plan.frequency} style={styles.planCard}>
+            <View key={plan.frequency} style={styles.planCard}>
               <Text style={styles.planFrequency}>{plan.frequency}</Text>
               <Text style={styles.planPrice}>
                 {plan.price > 0
@@ -118,7 +101,7 @@ export function SpaceServices({
                 size="small"
                 onPress={() => handleOpenEnrollment(plan)}
               />
-            </TouchableOpacity>
+            </View>
           ))}
         </View>
       )}
@@ -129,38 +112,6 @@ export function SpaceServices({
 const styles = StyleSheet.create({
   container: {
     marginBottom: 24,
-  },
-  tabsContainer: {
-    flexDirection: 'row',
-    marginBottom: 16,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
-    padding: 4,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: 'center',
-    borderRadius: 6,
-  },
-  activeTab: {
-    backgroundColor: '#fff',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  tabText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#666',
-  },
-  activeTabText: {
-    color: '#1a73e8',
   },
   pricesContainer: {
     gap: 12,
