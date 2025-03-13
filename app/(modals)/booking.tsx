@@ -4,16 +4,12 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Platform,
   ScrollView,
   SafeAreaView,
   Modal,
-  ActivityIndicator,
   Share,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Loading } from '../components/Loading';
@@ -72,10 +68,6 @@ export default function BookingScreen() {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsLoading(false);
     setShowReceipt(true);
-  };
-
-  const handleConfirmDate = (selectedDate: Date) => {
-    setDate(selectedDate);
   };
 
   // Função para formatar a data para o formato do calendário

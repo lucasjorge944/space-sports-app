@@ -1,18 +1,7 @@
 import React, { useCallback } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  Modal,
-  Pressable,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Loading } from '../components/Loading';
 import { PageHeader } from '../components/PageHeader';
-import { Tag } from '../components/Tag';
 import { AttendanceListModal } from '../components/AttendanceListModal';
 import { ConfirmationModal } from '../components/ConfirmationModal';
 import { OptionModalType, OptionsModal } from '../components/OptionsModal';
