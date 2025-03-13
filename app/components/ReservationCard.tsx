@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { OptionModalType, OptionsModal } from './OptionsModal';
+import { ConfirmationModal } from './ConfirmationModal';
+import { Loading } from './Loading';
 
 interface ReservationCardProps {
   data: {
@@ -12,61 +15,146 @@ interface ReservationCardProps {
     duration: string;
     price: number;
     image: string;
+    holder: string;
     people: number;
     pricePerPerson: number;
   };
-  onMorePress: () => void;
+  onCancelSuccess?: () => void;
+  onChangeSuccess?: () => void;
 }
 
-export function ReservationCard({ data, onMorePress }: ReservationCardProps) {
+export function ReservationCard({
+  data,
+  onCancelSuccess,
+  onChangeSuccess,
+}: ReservationCardProps) {
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [confirmModalVisible, setConfirmModalVisible] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleChangeReservation = useCallback(() => {
+    // Implementar lógica de alteração
+    setModalVisible(false);
+    onChangeSuccess?.();
+  }, [onChangeSuccess]);
+
+  const handleCancelReservation = useCallback(() => {
+    setModalVisible(false);
+    setConfirmModalVisible(true);
+  }, []);
+
+  const handleConfirmCancel = useCallback(async () => {
+    setConfirmModalVisible(false);
+    setIsLoading(true);
+
+    try {
+      // Simular uma chamada de API
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Implementar lógica de cancelamento aqui
+      onCancelSuccess?.();
+    } finally {
+      setIsLoading(false);
+    }
+  }, [onCancelSuccess]);
+
+  const handleSelectOption = useCallback(
+    (option: OptionModalType) => {
+      if (option.label === 'Alterar') {
+        handleChangeReservation();
+      } else if (option.label === 'Cancelar') {
+        handleCancelReservation();
+      }
+    },
+    [handleChangeReservation, handleCancelReservation]
+  );
+
+  const reservationOptions = [
+    {
+      icon: 'calendar-outline',
+      label: 'Alterar',
+    },
+    {
+      icon: 'close-circle-outline',
+      label: 'Cancelar',
+      variant: 'danger',
+      showSeparator: true,
+    },
+  ] as OptionModalType[];
+
   return (
-    <TouchableOpacity style={styles.card} onPress={onMorePress}>
-      <Image
-        source={{ uri: data.image }}
-        style={styles.image}
-        resizeMode="cover"
+    <>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => setModalVisible(true)}
+      >
+        <Image
+          source={{ uri: data.image }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.title}>{data.spaceName}</Text>
+          </View>
+
+          <Text style={styles.sport}>{data.sport}</Text>
+
+          <View style={styles.details}>
+            <View style={styles.detailItem}>
+              <Ionicons name="calendar-outline" size={16} color="#666" />
+              <Text style={styles.detailText}>{data.date}</Text>
+            </View>
+            <View style={styles.detailItem}>
+              <Ionicons name="time-outline" size={16} color="#666" />
+              <Text style={styles.detailText}>{data.time}</Text>
+            </View>
+          </View>
+
+          <View style={styles.details}>
+            <View style={styles.detailItem}>
+              <Ionicons name="hourglass-outline" size={16} color="#666" />
+              <Text style={styles.detailText}>{data.duration}</Text>
+            </View>
+            <View style={styles.detailItem}>
+              <Ionicons name="people-outline" size={16} color="#666" />
+              <Text style={styles.detailText}>{data.people} pessoas</Text>
+            </View>
+          </View>
+
+          <View style={styles.priceContainer}>
+            <View style={styles.pricePerPersonTag}>
+              <Text style={styles.pricePerPersonText}>
+                R$ {data.pricePerPerson.toFixed(2)}/pessoa
+              </Text>
+            </View>
+            <View style={styles.priceTag}>
+              <Text style={styles.priceText}>R$ {data.price.toFixed(2)}</Text>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      <OptionsModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        options={reservationOptions}
+        onSelectOption={handleSelectOption}
       />
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>{data.spaceName}</Text>
-        </View>
 
-        <Text style={styles.sport}>{data.sport}</Text>
+      <ConfirmationModal
+        visible={confirmModalVisible}
+        onClose={() => setConfirmModalVisible(false)}
+        onConfirm={handleConfirmCancel}
+        title="Cancelar Reserva"
+        message="Tem certeza que deseja cancelar esta reserva?"
+        confirmText="Confirmar"
+        cancelText="Voltar"
+        icon={{ name: 'alert-circle-outline', color: '#dc3545' }}
+        confirmButtonStyle="danger"
+      />
 
-        <View style={styles.details}>
-          <View style={styles.detailItem}>
-            <Ionicons name="calendar-outline" size={16} color="#666" />
-            <Text style={styles.detailText}>{data.date}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Ionicons name="time-outline" size={16} color="#666" />
-            <Text style={styles.detailText}>{data.time}</Text>
-          </View>
-        </View>
-
-        <View style={styles.details}>
-          <View style={styles.detailItem}>
-            <Ionicons name="hourglass-outline" size={16} color="#666" />
-            <Text style={styles.detailText}>{data.duration}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Ionicons name="people-outline" size={16} color="#666" />
-            <Text style={styles.detailText}>{data.people} pessoas</Text>
-          </View>
-        </View>
-
-        <View style={styles.priceContainer}>
-          <View style={styles.pricePerPersonTag}>
-            <Text style={styles.pricePerPersonText}>
-              R$ {data.pricePerPerson.toFixed(2)}/pessoa
-            </Text>
-          </View>
-          <View style={styles.priceTag}>
-            <Text style={styles.priceText}>R$ {data.price.toFixed(2)}</Text>
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
+      <Loading visible={isLoading} />
+    </>
   );
 }
 

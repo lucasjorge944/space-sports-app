@@ -140,7 +140,11 @@ export default function MySpacesScreen() {
             <ReservationCard
               key={reservation.id}
               data={reservation}
-              onMorePress={() => {
+              onCancelSuccess={() => {
+                // Implementar atualização da lista de reservas
+                console.log('Reservation cancelled:', reservation.id);
+              }}
+              onChangeSuccess={() => {
                 // Implementar atualização da lista de reservas
                 console.log('Reservation changed:', reservation.id);
               }}
