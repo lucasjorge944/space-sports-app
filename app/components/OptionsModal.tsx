@@ -8,6 +8,7 @@ import {
   Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { BottomSheetModal } from './BottomSheetModal';
 
 export interface OptionModalType {
   icon: keyof typeof Ionicons.glyphMap;
@@ -30,45 +31,40 @@ export function OptionsModal({
   onSelectOption,
 }: OptionsModalProps) {
   return (
-    <Modal
-      animationType="slide"
-      transparent
+    <BottomSheetModal
       visible={visible}
-      onRequestClose={onClose}
+      onClose={onClose}
+      title="Ordenar por"
+      height={20}
+      header={false}
     >
-      <Pressable style={styles.modalOverlay} onPress={onClose}>
-        <View style={styles.modalView}>
-          <View style={styles.modalHandle} />
-
-          {options.map((option, index) => (
-            <React.Fragment key={option.label}>
-              {option.showSeparator && <View style={styles.separator} />}
-              <TouchableOpacity
-                style={styles.modalOption}
-                onPress={() => {
-                  onClose();
-                  onSelectOption(option);
-                }}
-              >
-                <Ionicons
-                  name={option.icon}
-                  size={24}
-                  color={option.variant === 'danger' ? '#dc3545' : '#333'}
-                />
-                <Text
-                  style={[
-                    styles.modalOptionText,
-                    option.variant === 'danger' && styles.dangerText,
-                  ]}
-                >
-                  {option.label}
-                </Text>
-              </TouchableOpacity>
-            </React.Fragment>
-          ))}
-        </View>
-      </Pressable>
-    </Modal>
+      {options.map((option, index) => (
+        <React.Fragment key={option.label}>
+          {option.showSeparator && <View style={styles.separator} />}
+          <TouchableOpacity
+            style={styles.modalOption}
+            onPress={() => {
+              onClose();
+              onSelectOption(option);
+            }}
+          >
+            <Ionicons
+              name={option.icon}
+              size={24}
+              color={option.variant === 'danger' ? '#dc3545' : '#333'}
+            />
+            <Text
+              style={[
+                styles.modalOptionText,
+                option.variant === 'danger' && styles.dangerText,
+              ]}
+            >
+              {option.label}
+            </Text>
+          </TouchableOpacity>
+        </React.Fragment>
+      ))}
+    </BottomSheetModal>
   );
 }
 

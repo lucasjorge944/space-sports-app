@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Modal, StyleSheet, Pressable } from 'react-native';
 import { IconButton } from './IconButton';
-type ModalHeight = 33 | 50 | 80;
+type ModalHeight = 20 | 33 | 50 | 80;
 
 interface BottomSheetModalProps {
   visible: boolean;
@@ -9,6 +9,7 @@ interface BottomSheetModalProps {
   title: string;
   children: React.ReactNode;
   height?: ModalHeight;
+  header?: boolean;
 }
 
 export function BottomSheetModal({
@@ -17,6 +18,7 @@ export function BottomSheetModal({
   title,
   children,
   height = 80,
+  header = true,
 }: BottomSheetModalProps) {
   return (
     <Modal
@@ -31,10 +33,12 @@ export function BottomSheetModal({
             <View style={styles.modalHandle} />
           </View>
 
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>{title}</Text>
-            <IconButton name="close" onPress={onClose} color="#666" />
-          </View>
+          {header && (
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{title}</Text>
+              <IconButton name="close" onPress={onClose} color="#666" />
+            </View>
+          )}
 
           <View style={styles.contentContainer}>{children}</View>
         </View>
