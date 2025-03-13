@@ -12,7 +12,10 @@ import { PageHeader } from '../components/PageHeader';
 import { ClassCard } from '../components/ClassCard';
 import { ReservationCard } from '../components/ReservationCard';
 import { Ionicons } from '@expo/vector-icons';
-import { SortOptionsModal } from '../components/SortOptionsModal';
+import {
+  SortOptionsModal,
+  SortOptionConfig,
+} from '../components/SortOptionsModal';
 
 const MOCK_RESERVATIONS = [
   {
@@ -111,14 +114,30 @@ const MOCK_STUDENTS = {
 // Adicionar constante para o usuário atual
 const CURRENT_USER = 'Lucas Jorge';
 
+const SORT_OPTIONS: SortOptionConfig[] = [
+  {
+    title: 'Data',
+    value: 'date',
+    icon: 'calendar-outline',
+  },
+  {
+    title: 'Preço',
+    value: 'price',
+    icon: 'cash-outline',
+  },
+  {
+    title: 'Esporte',
+    value: 'sport',
+    icon: 'basketball-outline',
+  },
+];
+
 export default function MySpacesScreen() {
   const [confirmedClasses, setConfirmedClasses] = React.useState<string[]>(
     MOCK_TODAY_CLASSES.filter((c) => c.confirmed).map((c) => c.id)
   );
   const [showSortModal, setShowSortModal] = React.useState(false);
-  const [sortOption, setSortOption] = React.useState<
-    'date' | 'price' | 'sport'
-  >('date');
+  const [sortOption, setSortOption] = React.useState<string>('date');
 
   const sortedReservations = React.useMemo(() => {
     return [...MOCK_RESERVATIONS].sort((a, b) => {
@@ -188,6 +207,7 @@ export default function MySpacesScreen() {
         onClose={() => setShowSortModal(false)}
         selectedOption={sortOption}
         onOptionSelect={setSortOption}
+        options={SORT_OPTIONS}
       />
     </>
   );

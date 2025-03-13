@@ -11,6 +11,33 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { PageHeader } from '../components/PageHeader';
 import { Tag } from '../components/Tag';
+import {
+  SortOptionsModal,
+  SortOptionConfig,
+} from '../components/SortOptionsModal';
+
+const SORT_OPTIONS: SortOptionConfig[] = [
+  {
+    title: 'Avaliação',
+    value: 'rating',
+    icon: 'star-outline',
+  },
+  {
+    title: 'Preço',
+    value: 'price',
+    icon: 'cash-outline',
+  },
+  {
+    title: 'Nome',
+    value: 'name',
+    icon: 'text-outline',
+  },
+  {
+    title: 'Distância',
+    value: 'distance',
+    icon: 'location-outline',
+  },
+];
 
 const MOCK_SPACES = [
   {
@@ -46,17 +73,35 @@ const MOCK_SPACES = [
 ];
 
 export default function ExploreScreen() {
+  const [showSortModal, setShowSortModal] = React.useState(false);
+  const [sortOption, setSortOption] = React.useState<string>('rating');
+
+  const sortedSpaces = React.useMemo(() => {
+    return [...MOCK_SPACES].sort((a, b) => {
+      switch (sortOption) {
+        case 'rating':
+          return b.rating - a.rating;
+        case 'price':
+          return a.price - b.price;
+        case 'name':
+          return a.name.localeCompare(b.name);
+        default:
+          return 0;
+      }
+    });
+  }, [sortOption]);
+
   return (
     <View style={{ flex: 1 }}>
       <PageHeader
         title="Explorar"
         rightIcon="filter"
-        onRightIconPress={() => console.log('Filter pressed')}
+        onRightIconPress={() => setShowSortModal(true)}
       />
 
       <ScrollView style={styles.container}>
         <View style={styles.spacesList}>
-          {MOCK_SPACES.map((space) => (
+          {sortedSpaces.map((space) => (
             <TouchableOpacity
               key={space.id}
               style={styles.spaceCard}
@@ -93,6 +138,14 @@ export default function ExploreScreen() {
           ))}
         </View>
       </ScrollView>
+
+      <SortOptionsModal
+        visible={showSortModal}
+        onClose={() => setShowSortModal(false)}
+        selectedOption={sortOption}
+        onOptionSelect={setSortOption}
+        options={SORT_OPTIONS}
+      />
     </View>
   );
 }

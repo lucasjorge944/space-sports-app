@@ -4,49 +4,31 @@ import { IconButton } from './IconButton';
 import { BottomSheetModal } from './BottomSheetModal';
 import { Ionicons } from '@expo/vector-icons';
 
-type SortOption = 'date' | 'price' | 'sport';
+export interface SortOptionConfig {
+  title: string;
+  value: string;
+  icon: keyof typeof Ionicons.glyphMap;
+}
 
 interface SortOptionsModalProps {
   visible: boolean;
   onClose: () => void;
-  selectedOption: SortOption;
-  onOptionSelect: (option: SortOption) => void;
+  selectedOption: string;
+  onOptionSelect: (option: string) => void;
+  options: SortOptionConfig[];
 }
-
-interface SortOptionConfig {
-  title: string;
-  value: SortOption;
-  icon: string;
-}
-
-const SORT_OPTIONS: SortOptionConfig[] = [
-  {
-    title: 'Data',
-    value: 'date',
-    icon: 'calendar-outline',
-  },
-  {
-    title: 'Preço',
-    value: 'price',
-    icon: 'cash-outline',
-  },
-  {
-    title: 'Esporte',
-    value: 'sport',
-    icon: 'basketball-outline',
-  },
-];
 
 export function SortOptionsModal({
   visible,
   onClose,
   selectedOption,
   onOptionSelect,
+  options,
 }: SortOptionsModalProps) {
   const SortOption = ({ title, value, icon }: SortOptionConfig) => (
     <View style={styles.sortOption}>
       <IconButton
-        name={icon as keyof typeof Ionicons.glyphMap}
+        name={icon}
         size="large"
         selected={selectedOption === value}
         onPress={() => {
@@ -73,7 +55,7 @@ export function SortOptionsModal({
       height={33}
     >
       <View style={styles.optionsContainer}>
-        {SORT_OPTIONS.map((option) => (
+        {options.map((option) => (
           <SortOption key={option.value} {...option} />
         ))}
       </View>
