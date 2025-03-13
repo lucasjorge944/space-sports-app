@@ -15,6 +15,7 @@ import { Stack } from 'expo-router';
 import { Loading } from '../components/Loading';
 import { CustomButton } from '../components/CustomButton';
 import { PlanCard } from '../components/PlanCard';
+import { BottomSheetModal } from '../components/BottomSheetModal';
 
 // Definir o tipo do plano
 type Plan = {
@@ -200,208 +201,164 @@ export default function PlansScreen() {
         </View>
       </ScrollView>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
+      <BottomSheetModal
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        onClose={() => setModalVisible(false)}
+        height={20}
+        header={false}
       >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setModalVisible(false)}
-        >
-          <View style={styles.modalView}>
-            <View style={styles.modalHandle} />
+        {selectedPlan?.status === 'pending' ? (
+          <>
+            <TouchableOpacity
+              style={styles.modalOption}
+              onPress={() => {
+                setModalVisible(false);
+                setShowContactModal(true);
+              }}
+            >
+              <Ionicons name="alert-circle-outline" size={24} color="#f57c00" />
+              <Text style={styles.modalOptionText}>Não recebi contato</Text>
+            </TouchableOpacity>
 
-            {selectedPlan?.status === 'pending' ? (
-              <>
-                <TouchableOpacity
-                  style={styles.modalOption}
-                  onPress={() => {
-                    setModalVisible(false);
-                    setShowContactModal(true);
-                  }}
-                >
-                  <Ionicons
-                    name="alert-circle-outline"
-                    size={24}
-                    color="#f57c00"
-                  />
-                  <Text style={styles.modalOptionText}>Não recebi contato</Text>
-                </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalOption}
+              onPress={() => {
+                setModalVisible(false);
+                setConfirmStatusModalVisible(true);
+              }}
+            >
+              <Ionicons name="close-circle-outline" size={24} color="#c62828" />
+              <Text style={styles.modalOptionText}>Cancelar matrícula</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <TouchableOpacity
+              style={styles.modalOption}
+              onPress={handleChangePlan}
+            >
+              <Ionicons name="swap-horizontal" size={24} color="#1a73e8" />
+              <Text style={styles.modalOptionText}>Trocar de Plano</Text>
+            </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.modalOption}
-                  onPress={() => {
-                    setModalVisible(false);
-                    setConfirmStatusModalVisible(true);
-                  }}
-                >
-                  <Ionicons
-                    name="close-circle-outline"
-                    size={24}
-                    color="#c62828"
-                  />
-                  <Text style={styles.modalOptionText}>Cancelar matrícula</Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <>
-                <TouchableOpacity
-                  style={styles.modalOption}
-                  onPress={handleChangePlan}
-                >
-                  <Ionicons name="swap-horizontal" size={24} color="#1a73e8" />
-                  <Text style={styles.modalOptionText}>Trocar de Plano</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.modalOption}
-                  onPress={handleToggleStatus}
-                >
-                  <Ionicons
-                    name={
-                      selectedPlan?.status === 'inactive' ? 'play' : 'pause'
-                    }
-                    size={24}
-                    color={
-                      selectedPlan?.status === 'inactive'
-                        ? '#2e7d32'
-                        : '#c62828'
-                    }
-                  />
-                  <Text style={styles.modalOptionText}>
-                    {selectedPlan?.status === 'inactive'
-                      ? 'Ativar Plano'
-                      : 'Pausar Plano'}
-                  </Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
-        </Pressable>
-      </Modal>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={planModalVisible}
-        onRequestClose={() => setPlanModalVisible(false)}
-      >
-        <View style={styles.planModalOverlay}>
-          <View style={styles.planModalView}>
-            <View style={styles.planModalHeader}>
-              <Text style={styles.planModalTitle}>Escolha um Plano</Text>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setPlanModalVisible(false)}
-              >
-                <Ionicons name="close" size={24} color="#666" />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.plansList}>
-              {MOCK_PLANS.map((plan, index) => (
-                <TouchableOpacity
-                  key={plan.frequency}
-                  style={[
-                    styles.planOption,
-                    index < MOCK_PLANS.length - 1 && styles.planOptionBorder,
-                  ]}
-                  onPress={() => handleSelectNewPlan(plan)}
-                >
-                  <View>
-                    <Text style={styles.planFrequency}>{plan.frequency}</Text>
-                    <Text style={styles.planDescription}>
-                      Acesso{' '}
-                      {plan.frequency === 'Ilimitado'
-                        ? 'ilimitado'
-                        : `${plan.frequency.split('x')[0]} vez${
-                            plan.frequency.startsWith('1') ? '' : 'es'
-                          } por semana`}
-                    </Text>
-                  </View>
-                  <View style={styles.planPriceContainer}>
-                    <Text style={styles.planPrice}>R$ {plan.price}</Text>
-                    <Text style={styles.planPriceLabel}>/mês</Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={confirmModalVisible}
-        onRequestClose={() => setConfirmModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.confirmModalView}>
-            <View style={styles.confirmModalContent}>
-              <Ionicons name="alert-circle-outline" size={48} color="#1a73e8" />
-              <Text style={styles.confirmModalTitle}>Confirmar Mudança</Text>
-              <Text style={styles.confirmModalText}>
-                Deseja alterar seu plano atual?
+            <TouchableOpacity
+              style={styles.modalOption}
+              onPress={handleToggleStatus}
+            >
+              <Ionicons
+                name={selectedPlan?.status === 'inactive' ? 'play' : 'pause'}
+                size={24}
+                color={
+                  selectedPlan?.status === 'inactive' ? '#2e7d32' : '#c62828'
+                }
+              />
+              <Text style={styles.modalOptionText}>
+                {selectedPlan?.status === 'inactive'
+                  ? 'Ativar Plano'
+                  : 'Pausar Plano'}
               </Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </BottomSheetModal>
 
-              <View style={styles.planChangeDetails}>
-                <View style={styles.planChangeItem}>
-                  <Text style={styles.planChangeLabel}>Plano Atual</Text>
-                  <Text style={styles.planChangePlan}>
-                    {selectedPlan?.plan}
-                  </Text>
-                  <Text style={styles.planChangePrice}>
-                    R$ {selectedPlan?.price.toFixed(2)}/mês
-                  </Text>
-                </View>
+      <BottomSheetModal
+        visible={planModalVisible}
+        onClose={() => setPlanModalVisible(false)}
+        height={50}
+        title="Escolha um Plano"
+      >
+        <ScrollView style={styles.plansList}>
+          {MOCK_PLANS.map((plan, index) => (
+            <TouchableOpacity
+              key={plan.frequency}
+              style={[
+                styles.planOption,
+                index < MOCK_PLANS.length - 1 && styles.planOptionBorder,
+              ]}
+              onPress={() => handleSelectNewPlan(plan)}
+            >
+              <View>
+                <Text style={styles.planFrequency}>{plan.frequency}</Text>
+                <Text style={styles.planDescription}>
+                  Acesso{' '}
+                  {plan.frequency === 'Ilimitado'
+                    ? 'ilimitado'
+                    : `${plan.frequency.split('x')[0]} vez${
+                        plan.frequency.startsWith('1') ? '' : 'es'
+                      } por semana`}
+                </Text>
+              </View>
+              <View style={styles.planPriceContainer}>
+                <Text style={styles.planPrice}>R$ {plan.price}</Text>
+                <Text style={styles.planPriceLabel}>/mês</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </BottomSheetModal>
 
-                <View style={styles.planChangeArrow}>
-                  <Ionicons name="arrow-forward" size={24} color="#666" />
-                </View>
+      <BottomSheetModal
+        visible={confirmModalVisible}
+        onClose={() => setConfirmModalVisible(false)}
+        height={40}
+        header={false}
+      >
+        <View style={{ flex: 1, paddingHorizontal: 16 }}>
+          <View style={styles.confirmModalContent}>
+            <Ionicons name="alert-circle-outline" size={48} color="#1a73e8" />
+            <Text style={styles.confirmModalTitle}>Confirmar Mudança</Text>
+            <Text style={styles.confirmModalText}>
+              Deseja alterar seu plano atual?
+            </Text>
 
-                <View style={styles.planChangeItem}>
-                  <Text style={styles.planChangeLabel}>Novo Plano</Text>
-                  <Text style={styles.planChangePlan}>
-                    {newPlan?.frequency}
-                  </Text>
-                  <Text style={styles.planChangePrice}>
-                    R$ {newPlan?.price.toFixed(2)}/mês
-                  </Text>
-                </View>
+            <View style={styles.planChangeDetails}>
+              <View style={styles.planChangeItem}>
+                <Text style={styles.planChangeLabel}>Plano Atual</Text>
+                <Text style={styles.planChangePlan}>{selectedPlan?.plan}</Text>
+                <Text style={styles.planChangePrice}>
+                  R$ {selectedPlan?.price.toFixed(2)}/mês
+                </Text>
+              </View>
+
+              <View style={styles.planChangeArrow}>
+                <Ionicons name="arrow-forward" size={24} color="#666" />
+              </View>
+
+              <View style={styles.planChangeItem}>
+                <Text style={styles.planChangeLabel}>Novo Plano</Text>
+                <Text style={styles.planChangePlan}>{newPlan?.frequency}</Text>
+                <Text style={styles.planChangePrice}>
+                  R$ {newPlan?.price.toFixed(2)}/mês
+                </Text>
               </View>
             </View>
+          </View>
+          <View style={styles.confirmModalButtons}>
+            <TouchableOpacity
+              style={[
+                styles.confirmModalButton,
+                styles.confirmModalButtonCancel,
+              ]}
+              onPress={() => setConfirmModalVisible(false)}
+            >
+              <Text style={styles.confirmModalButtonTextCancel}>Cancelar</Text>
+            </TouchableOpacity>
 
-            <View style={styles.confirmModalButtons}>
-              <TouchableOpacity
-                style={[
-                  styles.confirmModalButton,
-                  styles.confirmModalButtonCancel,
-                ]}
-                onPress={() => setConfirmModalVisible(false)}
-              >
-                <Text style={styles.confirmModalButtonTextCancel}>
-                  Cancelar
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.confirmModalButton,
-                  styles.confirmModalButtonConfirm,
-                ]}
-                onPress={handleConfirmPlanChange}
-              >
-                <Text style={styles.confirmModalButtonTextConfirm}>
-                  Confirmar
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={[
+                styles.confirmModalButton,
+                styles.confirmModalButtonConfirm,
+              ]}
+              onPress={handleConfirmPlanChange}
+            >
+              <Text style={styles.confirmModalButtonTextConfirm}>
+                Confirmar
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </BottomSheetModal>
 
       <Modal
         animationType="fade"

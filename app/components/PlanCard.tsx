@@ -23,6 +23,7 @@ export function PlanCard({ data, onMorePress }: PlanCardProps) {
   return (
     <TouchableOpacity
       style={[styles.card, data.status === 'inactive' && styles.inactiveCard]}
+      onPress={onMorePress}
     >
       <View
         style={[
@@ -71,13 +72,6 @@ export function PlanCard({ data, onMorePress }: PlanCardProps) {
           >
             {data.spaceName}
           </Text>
-          <TouchableOpacity style={styles.moreButton} onPress={onMorePress}>
-            <Ionicons
-              name="ellipsis-horizontal"
-              size={24}
-              color={data.status === 'inactive' ? '#999' : '#666'}
-            />
-          </TouchableOpacity>
         </View>
 
         <Text

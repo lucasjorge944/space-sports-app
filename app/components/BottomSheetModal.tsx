@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Modal, StyleSheet, Pressable } from 'react-native';
 import { IconButton } from './IconButton';
-type ModalHeight = 20 | 30 | 33 | 50 | 80;
+type ModalHeight = 20 | 30 | 33 | 40 | 50 | 80;
 
 interface BottomSheetModalProps {
   visible: boolean;
@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    marginBottom: 16,
   },
   modalTitle: {
     fontSize: 20,
@@ -86,6 +85,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 0,
   },
 });
