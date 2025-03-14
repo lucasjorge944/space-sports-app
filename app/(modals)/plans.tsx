@@ -16,6 +16,7 @@ import { Loading } from '../components/Loading';
 import { CustomButton } from '../components/CustomButton';
 import { PlanCard } from '../components/PlanCard';
 import { BottomSheetModal } from '../components/BottomSheetModal';
+import { PageHeader } from '../components/PageHeader';
 
 // Definir o tipo do plano
 type Plan = {
@@ -181,16 +182,12 @@ export default function PlansScreen() {
     <>
       <Stack.Screen
         options={{
-          headerShown: true,
-          headerTitle: 'Meus Planos',
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: '#f5f5f5' },
-          headerBackTitle: 'Voltar',
+          headerShown: false,
         }}
       />
+      <PageHeader title="Planos" rightIcon="filter" showBackButton />
       <ScrollView style={styles.container}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Planos</Text>
           {MOCK_CLASSES.map((class_) => (
             <PlanCard
               key={class_.id}

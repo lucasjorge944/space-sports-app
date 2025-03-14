@@ -21,7 +21,11 @@ export function PageHeader({
     <View style={[styles.header, styles.exploreHeader]}>
       <View style={styles.leftContainer}>
         {showBackButton && (
-          <IconButton name="close" onPress={() => router.back()} color="#666" />
+          <IconButton
+            name="chevron-back"
+            onPress={() => router.back()}
+            color="#1a73e8"
+          />
         )}
         <Text style={[styles.title, styles.exploreTitle]}>{title}</Text>
       </View>
