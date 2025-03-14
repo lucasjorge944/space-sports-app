@@ -20,10 +20,10 @@ export default function LocationModal() {
       </View>
       <View style={styles.content}>
         <CustomTextInput
-          label="Localização"
           placeholder="Buscar endereço e número"
           value={location}
           onChangeText={setLocation}
+          icon="search-outline"
         />
       </View>
     </SafeAreaView>

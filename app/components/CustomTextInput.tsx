@@ -1,10 +1,12 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 interface CustomTextInputProps {
   placeholder?: string;
   value: string;
   onChangeText: (text: string) => void;
   label?: string;
+  icon?: keyof typeof Ionicons.glyphMap;
 }
 
 export function CustomTextInput({
@@ -12,17 +14,23 @@ export function CustomTextInput({
   value,
   onChangeText,
   label,
+  icon,
 }: CustomTextInputProps) {
   return (
     <View style={styles.inputContainer}>
       {label && <Text style={styles.inputLabel}>{label}</Text>}
-      <TextInput
-        style={styles.input}
-        placeholder={placeholder}
-        value={value}
-        onChangeText={onChangeText}
-        placeholderTextColor="#999"
-      />
+      <View style={styles.inputWrapper}>
+        {icon && (
+          <Ionicons name={icon} size={20} color="#666" style={styles.icon} />
+        )}
+        <TextInput
+          style={[styles.input, icon && styles.inputWithIcon]}
+          placeholder={placeholder}
+          value={value}
+          onChangeText={onChangeText}
+          placeholderTextColor="#999"
+        />
+      </View>
     </View>
   );
 }
@@ -37,14 +45,25 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontWeight: '500',
   },
-  input: {
-    height: 48,
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
+    backgroundColor: '#fff',
+  },
+  icon: {
+    marginLeft: 16,
+  },
+  input: {
+    flex: 1,
+    height: 48,
     paddingHorizontal: 16,
     fontSize: 16,
     color: '#333',
-    backgroundColor: '#fff',
+  },
+  inputWithIcon: {
+    paddingLeft: 8,
   },
 });
