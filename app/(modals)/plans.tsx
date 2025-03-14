@@ -357,117 +357,103 @@ export default function PlansScreen() {
         </View>
       </BottomSheetModal>
 
-      <Modal
-        animationType="fade"
-        transparent={true}
+      <BottomSheetModal
         visible={confirmStatusModalVisible}
-        onRequestClose={() => setConfirmStatusModalVisible(false)}
+        onClose={() => setConfirmStatusModalVisible(false)}
+        height={45}
+        header={false}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.confirmModalView}>
-            <View style={styles.confirmModalContent}>
-              <Ionicons
-                name="alert-circle-outline"
-                size={48}
-                color={
-                  selectedPlan?.status === 'inactive' ? '#2e7d32' : '#c62828'
-                }
-              />
-              <Text style={styles.confirmModalTitle}>
-                {selectedPlan?.status === 'inactive'
-                  ? 'Ativar Plano'
-                  : 'Inativar Plano'}
+        <View style={{ flex: 1, paddingHorizontal: 16 }}>
+          <View style={styles.confirmModalContent}>
+            <Ionicons
+              name="alert-circle-outline"
+              size={48}
+              color={
+                selectedPlan?.status === 'inactive' ? '#2e7d32' : '#c62828'
+              }
+            />
+            <Text style={styles.confirmModalTitle}>
+              {selectedPlan?.status === 'inactive'
+                ? 'Ativar Plano'
+                : 'Inativar Plano'}
+            </Text>
+            <Text style={styles.confirmModalText}>
+              {selectedPlan?.status === 'inactive'
+                ? 'Que bom que você quer voltar! Deseja reativar este plano?'
+                : 'Que pena... Tem certeza que deseja inativar este plano?'}
+            </Text>
+
+            <View style={styles.planStatusDetails}>
+              <Text style={styles.planStatusName}>{selectedPlan?.sport}</Text>
+              <Text style={styles.planStatusFrequency}>
+                {selectedPlan?.plan}
               </Text>
-              <Text style={styles.confirmModalText}>
-                {selectedPlan?.status === 'inactive'
-                  ? 'Que bom que você quer voltar! Deseja reativar este plano?'
-                  : 'Que pena... Tem certeza que deseja inativar este plano?'}
+              <Text style={styles.planStatusPrice}>
+                R$ {selectedPlan?.price.toFixed(2)}/mês
               </Text>
-
-              <View style={styles.planStatusDetails}>
-                <Text style={styles.planStatusName}>{selectedPlan?.sport}</Text>
-                <Text style={styles.planStatusFrequency}>
-                  {selectedPlan?.plan}
-                </Text>
-                <Text style={styles.planStatusPrice}>
-                  R$ {selectedPlan?.price.toFixed(2)}/mês
-                </Text>
-              </View>
             </View>
+          </View>
+          <View style={styles.confirmModalButtons}>
+            <TouchableOpacity
+              style={[
+                styles.confirmModalButton,
+                styles.confirmModalButtonCancel,
+              ]}
+              onPress={() => setConfirmStatusModalVisible(false)}
+            >
+              <Text style={styles.confirmModalButtonTextCancel}>Cancelar</Text>
+            </TouchableOpacity>
 
-            <View style={styles.confirmModalButtons}>
-              <TouchableOpacity
-                style={[
-                  styles.confirmModalButton,
-                  styles.confirmModalButtonCancel,
-                ]}
-                onPress={() => setConfirmStatusModalVisible(false)}
-              >
-                <Text style={styles.confirmModalButtonTextCancel}>
-                  Cancelar
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.confirmModalButton,
-                  styles.confirmModalButtonConfirm,
-                  selectedPlan?.status === 'inactive'
-                    ? styles.activateButton
-                    : styles.deactivateButton,
-                ]}
-                onPress={handleConfirmStatusChange}
-              >
-                <Text style={styles.confirmModalButtonTextConfirm}>
-                  {selectedPlan?.status === 'inactive' ? 'Ativar' : 'Inativar'}
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={[
+                styles.confirmModalButton,
+                styles.confirmModalButtonConfirm,
+                selectedPlan?.status === 'inactive'
+                  ? styles.activateButton
+                  : styles.deactivateButton,
+              ]}
+              onPress={handleConfirmStatusChange}
+            >
+              <Text style={styles.confirmModalButtonTextConfirm}>
+                {selectedPlan?.status === 'inactive' ? 'Ativar' : 'Inativar'}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </BottomSheetModal>
 
-      <Modal
+      <BottomSheetModal
         visible={showContactModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowContactModal(false)}
+        onClose={() => setShowContactModal(false)}
+        height={40}
+        header={false}
       >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setShowContactModal(false)}
-        >
-          <View style={styles.contactModalView}>
-            <View style={styles.modalHandle} />
-
-            <View style={styles.contactModalContent}>
-              <View style={styles.contactIconContainer}>
-                <Ionicons name="logo-whatsapp" size={32} color="#25D366" />
-              </View>
-
-              <Text style={styles.contactModalTitle}>
-                Entrar em contato via WhatsApp
-              </Text>
-
-              <Text style={styles.contactModalText}>
-                Vamos te conectar a um dos professores para verificar o status
-                da sua matrícula.
-              </Text>
-
-              <TouchableOpacity
-                style={styles.whatsappButton}
-                onPress={() => {
-                  handleWhatsAppContact();
-                  setShowContactModal(false);
-                }}
-              >
-                <Ionicons name="logo-whatsapp" size={24} color="#fff" />
-                <Text style={styles.whatsappButtonText}>Abrir WhatsApp</Text>
-              </TouchableOpacity>
-            </View>
+        <View style={styles.contactModalContent}>
+          <View style={styles.contactIconContainer}>
+            <Ionicons name="logo-whatsapp" size={32} color="#25D366" />
           </View>
-        </Pressable>
-      </Modal>
+
+          <Text style={styles.contactModalTitle}>
+            Entrar em contato via WhatsApp
+          </Text>
+
+          <Text style={styles.contactModalText}>
+            Vamos te conectar a um dos professores para verificar o status da
+            sua matrícula.
+          </Text>
+
+          <TouchableOpacity
+            style={styles.whatsappButton}
+            onPress={() => {
+              handleWhatsAppContact();
+              setShowContactModal(false);
+            }}
+          >
+            <Ionicons name="logo-whatsapp" size={24} color="#fff" />
+            <Text style={styles.whatsappButtonText}>Abrir WhatsApp</Text>
+          </TouchableOpacity>
+        </View>
+      </BottomSheetModal>
 
       <Loading visible={isLoading} />
     </>
@@ -725,6 +711,8 @@ const styles = StyleSheet.create({
   contactModalContent: {
     alignItems: 'center',
     paddingVertical: 20,
+    paddingBottom: 0,
+    paddingHorizontal: 16,
   },
   contactIconContainer: {
     width: 64,
