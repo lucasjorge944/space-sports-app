@@ -7,15 +7,13 @@ import { IconButton } from './IconButton';
 interface PageHeaderProps {
   title: string;
   showBackButton?: boolean;
-  rightIcon?: keyof typeof Ionicons.glyphMap;
-  onRightIconPress?: () => void;
+  buttons?: React.ReactNode;
 }
 
 export function PageHeader({
   title,
   showBackButton = false,
-  rightIcon,
-  onRightIconPress,
+  buttons,
 }: PageHeaderProps) {
   return (
     <View style={[styles.header, styles.exploreHeader]}>
@@ -29,16 +27,16 @@ export function PageHeader({
         )}
         <Text style={[styles.title, styles.exploreTitle]}>{title}</Text>
       </View>
-
-      {rightIcon ? (
-        <IconButton
-          name={rightIcon}
-          onPress={onRightIconPress}
-          color="#1a73e8"
-        />
-      ) : (
-        <View style={{ width: 24 }} />
-      )}
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          gap: 16,
+          justifyContent: 'flex-end',
+        }}
+      >
+        {buttons}
+      </View>
     </View>
   );
 }
@@ -47,7 +45,6 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#fff',
     padding: 20,
     paddingTop: 60,

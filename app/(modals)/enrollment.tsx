@@ -17,7 +17,6 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Loading } from '../components/Loading';
 import { SelectInput } from '../components/SelectInput';
 import { TextAreaInput } from '../components/TextAreaInput';
-import { PageHeader } from '../components/PageHeader';
 import { CustomButton } from '../components/CustomButton';
 
 export default function EnrollmentScreen() {

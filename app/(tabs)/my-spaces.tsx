@@ -1,21 +1,13 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Modal,
-  TouchableOpacity,
-  Pressable,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { PageHeader } from '../components/PageHeader';
 import { ClassCard } from '../components/ClassCard';
 import { ReservationCard } from '../components/ReservationCard';
-import { Ionicons } from '@expo/vector-icons';
 import {
   SortOptionsModal,
   SortOptionConfig,
 } from '../components/SortOptionsModal';
+import { IconButton } from '../components/IconButton';
 
 const MOCK_RESERVATIONS = [
   {
@@ -161,8 +153,13 @@ export default function MySpacesScreen() {
     <>
       <PageHeader
         title="Reservas"
-        rightIcon="filter"
-        onRightIconPress={() => setShowSortModal(true)}
+        buttons={
+          <IconButton
+            name="filter"
+            onPress={() => setShowSortModal(true)}
+            color="#1a73e8"
+          />
+        }
       />
       <ScrollView style={styles.container}>
         <View style={styles.section}>

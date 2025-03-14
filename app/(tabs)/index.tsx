@@ -6,6 +6,7 @@ import {
   SortOptionsModal,
   SortOptionConfig,
 } from '../components/SortOptionsModal';
+import { IconButton } from '../components/IconButton';
 
 const SORT_OPTIONS: SortOptionConfig[] = [
   {
@@ -86,8 +87,16 @@ export default function ExploreScreen() {
     <View style={{ flex: 1 }}>
       <PageHeader
         title="Explorar"
-        rightIcon="filter"
-        onRightIconPress={() => setShowSortModal(true)}
+        buttons={
+          <>
+            <IconButton name="location-outline" color="#1a73e8" />
+            <IconButton
+              name="filter"
+              onPress={() => setShowSortModal(true)}
+              color="#1a73e8"
+            />
+          </>
+        }
       />
 
       <ScrollView style={styles.container}>

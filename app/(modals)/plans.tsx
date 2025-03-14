@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { Stack } from 'expo-router';
 import { PlanCard } from '../components/PlanCard';
 import { PageHeader } from '../components/PageHeader';
+import { IconButton } from '../components/IconButton';
 
 // Definir o tipo do plano
 type Plan = {
@@ -68,7 +69,11 @@ export default function PlansScreen() {
           headerShown: false,
         }}
       />
-      <PageHeader title="Planos" rightIcon="filter" showBackButton />
+      <PageHeader
+        title="Planos"
+        buttons={<IconButton name="filter" color="#1a73e8" />}
+        showBackButton
+      />
       <ScrollView style={styles.container}>
         <View style={styles.section}>
           {MOCK_CLASSES.map((class_) => (
