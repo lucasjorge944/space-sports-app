@@ -6,6 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { IconButton } from '../components/IconButton';
 
@@ -21,6 +22,7 @@ export default function LocationModal() {
         <Text style={styles.headerTitle}>Configurar localização</Text>
         <View style={{ width: 24 }} />
       </View>
+      <ScrollView style={styles.content}></ScrollView>
     </SafeAreaView>
   );
 }
