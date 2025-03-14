@@ -1,13 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TextInput } from 'react-native';
 import { IconButton } from '../components/IconButton';
 
 export default function LocationModal() {
@@ -22,7 +15,6 @@ export default function LocationModal() {
         <Text style={styles.headerTitle}>Configurar localização</Text>
         <View style={{ width: 24 }} />
       </View>
-      <ScrollView style={styles.content}></ScrollView>
     </SafeAreaView>
   );
 }
@@ -31,10 +23,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  content: {
-    flex: 1,
-    padding: 20,
   },
   text: {
     fontSize: 16,
