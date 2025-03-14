@@ -1,18 +1,6 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-  TextInput,
-} from 'react-native';
+import { View, StyleSheet, ScrollView, Image, Dimensions } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { CustomButton } from '../components/CustomButton';
-import { TextAreaInput } from '../components/TextAreaInput';
 import { IconButton } from '../components/IconButton';
 import { SpaceAmenities } from '../components/SpaceAmenities';
 import { SpaceSchedule } from '../components/SpaceSchedule';
