@@ -6,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { View, Text } from 'react-native';
 import { Animated } from 'react-native';
 import { CustomSplash } from './components/CustomSplash';
+import app from './config/firebase';
 
 // Mantenha a tela de splash visível enquanto carregamos recursos
 SplashScreen.preventAutoHideAsync();
@@ -24,7 +25,8 @@ export default function RootLayout() {
         // Mantenha a splash screen visível enquanto preparamos tudo
         await SplashScreen.preventAutoHideAsync();
 
-        // Aguarde um momento para simular carregamento
+        // Inicialize o Firebase e aguarde um momento para simular carregamento
+        console.log('Firebase initialized:', !!app);
         await new Promise((resolve) => setTimeout(resolve, 2000));
       } catch (e) {
         console.warn(e);
