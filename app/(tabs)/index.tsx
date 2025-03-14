@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { router } from 'expo-router';
 import { PageHeader } from '../components/PageHeader';
@@ -8,6 +8,7 @@ import {
   SortOptionConfig,
 } from '../components/SortOptionsModal';
 import { IconButton } from '../components/IconButton';
+import { getSpaces } from '../services/firestore';
 
 const SORT_OPTIONS: SortOptionConfig[] = [
   {
@@ -68,6 +69,20 @@ const MOCK_SPACES = [
 export default function ExploreScreen() {
   const [showSortModal, setShowSortModal] = React.useState(false);
   const [sortOption, setSortOption] = React.useState<string>('rating');
+
+  useEffect(() => {
+    loadSpaces();
+  }, []);
+
+  const loadSpaces = async () => {
+    try {
+      const spacesData = await getSpaces();
+      console.log(spacesData);
+    } catch (err) {
+      console.error('Error loading spaces:', err);
+    } finally {
+    }
+  };
 
   const sortedSpaces = React.useMemo(() => {
     return [...MOCK_SPACES].sort((a, b) => {
