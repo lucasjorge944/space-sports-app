@@ -70,6 +70,13 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+          name="(modals)/location"
+          options={{
+            presentation: 'modal',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
           name="(modals)/enrollment"
           options={{
             presentation: 'modal',

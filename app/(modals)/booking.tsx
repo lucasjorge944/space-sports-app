@@ -15,6 +15,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Loading } from '../components/Loading';
 import { CustomButton } from '../components/CustomButton';
 import { SelectInput } from '../components/SelectInput';
+import { IconButton } from '../components/IconButton';
 
 export default function BookingScreen() {
   const params = useLocalSearchParams();
@@ -135,9 +136,11 @@ export default function BookingScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={handleClose}>
-          <Ionicons name="close" size={24} color="#666" />
-        </TouchableOpacity>
+        <IconButton
+          name="close-outline"
+          onPress={() => router.back()}
+          color="#666"
+        />
         <Text style={styles.headerTitle}>Fazer Reserva</Text>
         <View style={{ width: 24 }} />
       </View>
@@ -492,7 +495,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },

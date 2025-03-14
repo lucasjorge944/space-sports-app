@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
+import { router } from 'expo-router';
 import { PageHeader } from '../components/PageHeader';
 import { SpaceCard } from '../components/SpaceCard';
 import {
@@ -89,7 +90,11 @@ export default function ExploreScreen() {
         title="Explorar"
         buttons={
           <>
-            <IconButton name="location-outline" color="#1a73e8" />
+            <IconButton
+              name="location-outline"
+              color="#1a73e8"
+              onPress={() => router.push('/(modals)/location')}
+            />
             <IconButton
               name="filter"
               onPress={() => setShowSortModal(true)}
