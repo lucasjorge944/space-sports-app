@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  TextInputProps,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface CustomTextInputProps {
@@ -7,6 +13,7 @@ interface CustomTextInputProps {
   onChangeText: (text: string) => void;
   label?: string;
   icon?: keyof typeof Ionicons.glyphMap;
+  inputProps?: TextInputProps;
 }
 
 export function CustomTextInput({
@@ -15,6 +22,7 @@ export function CustomTextInput({
   onChangeText,
   label,
   icon,
+  inputProps,
 }: CustomTextInputProps) {
   return (
     <View style={styles.inputContainer}>
@@ -29,6 +37,7 @@ export function CustomTextInput({
           value={value}
           onChangeText={onChangeText}
           placeholderTextColor="#999"
+          {...inputProps}
         />
       </View>
     </View>
