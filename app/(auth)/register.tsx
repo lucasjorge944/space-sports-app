@@ -4,30 +4,28 @@ import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'expo-router';
 import { CustomTextInput } from '../components/CustomTextInput';
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signIn, signInWithGoogle } = useAuth();
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const { signUp } = useAuth();
 
-  const handleEmailLogin = async () => {
-    try {
-      await signIn(email, password);
-    } catch (error: any) {
-      Alert.alert('Erro no login', error.message);
+  const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert('Erro', 'As senhas não coincidem');
+      return;
     }
-  };
 
-  const handleGoogleLogin = async () => {
     try {
-      await signInWithGoogle();
+      await signUp(email, password);
     } catch (error: any) {
-      Alert.alert('Erro no login com Google', error.message);
+      Alert.alert('Erro no cadastro', error.message);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Cadastro</Text>
 
       <CustomTextInput
         placeholder="Email"
@@ -48,20 +46,22 @@ export default function LoginScreen() {
         }}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleEmailLogin}>
-        <Text style={styles.buttonText}>Entrar</Text>
+      <CustomTextInput
+        placeholder="Confirmar Senha"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        inputProps={{
+          secureTextEntry: true,
+        }}
+      />
+
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Cadastrar</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={[styles.button, styles.googleButton]}
-        onPress={handleGoogleLogin}
-      >
-        <Text style={styles.buttonText}>Entrar com Google</Text>
-      </TouchableOpacity>
-
-      <Link href="/(auth)/register" asChild>
+      <Link href="/(auth)/login" asChild>
         <TouchableOpacity style={styles.linkButton}>
-          <Text style={styles.linkText}>Não tem uma conta? Cadastre-se</Text>
+          <Text style={styles.linkText}>Já tem uma conta? Faça login</Text>
         </TouchableOpacity>
       </Link>
     </View>
@@ -93,9 +93,6 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 5,
     marginBottom: 10,
-  },
-  googleButton: {
-    backgroundColor: '#4285F4',
   },
   buttonText: {
     color: '#fff',

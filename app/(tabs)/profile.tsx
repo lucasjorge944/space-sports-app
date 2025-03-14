@@ -3,11 +3,17 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { CustomButton } from '../components/CustomButton';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function ProfileScreen() {
-  const handleLogout = () => {
-    // TODO: Implement Firebase logout
-    router.replace('/login');
+  const { logout } = useAuth();
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.replace('/login');
+    } catch (error) {
+      console.error('Erro ao sair:', error);
+    }
   };
 
   return (
