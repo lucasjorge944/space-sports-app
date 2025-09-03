@@ -28,7 +28,6 @@ export class GetSpacesUseCase {
    * Aplica regras de negócio aos espaços
    */
   private applyBusinessRules(spaces: Space[]): Space[] {
-    return spaces;
     // Filtra espaços com rating muito baixo
     const filteredSpaces = spaces.filter((space) => space.rating >= 1.0);
 

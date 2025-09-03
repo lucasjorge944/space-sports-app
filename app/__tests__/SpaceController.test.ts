@@ -6,6 +6,8 @@
 import { Space, SpaceFilters } from '../domain/entities/Space';
 import { SpaceRepository } from '../domain/repositories/SpaceRepository';
 import { GetSpacesUseCase } from '../domain/usecases/GetSpacesUseCase';
+import { GetSpacesByFilterUseCase } from '../domain/usecases/GetSpacesByFilterUseCase';
+import { GetSpaceByIdUseCase } from '../domain/usecases/GetSpaceByIdUseCase';
 import { SpaceController } from '../presentation/controllers/SpaceController';
 
 // Mock do repositório para testes
@@ -76,6 +78,8 @@ class MockSpaceRepository implements SpaceRepository {
 describe('SpaceController', () => {
   let mockRepository: MockSpaceRepository;
   let getSpacesUseCase: GetSpacesUseCase;
+  let getSpacesByFilterUseCase: GetSpacesByFilterUseCase;
+  let getSpaceByIdUseCase: GetSpaceByIdUseCase;
   let controller: SpaceController;
 
   const mockSpaces = [
@@ -108,13 +112,13 @@ describe('SpaceController', () => {
   beforeEach(() => {
     mockRepository = new MockSpaceRepository(mockSpaces);
     getSpacesUseCase = new GetSpacesUseCase(mockRepository);
+    getSpacesByFilterUseCase = new GetSpacesByFilterUseCase(mockRepository);
+    getSpaceByIdUseCase = new GetSpaceByIdUseCase(mockRepository);
 
-    // Para este exemplo, vamos simplificar e usar apenas um use case
     controller = new SpaceController(
       getSpacesUseCase,
-      // Em um teste real, criaríamos mocks para todos os use cases
-      {} as any,
-      {} as any
+      getSpacesByFilterUseCase,
+      getSpaceByIdUseCase
     );
   });
 
