@@ -1,24 +1,27 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 // Your Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyB33cmpYGPxALEJZHlFtb6qT56uacRjH0M',
-  authDomain: 'space-sports-a6aa5.firebaseapp.com',
-  projectId: 'space-sports-a6aa5',
-  storageBucket: 'space-sports-a6aa5.firebasestorage.app',
-  messagingSenderId: '301832539995',
-  appId: '1:301832539995:web:0074e2df63183127a2547e',
-  measurementId: 'G-FVCNH18D0L',
+  apiKey: 'AIzaSyBfNZojAQZTEqrkLdvXt2VYNN6cS_sMgCo',
+  authDomain: 'sports-space-344db.firebaseapp.com',
+  projectId: 'sports-space-344db',
+  storageBucket: 'sports-space-344db.firebasestorage.app',
+  messagingSenderId: '245738778317',
+  appId: '1:245738778317:web:98b0288258836854800384',
+  measurementId: 'G-6X3VNMXSP6',
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase services
-export const auth = getAuth(app);
+// Initialize Firebase services with React Native persistence
+export const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 

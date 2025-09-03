@@ -5,8 +5,6 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup,
   User,
 } from 'firebase/auth';
 
@@ -44,13 +42,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signInWithGoogle = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      setUser(result.user);
-    } catch (error) {
-      throw error;
-    }
+    // try {
+    //   const provider = new GoogleAuthProvider();
+    //   const result = await signInWithPopup(auth, provider);
+    //   setUser(result.user);
+    // } catch (error) {
+    //   throw error;
+    // }
   };
 
   const signUp = async (email: string, password: string) => {

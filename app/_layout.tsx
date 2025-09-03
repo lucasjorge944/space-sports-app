@@ -3,20 +3,22 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { View, Text } from 'react-native';
 import { Animated } from 'react-native';
-import { CustomSplash } from './components/CustomSplash';
 import app from './config/firebase';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { CustomSplash } from './components/CustomSplash';
 
 // Mantenha a tela de splash visível enquanto carregamos recursos
 SplashScreen.preventAutoHideAsync();
 
-function useProtectedRoute(user: any) {
+function useProtectedRoute(user: any, loading: boolean) {
   const segments = useSegments();
   const router = useRouter();
 
   useEffect(() => {
+    // Don't navigate while authentication is still loading
+    if (loading) return;
+
     const inAuthGroup = segments[0] === '(auth)';
 
     if (!user && !inAuthGroup) {
@@ -26,12 +28,17 @@ function useProtectedRoute(user: any) {
       // Redirect away from the sign-in page if signed in
       router.replace('/(tabs)');
     }
-  }, [user, segments]);
+  }, [user, loading, segments]);
 }
 
 function RootLayoutNav() {
-  const { user } = useAuth();
-  useProtectedRoute(user);
+  const { user, loading } = useAuth();
+  useProtectedRoute(user, loading);
+
+  // Show loading screen while authentication is being determined
+  if (loading) {
+    return <CustomSplash />;
+  }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
