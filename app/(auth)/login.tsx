@@ -11,7 +11,7 @@ export default function LoginScreen() {
 
   const handleEmailLogin = async () => {
     try {
-      //await signIn(email, password);
+      await signIn(email, password);
     } catch (error: any) {
       Alert.alert('Erro no login', error.message);
     }

@@ -8,7 +8,12 @@ import {
   SortOptionConfig,
 } from '../components/SortOptionsModal';
 import { IconButton } from '../components/IconButton';
-import { getSpaces } from '../services/firestore';
+import { Loading } from '../components/Loading';
+
+// Importações da nova arquitetura
+import { getDIContainer } from '../infrastructure/di/DIContainer';
+import { useSpaces } from '../presentation/hooks/useSpaces';
+import { SpaceFilters } from '../domain/entities/Space';
 
 const SORT_OPTIONS: SortOptionConfig[] = [
   {
@@ -33,59 +38,40 @@ const SORT_OPTIONS: SortOptionConfig[] = [
   },
 ];
 
-const MOCK_SPACES = [
-  {
-    id: '1',
-    name: 'Arena Sports',
-    description: 'Quadras de Beach Tennis e Vôlei',
-    rating: 4.8,
-    reviews: 128,
-    image: 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6',
-    sports: ['Beach Tennis', 'Vôlei'],
-    price: 100,
-  },
-  {
-    id: '2',
-    name: 'Centro Esportivo',
-    description: 'Quadras de Futevôlei e Beach Tennis',
-    rating: 4.5,
-    reviews: 96,
-    image: 'https://images.unsplash.com/photo-1577412647305-991150c7d163',
-    sports: ['Futevôlei', 'Beach Tennis'],
-    price: 90,
-  },
-  {
-    id: '3',
-    name: 'Beach Sports',
-    description: 'Aulas e quadras de Beach Tennis',
-    rating: 4.9,
-    reviews: 234,
-    image: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8',
-    sports: ['Beach Tennis'],
-    price: 110,
-  },
-];
-
 export default function ExploreScreen() {
   const [showSortModal, setShowSortModal] = React.useState(false);
   const [sortOption, setSortOption] = React.useState<string>('rating');
+  const [filters, setFilters] = React.useState<SpaceFilters>({});
+
+  // Usa a nova arquitetura através do hook
+  const diContainer = getDIContainer();
+  const spaceController = diContainer.getSpaceController();
+  const { spaces, loading, error, loadSpaces, loadSpacesByFilter, clearError } =
+    useSpaces(spaceController);
 
   useEffect(() => {
-    loadSpaces();
+    loadInitialSpaces();
   }, []);
 
-  const loadSpaces = async () => {
+  const loadInitialSpaces = async () => {
     try {
-      const spacesData = await getSpaces();
-      console.log(spacesData);
+      await loadSpaces();
     } catch (err) {
-      console.error('Error loading spaces:', err);
-    } finally {
+      console.error('Erro ao carregar espaços iniciais:', err);
+    }
+  };
+
+  const handleFilterChange = async (newFilters: SpaceFilters) => {
+    setFilters(newFilters);
+    try {
+      await loadSpacesByFilter(newFilters);
+    } catch (err) {
+      console.error('Erro ao aplicar filtros:', err);
     }
   };
 
   const sortedSpaces = React.useMemo(() => {
-    return [...MOCK_SPACES].sort((a, b) => {
+    return [...spaces].sort((a, b) => {
       switch (sortOption) {
         case 'rating':
           return b.rating - a.rating;
@@ -97,7 +83,25 @@ export default function ExploreScreen() {
           return 0;
       }
     });
-  }, [sortOption]);
+  }, [spaces, sortOption]);
+
+  const handleRefresh = () => {
+    clearError();
+    if (Object.keys(filters).length > 0) {
+      loadSpacesByFilter(filters);
+    } else {
+      loadSpaces();
+    }
+  };
+
+  if (loading && spaces.length === 0) {
+    return (
+      <View style={styles.container}>
+        <PageHeader title="Explorar" />
+        <Loading visible={loading} />
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -115,16 +119,51 @@ export default function ExploreScreen() {
               onPress={() => setShowSortModal(true)}
               color="#1a73e8"
             />
+            <IconButton
+              name="refresh-outline"
+              onPress={handleRefresh}
+              color="#1a73e8"
+            />
           </>
         }
       />
 
       <ScrollView style={styles.container}>
+        {error && (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+            <IconButton
+              name="refresh-outline"
+              onPress={handleRefresh}
+              color="#1a73e8"
+            />
+          </View>
+        )}
+
         <View style={styles.spacesList}>
-          <Text style={styles.containerTitle}>Espaços</Text>
-          {sortedSpaces.map((space) => (
-            <SpaceCard key={space.id} data={space} />
-          ))}
+          <Text style={styles.containerTitle}>
+            Espaços {spaces.length > 0 && `(${spaces.length})`}
+          </Text>
+
+          {loading && spaces.length > 0 && (
+            <View style={styles.refreshingIndicator}>
+              <Text style={styles.refreshingText}>Atualizando...</Text>
+            </View>
+          )}
+
+          {sortedSpaces.length === 0 && !loading ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                {error
+                  ? 'Erro ao carregar espaços'
+                  : 'Nenhum espaço encontrado'}
+              </Text>
+            </View>
+          ) : (
+            sortedSpaces.map((space) => (
+              <SpaceCard key={space.id} data={space} />
+            ))
+          )}
         </View>
       </ScrollView>
 
@@ -153,5 +192,39 @@ const styles = StyleSheet.create({
   spacesList: {
     paddingHorizontal: 20,
     paddingTop: 18,
+  },
+  errorContainer: {
+    backgroundColor: '#ffebee',
+    margin: 16,
+    padding: 16,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  errorText: {
+    color: '#c62828',
+    fontSize: 14,
+    flex: 1,
+  },
+  refreshingIndicator: {
+    backgroundColor: '#e3f2fd',
+    padding: 8,
+    borderRadius: 4,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  refreshingText: {
+    color: '#1976d2',
+    fontSize: 12,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    padding: 32,
+  },
+  emptyText: {
+    color: '#666',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
