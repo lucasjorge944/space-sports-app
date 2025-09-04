@@ -45,7 +45,7 @@ export default function ExploreScreen() {
 
   // Usa a nova arquitetura através do hook
   const diContainer = getDIContainer();
-  const spaceController = diContainer.getSpaceController();
+  const spaceController = diContainer.spaces.getSpaceController();
   const { spaces, loading, error, loadSpaces, loadSpacesByFilter, clearError } =
     useSpaces(spaceController);
 

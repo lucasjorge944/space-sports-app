@@ -1,28 +1,19 @@
-import { SpaceRepository } from '../../domain/repositories/SpaceRepository';
-import { GetSpacesUseCase } from '../../domain/usecases/GetSpacesUseCase';
-import { GetSpacesByFilterUseCase } from '../../domain/usecases/GetSpacesByFilterUseCase';
-import { GetSpaceByIdUseCase } from '../../domain/usecases/GetSpaceByIdUseCase';
-import { FirestoreSpaceRepository } from '../repositories/FirestoreSpaceRepository';
-import { SpaceController } from '../../presentation/controllers/SpaceController';
+import { SpaceContainer } from './containers/SpaceContainer';
+import { BookingContainer } from './containers/BookingContainer';
+import { EnrollmentContainer } from './containers/EnrollmentContainer';
 
 /**
- * Container de Injeção de Dependência
- * Configura e fornece todas as dependências da aplicação
+ * Container de Injeção de Dependência Principal
+ * Organiza e fornece acesso aos módulos da aplicação
  * Implementa o padrão Singleton para garantir instâncias únicas
  */
 export class DIContainer {
   private static instance: DIContainer;
 
-  // Repositórios
-  private _spaceRepository: SpaceRepository | null = null;
-
-  // Use Cases
-  private _getSpacesUseCase: GetSpacesUseCase | null = null;
-  private _getSpacesByFilterUseCase: GetSpacesByFilterUseCase | null = null;
-  private _getSpaceByIdUseCase: GetSpaceByIdUseCase | null = null;
-
-  // Controllers
-  private _spaceController: SpaceController | null = null;
+  // Containers organizados por domínio
+  private _spaceContainer: SpaceContainer | null = null;
+  private _bookingContainer: BookingContainer | null = null;
+  private _enrollmentContainer: EnrollmentContainer | null = null;
 
   private constructor() {}
 
@@ -36,73 +27,83 @@ export class DIContainer {
     return DIContainer.instance;
   }
 
+  // ===================================================================
+  // CONTAINERS - Acesso organizado por domínio
+  // ===================================================================
+
   /**
-   * Obtém o repositório de espaços
+   * Obtém o container de Spaces
    */
-  public getSpaceRepository(): SpaceRepository {
-    if (!this._spaceRepository) {
-      this._spaceRepository = new FirestoreSpaceRepository();
+  public get spaces(): SpaceContainer {
+    if (!this._spaceContainer) {
+      this._spaceContainer = new SpaceContainer();
     }
-    return this._spaceRepository;
+    return this._spaceContainer;
   }
 
   /**
-   * Obtém o caso de uso para buscar espaços
+   * Obtém o container de Bookings
    */
-  public getGetSpacesUseCase(): GetSpacesUseCase {
-    if (!this._getSpacesUseCase) {
-      this._getSpacesUseCase = new GetSpacesUseCase(this.getSpaceRepository());
+  public get bookings(): BookingContainer {
+    if (!this._bookingContainer) {
+      this._bookingContainer = new BookingContainer();
     }
-    return this._getSpacesUseCase;
+    return this._bookingContainer;
   }
 
   /**
-   * Obtém o caso de uso para buscar espaços com filtros
+   * Obtém o container de Enrollments
    */
-  public getGetSpacesByFilterUseCase(): GetSpacesByFilterUseCase {
-    if (!this._getSpacesByFilterUseCase) {
-      this._getSpacesByFilterUseCase = new GetSpacesByFilterUseCase(
-        this.getSpaceRepository()
-      );
+  public get enrollments(): EnrollmentContainer {
+    if (!this._enrollmentContainer) {
+      this._enrollmentContainer = new EnrollmentContainer();
     }
-    return this._getSpacesByFilterUseCase;
+    return this._enrollmentContainer;
+  }
+
+  // ===================================================================
+  // MÉTODOS DE CONVENIÊNCIA - Para manter compatibilidade
+  // ===================================================================
+
+  /**
+   * @deprecated Use spaces.getSpaceController() instead
+   */
+  public getSpaceController() {
+    return this.spaces.getSpaceController();
   }
 
   /**
-   * Obtém o caso de uso para buscar espaço por ID
+   * @deprecated Use spaces.getGetSpacesUseCase() instead
    */
-  public getGetSpaceByIdUseCase(): GetSpaceByIdUseCase {
-    if (!this._getSpaceByIdUseCase) {
-      this._getSpaceByIdUseCase = new GetSpaceByIdUseCase(
-        this.getSpaceRepository()
-      );
-    }
-    return this._getSpaceByIdUseCase;
+  public getGetSpacesUseCase() {
+    return this.spaces.getGetSpacesUseCase();
   }
 
   /**
-   * Obtém o controller de espaços
+   * @deprecated Use spaces.getGetSpacesByFilterUseCase() instead
    */
-  public getSpaceController(): SpaceController {
-    if (!this._spaceController) {
-      this._spaceController = new SpaceController(
-        this.getGetSpacesUseCase(),
-        this.getGetSpacesByFilterUseCase(),
-        this.getGetSpaceByIdUseCase()
-      );
-    }
-    return this._spaceController;
+  public getGetSpacesByFilterUseCase() {
+    return this.spaces.getGetSpacesByFilterUseCase();
   }
 
   /**
-   * Limpa todas as instâncias (útil para testes)
+   * @deprecated Use spaces.getGetSpaceByIdUseCase() instead
+   */
+  public getGetSpaceByIdUseCase() {
+    return this.spaces.getGetSpaceByIdUseCase();
+  }
+
+  /**
+   * Limpa todas as instâncias de todos os containers (útil para testes)
    */
   public reset(): void {
-    this._spaceRepository = null;
-    this._getSpacesUseCase = null;
-    this._getSpacesByFilterUseCase = null;
-    this._getSpaceByIdUseCase = null;
-    this._spaceController = null;
+    this._spaceContainer?.reset();
+    this._bookingContainer?.reset();
+    this._enrollmentContainer?.reset();
+
+    this._spaceContainer = null;
+    this._bookingContainer = null;
+    this._enrollmentContainer = null;
   }
 }
 

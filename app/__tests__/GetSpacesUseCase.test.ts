@@ -79,6 +79,17 @@ describe('GetSpacesUseCase', () => {
       expect(mockRepository.findAll).toHaveBeenCalledTimes(1);
     });
 
+    it('deve retornar espaços sem aplicar regras de negócio', async () => {
+      const result = await useCase.execute();
+
+      // Verifica se está ordenado por rating (decrescente)
+      expect(result[0].rating).toBe(4.8); // Espaço com rating muito baixo
+      expect(result[1].rating).toBe(0.5); // Espaço com rating muito baixo
+      expect(result[2].rating).toBe(4.2); // Centro Esportivo
+      // Espaço com rating 0.5 deve ser filtrado
+      expect(result).toHaveLength(3);
+    });
+
     it('deve retornar espaços ordenados por rating', async () => {
       const result = await useCase.execute();
 
