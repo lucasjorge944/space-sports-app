@@ -9,8 +9,6 @@ import {
 } from '../components/SortOptionsModal';
 import { IconButton } from '../components/IconButton';
 import { Loading } from '../components/Loading';
-
-// Importações da nova arquitetura
 import { getDIContainer } from '../infrastructure/di/DIContainer';
 import { useSpaces } from '../presentation/hooks/useSpaces';
 import { SpaceFilters } from '../domain/entities/Space';
@@ -43,7 +41,6 @@ export default function ExploreScreen() {
   const [sortOption, setSortOption] = React.useState<string>('rating');
   const [filters, setFilters] = React.useState<SpaceFilters>({});
 
-  // Usa a nova arquitetura através do hook
   const diContainer = getDIContainer();
   const spaceController = diContainer.spaces.getSpaceController();
   const { spaces, loading, error, loadSpaces, loadSpacesByFilter, clearError } =

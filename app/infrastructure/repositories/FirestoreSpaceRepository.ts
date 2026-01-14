@@ -13,7 +13,7 @@ import {
   QueryConstraint,
 } from 'firebase/firestore';
 
-import { db } from '../../config/firebase';
+import { db } from '../../config/firebaseConfig';
 import { Space, SpaceFilters } from '../../domain/entities/Space';
 import { SpaceRepository } from '../../domain/repositories/SpaceRepository';
 

@@ -4,11 +4,10 @@ import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Animated } from 'react-native';
-import app from './config/firebase';
+import { app } from './config/firebaseConfig';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CustomSplash } from './components/CustomSplash';
 
-// Mantenha a tela de splash visível enquanto carregamos recursos
 SplashScreen.preventAutoHideAsync();
 
 function useProtectedRoute(user: any, loading: boolean) {
@@ -16,16 +15,11 @@ function useProtectedRoute(user: any, loading: boolean) {
   const router = useRouter();
 
   useEffect(() => {
-    // Don't navigate while authentication is still loading
     if (loading) return;
-
     const inAuthGroup = segments[0] === '(auth)';
-
     if (!user && !inAuthGroup) {
-      // Redirect to the sign-in page if not signed in
       router.replace('/(auth)/login');
     } else if (user && inAuthGroup) {
-      // Redirect away from the sign-in page if signed in
       router.replace('/(tabs)');
     }
   }, [user, loading, segments]);
@@ -34,12 +28,9 @@ function useProtectedRoute(user: any, loading: boolean) {
 function RootLayoutNav() {
   const { user, loading } = useAuth();
   useProtectedRoute(user, loading);
-
-  // Show loading screen while authentication is being determined
   if (loading) {
     return <CustomSplash />;
   }
-
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -87,16 +78,12 @@ export default function RootLayout() {
   useEffect(() => {
     async function prepare() {
       try {
-        // Mantenha a splash screen visível enquanto preparamos tudo
         await SplashScreen.preventAutoHideAsync();
-
-        // Inicialize o Firebase e aguarde um momento para simular carregamento
         console.log('Firebase initialized:', !!app);
         await new Promise((resolve) => setTimeout(resolve, 2000));
       } catch (e) {
         console.warn(e);
       } finally {
-        // Só inicie a animação quando tudo estiver pronto
         if (fontsLoaded || fontError) {
           Animated.timing(fadeAnim, {
             toValue: 0,
@@ -109,10 +96,8 @@ export default function RootLayout() {
         }
       }
     }
-
     prepare();
   }, [fontsLoaded, fontError]);
-
   if (!fontsLoaded && !fontError) {
     return <CustomSplash />;
   }
