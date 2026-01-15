@@ -5,7 +5,12 @@
     "jsx": "react-jsx",
     "module": "esnext",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ],
+      "tailwind.config": [
+        "./tailwind.config.js"
+      ]
     }
   },
   "include": [

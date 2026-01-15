@@ -1,8 +1,11 @@
+import { Button, ButtonText } from '@/components/ui/button';
+import { Input, InputField } from '@/components/ui/input';
+import { Heading } from '@/components/ui/heading';
+
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert, Image } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
-import { Link } from 'expo-router';
-import { CustomTextInput } from '../components/CustomTextInput';
+import { router } from 'expo-router';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -27,43 +30,88 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-
-      <CustomTextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        inputProps={{
-          autoCapitalize: 'none',
-          keyboardType: 'email-address',
+      <Heading size="2xl" style={{ textAlign: 'center' }}>
+        Sports Space
+      </Heading>
+      <Image
+        source={require('@/assets/images/logo.jpeg')}
+        resizeMode="cover"
+        style={{
+          width: 140,
+          height: 140,
+          borderRadius: 100,
+          marginHorizontal: 'auto',
         }}
       />
+      <View style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <Input
+          variant="outline"
+          size="xxl"
+          isDisabled={false}
+          isInvalid={false}
+          isReadOnly={false}
+        >
+          <InputField
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect={false}
+            textContentType="emailAddress"
+            accessibilityLabel="Campo de email"
+            accessibilityHint="Digite seu endereço de email"
+          />
+        </Input>
 
-      <CustomTextInput
-        placeholder="Senha"
-        value={password}
-        onChangeText={setPassword}
-        inputProps={{
-          secureTextEntry: true,
-        }}
-      />
+        <Input
+          variant="outline"
+          size="xxl"
+          isDisabled={false}
+          isInvalid={false}
+          isReadOnly={false}
+        >
+          <InputField
+            placeholder="Senha"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+            autoComplete="password"
+            autoCapitalize="none"
+            autoCorrect={false}
+            textContentType="password"
+            accessibilityLabel="Campo de senha"
+            accessibilityHint="Digite sua senha"
+          />
+        </Input>
+      </View>
+      <Button
+        variant="solid"
+        size="xl"
+        action="primary"
+        onPress={handleEmailLogin}
+      >
+        <ButtonText>Entrar</ButtonText>
+      </Button>
 
-      <TouchableOpacity style={styles.button} onPress={handleEmailLogin}>
-        <Text style={styles.buttonText}>Entrar</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[styles.button, styles.googleButton]}
+      <Button
+        variant="outline"
+        size="xl"
+        action="primary"
         onPress={handleGoogleLogin}
       >
-        <Text style={styles.buttonText}>Entrar com Google</Text>
-      </TouchableOpacity>
+        <ButtonText>Entrar com Google</ButtonText>
+      </Button>
 
-      <Link href="/(auth)/register" asChild>
-        <TouchableOpacity style={styles.linkButton}>
-          <Text style={styles.linkText}>Não tem uma conta? Cadastre-se</Text>
-        </TouchableOpacity>
-      </Link>
+      <Button
+        variant="link"
+        size="lg"
+        action="primary"
+        onPress={() => router.push('/(auth)/register')}
+      >
+        <ButtonText>Não tem uma conta? Cadastre-se</ButtonText>
+      </Button>
     </View>
   );
 }
@@ -74,39 +122,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
     backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 15,
-    marginBottom: 15,
-    borderRadius: 5,
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  googleButton: {
-    backgroundColor: '#4285F4',
-  },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  linkButton: {
-    marginTop: 15,
-  },
-  linkText: {
-    color: '#007AFF',
-    textAlign: 'center',
+    gap: 14,
   },
 });
