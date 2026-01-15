@@ -1,127 +1,225 @@
-import { Button, ButtonText } from '@/components/ui/button';
-import { Input, InputField } from '@/components/ui/input';
+import { Button, ButtonText, ButtonIcon } from '@/components/ui/button';
+import { Input, InputField, InputSlot, InputIcon } from '@/components/ui/input';
 import { Heading } from '@/components/ui/heading';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Center } from '@/components/ui/center';
+import { Text } from '@/components/ui/text';
+import { Divider } from '@/components/ui/divider';
+import { Pressable } from '@/components/ui/pressable';
 
 import { useState } from 'react';
-import { View, Text, StyleSheet, Alert, Image } from 'react-native';
+import { Alert, Image, StatusBar } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { signIn, signInWithGoogle } = useAuth();
 
   const handleEmailLogin = async () => {
+    if (!email.trim() || !password.trim()) {
+      Alert.alert(
+        'Campos obrigatórios',
+        'Por favor, preencha todos os campos.',
+      );
+      return;
+    }
+
+    setIsLoading(true);
     try {
       await signIn(email, password);
     } catch (error: any) {
       Alert.alert('Erro no login', error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
+    setIsLoading(true);
     try {
       await signInWithGoogle();
     } catch (error: any) {
       Alert.alert('Erro no login com Google', error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
-    <View style={styles.container}>
-      <Heading size="2xl" style={{ textAlign: 'center' }}>
-        Sports Space
-      </Heading>
-      <Image
-        source={require('@/assets/images/logo.jpeg')}
-        resizeMode="cover"
-        style={{
-          width: 140,
-          height: 140,
-          borderRadius: 100,
-          marginHorizontal: 'auto',
-        }}
-      />
-      <View style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <Input
-          variant="outline"
-          size="xxl"
-          isDisabled={false}
-          isInvalid={false}
-          isReadOnly={false}
-        >
-          <InputField
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoComplete="email"
-            autoCapitalize="none"
-            autoCorrect={false}
-            textContentType="emailAddress"
-            accessibilityLabel="Campo de email"
-            accessibilityHint="Digite seu endereço de email"
-          />
-        </Input>
+    <Box className="flex-1 bg-background-0">
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
-        <Input
-          variant="outline"
-          size="xxl"
-          isDisabled={false}
-          isInvalid={false}
-          isReadOnly={false}
-        >
-          <InputField
-            placeholder="Senha"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={true}
-            autoComplete="password"
-            autoCapitalize="none"
-            autoCorrect={false}
-            textContentType="password"
-            accessibilityLabel="Campo de senha"
-            accessibilityHint="Digite sua senha"
-          />
-        </Input>
-      </View>
-      <Button
-        variant="solid"
-        size="xl"
-        action="primary"
-        onPress={handleEmailLogin}
-      >
-        <ButtonText>Entrar</ButtonText>
-      </Button>
+      <Center className="flex-1 px-6">
+        <VStack space="2xl" className="w-full max-w-md">
+          {/* Header Section */}
+          <VStack space="lg" className="items-center">
+            <Box className="mb-4">
+              <Image
+                source={require('@/assets/images/logo.jpeg')}
+                style={{
+                  width: 120,
+                  height: 120,
+                  borderRadius: 60,
+                }}
+                resizeMode="cover"
+              />
+            </Box>
 
-      <Button
-        variant="outline"
-        size="xl"
-        action="primary"
-        onPress={handleGoogleLogin}
-      >
-        <ButtonText>Entrar com Google</ButtonText>
-      </Button>
+            <VStack space="xs" className="items-center">
+              <Heading size="3xl" className="text-typography-900 font-bold">
+                Sports Space
+              </Heading>
+              <Text size="md" className="text-typography-500 text-center">
+                Entre na sua conta para continuar
+              </Text>
+            </VStack>
+          </VStack>
 
-      <Button
-        variant="link"
-        size="lg"
-        action="primary"
-        onPress={() => router.push('/(auth)/register')}
-      >
-        <ButtonText>Não tem uma conta? Cadastre-se</ButtonText>
-      </Button>
-    </View>
+          {/* Form Section */}
+          <VStack space="lg" className="w-full">
+            {/* Email Input */}
+            <Input
+              variant="outline"
+              size="xl"
+              isDisabled={isLoading}
+              className="bg-background-50 border-background-300"
+            >
+              <InputSlot className="pl-4">
+                <Ionicons name="mail-outline" size={20} color="#6B7280" />
+              </InputSlot>
+              <InputField
+                placeholder="Digite seu email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoComplete="email"
+                autoCapitalize="none"
+                autoCorrect={false}
+                textContentType="emailAddress"
+                className="text-typography-900 ml-2"
+              />
+            </Input>
+
+            {/* Password Input */}
+            <Input
+              variant="outline"
+              size="xl"
+              isDisabled={isLoading}
+              className="bg-background-50 border-background-300"
+            >
+              <InputSlot className="pl-4">
+                <Ionicons
+                  name="lock-closed-outline"
+                  size={20}
+                  color="#6B7280"
+                />
+              </InputSlot>
+              <InputField
+                placeholder="Digite sua senha"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                autoComplete="password"
+                autoCapitalize="none"
+                autoCorrect={false}
+                textContentType="password"
+                className="text-typography-900 ml-2 flex-1"
+              />
+              <InputSlot className="pr-4" onPress={togglePasswordVisibility}>
+                <Ionicons
+                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                  size={20}
+                  color="#6B7280"
+                />
+              </InputSlot>
+            </Input>
+
+            {/* Forgot Password Link */}
+            <Pressable className="self-end">
+              <Text size="sm" className="text-primary-600 font-medium">
+                Esqueceu a senha?
+              </Text>
+            </Pressable>
+          </VStack>
+
+          {/* Buttons Section */}
+          <VStack space="md" className="w-full">
+            {/* Login Button */}
+            <Button
+              variant="solid"
+              size="lg"
+              action="primary"
+              onPress={handleEmailLogin}
+              isDisabled={isLoading}
+              className="w-full bg-primary-600 rounded-xl"
+            >
+              {isLoading ? (
+                <HStack space="sm" className="items-center">
+                  <Ionicons name="refresh" size={18} color="white" />
+                  <ButtonText className="text-white font-semibold">
+                    Entrando...
+                  </ButtonText>
+                </HStack>
+              ) : (
+                <ButtonText className="text-white font-semibold text-base">
+                  Entrar
+                </ButtonText>
+              )}
+            </Button>
+
+            {/* Divider */}
+            <HStack space="md" className="items-center my-2">
+              <Divider className="flex-1 bg-background-300" />
+              <Text size="sm" className="text-typography-400 px-2">
+                ou
+              </Text>
+              <Divider className="flex-1 bg-background-300" />
+            </HStack>
+
+            {/* Google Login Button */}
+            <Button
+              variant="outline"
+              size="lg"
+              action="secondary"
+              onPress={handleGoogleLogin}
+              isDisabled={isLoading}
+              className="w-full border-background-300 rounded-xl"
+            >
+              <HStack space="sm" className="items-center">
+                <Ionicons name="logo-google" size={20} color="#4285F4" />
+                <ButtonText className="text-typography-700 font-medium text-base">
+                  Continuar com Google
+                </ButtonText>
+              </HStack>
+            </Button>
+          </VStack>
+
+          {/* Register Link */}
+          <Center className="mt-4">
+            <HStack space="xs" className="items-center">
+              <Text size="sm" className="text-typography-500">
+                Não tem uma conta?
+              </Text>
+              <Pressable onPress={() => router.push('/(auth)/register')}>
+                <Text size="sm" className="text-primary-600 font-semibold">
+                  Cadastre-se
+                </Text>
+              </Pressable>
+            </HStack>
+          </Center>
+        </VStack>
+      </Center>
+    </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
-    gap: 14,
-  },
-});
