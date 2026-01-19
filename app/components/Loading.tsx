@@ -1,48 +1,33 @@
 import React from 'react';
-import { View, Text, Modal, StyleSheet, ActivityIndicator } from 'react-native';
+import { Modal } from 'react-native';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { Text } from '@/components/ui/text';
+import { Spinner } from '@/components/ui/spinner';
 
 interface LoadingProps {
   visible: boolean;
   message?: string;
 }
 
-export function Loading({ visible, message = 'Carregando...' }: LoadingProps) {
+export function Loading({ 
+  visible, 
+  message = 'Carregando...' 
+}: LoadingProps) {
+  if (!visible) return null;
+
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.modalOverlay}>
-        <View style={styles.loadingContainer}>
-          <View style={styles.loadingContent}>
-            <ActivityIndicator size="large" color="#1a73e8" />
-            <Text style={styles.loadingText}>{message}</Text>
-          </View>
-        </View>
-      </View>
+      <Box className="flex-1 bg-black/50 justify-center items-center">
+        <Box className="bg-white rounded-xl p-6 items-center shadow-sm">
+          <VStack space="md" className="items-center">
+            <Spinner size="large" className="text-blue-600" />
+            <Text size="md" className="text-gray-600">
+              {message}
+            </Text>
+          </VStack>
+        </Box>
+      </Box>
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingContainer: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 24,
-    width: '80%',
-    maxWidth: 280,
-    alignItems: 'center',
-  },
-  loadingContent: {
-    alignItems: 'center',
-    gap: 16,
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 8,
-  },
-});

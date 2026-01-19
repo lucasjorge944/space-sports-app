@@ -1,16 +1,26 @@
 import React, { useCallback, useState } from 'react';
+import { Image, Linking } from 'react-native';
 import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Linking,
-} from 'react-native';
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
+  ActionsheetItem,
+  ActionsheetItemText,
+} from '@/components/ui/actionsheet';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { ScrollView } from '@/components/ui/scroll-view';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Button, ButtonText } from '@/components/ui/button';
+import { Badge, BadgeText } from '@/components/ui/badge';
+import { Pressable } from '@/components/ui/pressable';
+import { Icon, CalendarDaysIcon, ClockIcon, SettingsIcon } from '@/components/ui/icon';
 import { Ionicons } from '@expo/vector-icons';
-import { BottomSheetModal } from './BottomSheetModal';
 import { Loading } from './Loading';
-import { ScrollView } from 'react-native';
 
 const MOCK_PLANS = [
   { frequency: '1x na semana', price: 240 },
@@ -124,704 +134,433 @@ export function PlanCard({ data }: PlanCardProps) {
       });
   };
 
+  const getStatusBadge = () => {
+    const statusConfig = {
+      active: { action: 'success' as const, text: 'Ativo' },
+      pending: { action: 'warning' as const, text: 'Pendente' },
+      inactive: { action: 'muted' as const, text: 'Inativo' }
+    };
+    return statusConfig[data.status];
+  };
+
   return (
     <>
-      <TouchableOpacity
-        style={[styles.card, data.status === 'inactive' && styles.inactiveCard]}
+      <Pressable
         onPress={() => setModalVisible(true)}
+        className={`bg-white rounded-xl mb-4 overflow-hidden shadow-sm border border-gray-100 active:scale-[0.98] transition-transform ${
+          data.status === 'inactive' ? 'opacity-80' : ''
+        }`}
       >
-        <View
-          style={[
-            styles.statusBadge,
-            data.status === 'inactive'
-              ? styles.inactiveBadge
-              : data.status === 'pending'
-              ? styles.pendingBadge
-              : styles.activeBadge,
-          ]}
-        >
-          <Text
-            style={[
-              styles.statusText,
-              data.status === 'inactive'
-                ? styles.inactiveStatusText
-                : data.status === 'pending'
-                ? styles.pendingStatusText
-                : styles.activeStatusText,
-            ]}
-          >
-            {data.status === 'inactive'
-              ? 'Inativo'
-              : data.status === 'pending'
-              ? 'Pendente'
-              : 'Ativo'}
-          </Text>
-        </View>
+        {/* Image with status badge */}
+        <Box className="relative">
+          <Image
+            source={{ uri: data.image }}
+            className={`w-full h-40 ${data.status === 'inactive' ? 'opacity-50' : ''}`}
+            style={{ resizeMode: 'cover' }}
+          />
+          
+          {/* Status badge overlay */}
+          <Box className="absolute top-3 right-3">
+            <Badge 
+              action={getStatusBadge().action} 
+              variant="solid" 
+              className="bg-black/70 border-0"
+            >
+              <BadgeText className="text-white font-medium text-xs">
+                {getStatusBadge().text}
+              </BadgeText>
+            </Badge>
+          </Box>
+        </Box>
 
-        <Image
-          source={{ uri: data.image }}
-          style={[
-            styles.image,
-            data.status === 'inactive' && styles.inactiveImage,
-          ]}
-          resizeMode="cover"
-        />
-
-        <View style={styles.content}>
-          <View style={styles.header}>
-            <Text
-              style={[
-                styles.title,
-                data.status === 'inactive' && styles.inactiveText,
-              ]}
+        <VStack space="sm" className="p-4">
+          {/* Header */}
+          <VStack space="xs">
+            <Heading 
+              size="lg" 
+              className={`leading-tight ${
+                data.status === 'inactive' ? 'text-gray-500' : 'text-gray-900'
+              }`}
             >
               {data.spaceName}
+            </Heading>
+            <Text 
+              size="md" 
+              className={`font-medium ${
+                data.status === 'inactive' ? 'text-gray-400' : 'text-blue-600'
+              }`}
+            >
+              {data.sport}
             </Text>
-          </View>
+            <Text 
+              size="sm" 
+              className={data.status === 'inactive' ? 'text-gray-400' : 'text-blue-500'}
+            >
+              {data.instructor}
+            </Text>
+          </VStack>
 
-          <Text
-            style={[
-              styles.sport,
-              data.status === 'inactive' && styles.inactiveText,
-            ]}
-          >
-            {data.sport}
-          </Text>
-
-          <Text
-            style={[
-              styles.instructor,
-              data.status === 'inactive' && styles.inactiveInstructor,
-            ]}
-          >
-            {data.instructor}
-          </Text>
-
-          <View style={styles.details}>
-            <View style={styles.detailItem}>
-              <Ionicons
-                name="calendar-outline"
-                size={16}
-                color={data.status === 'inactive' ? '#999' : '#666'}
+          {/* Schedule Details */}
+          <HStack space="lg" className="py-2">
+            <HStack space="xs" className="items-center flex-1">
+              <Icon 
+                as={CalendarDaysIcon} 
+                size="sm" 
+                className={data.status === 'inactive' ? 'text-gray-400' : 'text-gray-500'} 
               />
-              <Text
-                style={[
-                  styles.detailText,
-                  data.status === 'inactive' && styles.inactiveText,
-                ]}
+              <Text 
+                size="sm" 
+                className={data.status === 'inactive' ? 'text-gray-400' : 'text-gray-600'}
               >
                 {data.schedule}
               </Text>
-            </View>
-            <View style={styles.detailItem}>
-              <Ionicons
-                name="time-outline"
-                size={16}
-                color={data.status === 'inactive' ? '#999' : '#666'}
+            </HStack>
+            <HStack space="xs" className="items-center flex-1">
+              <Icon 
+                as={ClockIcon} 
+                size="sm" 
+                className={data.status === 'inactive' ? 'text-gray-400' : 'text-gray-500'} 
               />
-              <Text
-                style={[
-                  styles.detailText,
-                  data.status === 'inactive' && styles.inactiveText,
-                ]}
+              <Text 
+                size="sm" 
+                className={data.status === 'inactive' ? 'text-gray-400' : 'text-gray-600'}
               >
                 {data.time}
               </Text>
-            </View>
-          </View>
+            </HStack>
+          </HStack>
 
-          <View style={styles.planContainer}>
-            <View
-              style={[
-                styles.planTag,
-                data.status === 'inactive' && styles.inactivePlanTag,
-              ]}
+          {/* Plan and Price */}
+          <HStack className="justify-between items-center pt-2 border-t border-gray-100">
+            <Badge 
+              action={data.status === 'inactive' ? 'muted' : 'info'} 
+              variant="outline" 
+              size="sm"
             >
-              <Text
-                style={[
-                  styles.planText,
-                  data.status === 'inactive' && styles.inactivePlanText,
-                ]}
-              >
+              <BadgeText className={data.status === 'inactive' ? 'text-gray-400' : 'text-blue-600'}>
                 {data.plan}
-              </Text>
-            </View>
-            <Text
-              style={[
-                styles.planPrice,
-                data.status === 'inactive' && styles.inactivePlanText,
-              ]}
+              </BadgeText>
+            </Badge>
+            
+            <Text 
+              size="lg" 
+              bold 
+              className={data.status === 'inactive' ? 'text-gray-400' : 'text-blue-600'}
             >
               R$ {data.price.toFixed(2)}/mês
             </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+          </HStack>
+        </VStack>
+      </Pressable>
 
-      <BottomSheetModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        height={20}
-        header={false}
-      >
-        {data.status === 'pending' ? (
-          <>
-            <TouchableOpacity
-              style={styles.modalOption}
-              onPress={() => {
-                setModalVisible(false);
-                setShowContactModal(true);
-              }}
-            >
-              <Ionicons name="alert-circle-outline" size={24} color="#f57c00" />
-              <Text style={styles.modalOptionText}>Não recebi contato</Text>
-            </TouchableOpacity>
+      {/* Main Options Modal */}
+      <Actionsheet isOpen={modalVisible} onClose={() => setModalVisible(false)} snapPoints={[25]}>
+        <ActionsheetBackdrop />
+        <ActionsheetContent className="max-h-[25%]">
+          <ActionsheetDragIndicatorWrapper>
+            <ActionsheetDragIndicator />
+          </ActionsheetDragIndicatorWrapper>
 
-            <TouchableOpacity
-              style={styles.modalOption}
-              onPress={() => {
-                setModalVisible(false);
-                setConfirmStatusModalVisible(true);
-              }}
-            >
-              <Ionicons name="close-circle-outline" size={24} color="#c62828" />
-              <Text style={styles.modalOptionText}>Cancelar matrícula</Text>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <>
-            <TouchableOpacity
-              style={styles.modalOption}
-              onPress={handleChangePlan}
-            >
-              <Ionicons name="swap-horizontal" size={24} color="#1a73e8" />
-              <Text style={styles.modalOptionText}>Trocar de Plano</Text>
-            </TouchableOpacity>
+          <Box className="w-full">
+            {data.status === 'pending' ? (
+              <>
+                <ActionsheetItem
+                  onPress={() => {
+                    setModalVisible(false);
+                    setShowContactModal(true);
+                  }}
+                  className="py-4 px-4"
+                >
+                  <Box className="mr-3">
+                    <Ionicons name="alert-circle-outline" size={24} color="#f57c00" />
+                  </Box>
+                  <ActionsheetItemText className="text-base text-gray-900">
+                    Não recebi contato
+                  </ActionsheetItemText>
+                </ActionsheetItem>
 
-            <TouchableOpacity
-              style={styles.modalOption}
-              onPress={handleToggleStatus}
-            >
-              <Ionicons
-                name={data.status === 'inactive' ? 'play' : 'pause'}
-                size={24}
-                color={data.status === 'inactive' ? '#2e7d32' : '#c62828'}
-              />
-              <Text style={styles.modalOptionText}>
-                {data.status === 'inactive' ? 'Ativar Plano' : 'Pausar Plano'}
+                <ActionsheetItem
+                  onPress={() => {
+                    setModalVisible(false);
+                    setConfirmStatusModalVisible(true);
+                  }}
+                  className="py-4 px-4"
+                >
+                  <Box className="mr-3">
+                    <Ionicons name="close-circle-outline" size={24} color="#c62828" />
+                  </Box>
+                  <ActionsheetItemText className="text-base text-red-600">
+                    Cancelar matrícula
+                  </ActionsheetItemText>
+                </ActionsheetItem>
+              </>
+            ) : (
+              <>
+                <ActionsheetItem
+                  onPress={handleChangePlan}
+                  className="py-4 px-4"
+                >
+                  <Box className="mr-3">
+                    <Ionicons name="swap-horizontal" size={24} color="#1a73e8" />
+                  </Box>
+                  <ActionsheetItemText className="text-base text-gray-900">
+                    Trocar de Plano
+                  </ActionsheetItemText>
+                </ActionsheetItem>
+
+                <ActionsheetItem
+                  onPress={handleToggleStatus}
+                  className="py-4 px-4"
+                >
+                  <Box className="mr-3">
+                    <Ionicons
+                      name={data.status === 'inactive' ? 'play' : 'pause'}
+                      size={24}
+                      color={data.status === 'inactive' ? '#2e7d32' : '#c62828'}
+                    />
+                  </Box>
+                  <ActionsheetItemText 
+                    className={`text-base ${
+                      data.status === 'inactive' ? 'text-green-600' : 'text-red-600'
+                    }`}
+                  >
+                    {data.status === 'inactive' ? 'Ativar Plano' : 'Pausar Plano'}
+                  </ActionsheetItemText>
+                </ActionsheetItem>
+              </>
+            )}
+          </Box>
+        </ActionsheetContent>
+      </Actionsheet>
+
+      {/* Plan Selection Modal */}
+      <Actionsheet isOpen={planModalVisible} onClose={() => setPlanModalVisible(false)} snapPoints={[60]}>
+        <ActionsheetBackdrop />
+        <ActionsheetContent className="max-h-[60%]">
+          <ActionsheetDragIndicatorWrapper>
+            <ActionsheetDragIndicator />
+          </ActionsheetDragIndicatorWrapper>
+
+          <VStack space="lg" className="w-full px-4 pb-4">
+            <Heading size="xl" className="text-center text-gray-900 mt-2">
+              Escolha um Plano
+            </Heading>
+
+            <ScrollView className="flex-1" contentContainerClassName="pb-4">
+              <VStack space="sm">
+                {MOCK_PLANS.map((plan, index) => (
+                  <Pressable
+                    key={plan.frequency}
+                    onPress={() => handleSelectNewPlan(plan)}
+                    className="flex-row justify-between items-center py-4 px-4 bg-white rounded-lg border border-gray-100 active:bg-gray-50"
+                  >
+                    <VStack space="xs" className="flex-1">
+                      <Heading size="md" className="text-gray-900">
+                        {plan.frequency}
+                      </Heading>
+                      <Text size="sm" className="text-gray-600">
+                        Acesso{' '}
+                        {plan.frequency === 'Ilimitado'
+                          ? 'ilimitado'
+                          : `${plan.frequency.split('x')[0]} vez${
+                              plan.frequency.startsWith('1') ? '' : 'es'
+                            } por semana`}
+                      </Text>
+                    </VStack>
+                    
+                    <VStack className="items-end">
+                      <Text size="lg" bold className="text-blue-600">
+                        R$ {plan.price}
+                      </Text>
+                      <Text size="sm" className="text-gray-500">
+                        /mês
+                      </Text>
+                    </VStack>
+                  </Pressable>
+                ))}
+              </VStack>
+            </ScrollView>
+          </VStack>
+        </ActionsheetContent>
+      </Actionsheet>
+
+      {/* Plan Change Confirmation Modal */}
+      <Actionsheet isOpen={confirmModalVisible} onClose={() => setConfirmModalVisible(false)} snapPoints={[50]}>
+        <ActionsheetBackdrop />
+        <ActionsheetContent className="max-h-[50%]">
+          <ActionsheetDragIndicatorWrapper>
+            <ActionsheetDragIndicator />
+          </ActionsheetDragIndicatorWrapper>
+
+          <VStack space="lg" className="w-full px-6 pb-6">
+            {/* Content */}
+            <VStack space="md" className="items-center py-4">
+              <Box className="items-center justify-center">
+                <Ionicons name="alert-circle-outline" size={48} color="#1a73e8" />
+              </Box>
+              
+              <Heading size="xl" className="text-center text-gray-900">
+                Confirmar Mudança
+              </Heading>
+              
+              <Text size="md" className="text-center text-gray-600">
+                Deseja alterar seu plano atual?
               </Text>
-            </TouchableOpacity>
-          </>
-        )}
-      </BottomSheetModal>
 
-      <BottomSheetModal
-        visible={planModalVisible}
-        onClose={() => setPlanModalVisible(false)}
-        height={50}
-        title="Escolha um Plano"
-      >
-        <ScrollView style={styles.plansList}>
-          {MOCK_PLANS.map((plan, index) => (
-            <TouchableOpacity
-              key={plan.frequency}
-              style={[
-                styles.planOption,
-                index < MOCK_PLANS.length - 1 && styles.planOptionBorder,
-              ]}
-              onPress={() => handleSelectNewPlan(plan)}
-            >
-              <View>
-                <Text style={styles.planFrequency}>{plan.frequency}</Text>
-                <Text style={styles.planDescription}>
-                  Acesso{' '}
-                  {plan.frequency === 'Ilimitado'
-                    ? 'ilimitado'
-                    : `${plan.frequency.split('x')[0]} vez${
-                        plan.frequency.startsWith('1') ? '' : 'es'
-                      } por semana`}
-                </Text>
-              </View>
-              <View style={styles.planPriceContainer}>
-                <Text style={styles.planPrice}>R$ {plan.price}</Text>
-                <Text style={styles.planPriceLabel}>/mês</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </BottomSheetModal>
+              {/* Plan Comparison */}
+              <HStack className="justify-between items-center w-full py-4">
+                <VStack className="items-center flex-1">
+                  <Text size="sm" className="text-gray-500 mb-1">Plano Atual</Text>
+                  <Text size="md" bold className="text-gray-900 mb-1">{data.plan}</Text>
+                  <Text size="sm" className="text-blue-600">R$ {data.price.toFixed(2)}/mês</Text>
+                </VStack>
 
-      <BottomSheetModal
-        visible={confirmModalVisible}
-        onClose={() => setConfirmModalVisible(false)}
-        height={40}
-        header={false}
-      >
-        <View style={{ flex: 1, paddingHorizontal: 16 }}>
-          <View style={styles.confirmModalContent}>
-            <Ionicons name="alert-circle-outline" size={48} color="#1a73e8" />
-            <Text style={styles.confirmModalTitle}>Confirmar Mudança</Text>
-            <Text style={styles.confirmModalText}>
-              Deseja alterar seu plano atual?
-            </Text>
+                <Box className="px-4">
+                  <Ionicons name="arrow-forward" size={24} color="#666" />
+                </Box>
 
-            <View style={styles.planChangeDetails}>
-              <View style={styles.planChangeItem}>
-                <Text style={styles.planChangeLabel}>Plano Atual</Text>
-                <Text style={styles.planChangePlan}>{data.plan}</Text>
-                <Text style={styles.planChangePrice}>
+                <VStack className="items-center flex-1">
+                  <Text size="sm" className="text-gray-500 mb-1">Novo Plano</Text>
+                  <Text size="md" bold className="text-gray-900 mb-1">{newPlan?.frequency}</Text>
+                  <Text size="sm" className="text-blue-600">R$ {newPlan?.price.toFixed(2)}/mês</Text>
+                </VStack>
+              </HStack>
+            </VStack>
+
+            {/* Buttons */}
+            <HStack space="md" className="w-full">
+              <Button
+                variant="outline"
+                action="secondary"
+                size="lg"
+                onPress={() => setConfirmModalVisible(false)}
+                className="flex-1"
+              >
+                <ButtonText>Cancelar</ButtonText>
+              </Button>
+
+              <Button
+                variant="solid"
+                action="primary"
+                size="lg"
+                onPress={handleConfirmPlanChange}
+                className="flex-1"
+              >
+                <ButtonText>Confirmar</ButtonText>
+              </Button>
+            </HStack>
+          </VStack>
+        </ActionsheetContent>
+      </Actionsheet>
+
+      {/* Status Change Confirmation Modal */}
+      <Actionsheet isOpen={confirmStatusModalVisible} onClose={() => setConfirmStatusModalVisible(false)} snapPoints={[50]}>
+        <ActionsheetBackdrop />
+        <ActionsheetContent className="max-h-[50%]">
+          <ActionsheetDragIndicatorWrapper>
+            <ActionsheetDragIndicator />
+          </ActionsheetDragIndicatorWrapper>
+
+          <VStack space="lg" className="w-full px-6 pb-6">
+            {/* Content */}
+            <VStack space="md" className="items-center py-4">
+              <Box className="items-center justify-center">
+                <Ionicons
+                  name="alert-circle-outline"
+                  size={48}
+                  color={data.status === 'inactive' ? '#2e7d32' : '#c62828'}
+                />
+              </Box>
+              
+              <Heading size="xl" className="text-center text-gray-900">
+                {data.status === 'inactive' ? 'Ativar Plano' : 'Inativar Plano'}
+              </Heading>
+              
+              <Text size="md" className="text-center text-gray-600 leading-relaxed">
+                {data.status === 'inactive'
+                  ? 'Que bom que você quer voltar! Deseja reativar este plano?'
+                  : 'Que pena... Tem certeza que deseja inativar este plano?'}
+              </Text>
+
+              {/* Plan Details */}
+              <VStack className="items-center py-4">
+                <Text size="lg" bold className="text-gray-900 mb-1">{data.sport}</Text>
+                <Text size="md" className="text-gray-600 mb-1">{data.plan}</Text>
+                <Text size="md" className="text-blue-600 font-medium">
                   R$ {data.price.toFixed(2)}/mês
                 </Text>
-              </View>
+              </VStack>
+            </VStack>
 
-              <View style={styles.planChangeArrow}>
-                <Ionicons name="arrow-forward" size={24} color="#666" />
-              </View>
+            {/* Buttons */}
+            <HStack space="md" className="w-full">
+              <Button
+                variant="outline"
+                action="secondary"
+                size="lg"
+                onPress={() => setConfirmStatusModalVisible(false)}
+                className="flex-1"
+              >
+                <ButtonText>Cancelar</ButtonText>
+              </Button>
 
-              <View style={styles.planChangeItem}>
-                <Text style={styles.planChangeLabel}>Novo Plano</Text>
-                <Text style={styles.planChangePlan}>{newPlan?.frequency}</Text>
-                <Text style={styles.planChangePrice}>
-                  R$ {newPlan?.price.toFixed(2)}/mês
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View style={styles.confirmModalButtons}>
-            <TouchableOpacity
-              style={[
-                styles.confirmModalButton,
-                styles.confirmModalButtonCancel,
-              ]}
-              onPress={() => setConfirmModalVisible(false)}
-            >
-              <Text style={styles.confirmModalButtonTextCancel}>Cancelar</Text>
-            </TouchableOpacity>
+              <Button
+                variant="solid"
+                action={data.status === 'inactive' ? 'positive' : 'negative'}
+                size="lg"
+                onPress={handleConfirmStatusChange}
+                className="flex-1"
+              >
+                <ButtonText>{data.status === 'inactive' ? 'Ativar' : 'Inativar'}</ButtonText>
+              </Button>
+            </HStack>
+          </VStack>
+        </ActionsheetContent>
+      </Actionsheet>
 
-            <TouchableOpacity
-              style={[
-                styles.confirmModalButton,
-                styles.confirmModalButtonConfirm,
-              ]}
-              onPress={handleConfirmPlanChange}
-            >
-              <Text style={styles.confirmModalButtonTextConfirm}>
-                Confirmar
+      {/* WhatsApp Contact Modal */}
+      <Actionsheet isOpen={showContactModal} onClose={() => setShowContactModal(false)} snapPoints={[45]}>
+        <ActionsheetBackdrop />
+        <ActionsheetContent className="max-h-[45%]">
+          <ActionsheetDragIndicatorWrapper>
+            <ActionsheetDragIndicator />
+          </ActionsheetDragIndicatorWrapper>
+
+          <VStack space="lg" className="w-full px-6 pb-6">
+            {/* Content */}
+            <VStack space="md" className="items-center py-4">
+              <Box className="w-16 h-16 bg-green-100 rounded-full items-center justify-center mb-4">
+                <Ionicons name="logo-whatsapp" size={32} color="#25D366" />
+              </Box>
+              
+              <Heading size="xl" className="text-center text-gray-900">
+                Entrar em contato via WhatsApp
+              </Heading>
+              
+              <Text size="md" className="text-center text-gray-600 leading-relaxed px-4">
+                Vamos te conectar a um dos professores para verificar o status da sua matrícula.
               </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </BottomSheetModal>
+            </VStack>
 
-      <BottomSheetModal
-        visible={confirmStatusModalVisible}
-        onClose={() => setConfirmStatusModalVisible(false)}
-        height={45}
-        header={false}
-      >
-        <View style={{ flex: 1, paddingHorizontal: 16 }}>
-          <View style={styles.confirmModalContent}>
-            <Ionicons
-              name="alert-circle-outline"
-              size={48}
-              color={data.status === 'inactive' ? '#2e7d32' : '#c62828'}
-            />
-            <Text style={styles.confirmModalTitle}>
-              {data.status === 'inactive' ? 'Ativar Plano' : 'Inativar Plano'}
-            </Text>
-            <Text style={styles.confirmModalText}>
-              {data.status === 'inactive'
-                ? 'Que bom que você quer voltar! Deseja reativar este plano?'
-                : 'Que pena... Tem certeza que deseja inativar este plano?'}
-            </Text>
-
-            <View style={styles.planStatusDetails}>
-              <Text style={styles.planStatusName}>{data.sport}</Text>
-              <Text style={styles.planStatusFrequency}>{data.plan}</Text>
-              <Text style={styles.planStatusPrice}>
-                R$ {data.price.toFixed(2)}/mês
-              </Text>
-            </View>
-          </View>
-          <View style={styles.confirmModalButtons}>
-            <TouchableOpacity
-              style={[
-                styles.confirmModalButton,
-                styles.confirmModalButtonCancel,
-              ]}
-              onPress={() => setConfirmStatusModalVisible(false)}
+            {/* WhatsApp Button */}
+            <Button
+              variant="solid"
+              size="lg"
+              onPress={() => {
+                handleWhatsAppContact();
+                setShowContactModal(false);
+              }}
+              className="w-full bg-green-600"
             >
-              <Text style={styles.confirmModalButtonTextCancel}>Cancelar</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.confirmModalButton,
-                styles.confirmModalButtonConfirm,
-                data.status === 'inactive'
-                  ? styles.activateButton
-                  : styles.deactivateButton,
-              ]}
-              onPress={handleConfirmStatusChange}
-            >
-              <Text style={styles.confirmModalButtonTextConfirm}>
-                {data.status === 'inactive' ? 'Ativar' : 'Inativar'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </BottomSheetModal>
-
-      <BottomSheetModal
-        visible={showContactModal}
-        onClose={() => setShowContactModal(false)}
-        height={40}
-        header={false}
-      >
-        <View style={styles.contactModalContent}>
-          <View style={styles.contactIconContainer}>
-            <Ionicons name="logo-whatsapp" size={32} color="#25D366" />
-          </View>
-
-          <Text style={styles.contactModalTitle}>
-            Entrar em contato via WhatsApp
-          </Text>
-
-          <Text style={styles.contactModalText}>
-            Vamos te conectar a um dos professores para verificar o status da
-            sua matrícula.
-          </Text>
-
-          <TouchableOpacity
-            style={styles.whatsappButton}
-            onPress={() => {
-              handleWhatsAppContact();
-              setShowContactModal(false);
-            }}
-          >
-            <Ionicons name="logo-whatsapp" size={24} color="#fff" />
-            <Text style={styles.whatsappButtonText}>Abrir WhatsApp</Text>
-          </TouchableOpacity>
-        </View>
-      </BottomSheetModal>
+              <Ionicons name="logo-whatsapp" size={20} color="#fff" style={{ marginRight: 8 }} />
+              <ButtonText className="text-white font-semibold">Abrir WhatsApp</ButtonText>
+            </Button>
+          </VStack>
+        </ActionsheetContent>
+      </Actionsheet>
 
       <Loading visible={isLoading} />
     </>
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 16,
-    overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  inactiveCard: {
-    opacity: 0.8,
-  },
-  image: {
-    width: '100%',
-    height: 150,
-  },
-  inactiveImage: {
-    opacity: 0.5,
-  },
-  content: {
-    padding: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  moreButton: {
-    padding: 4,
-  },
-  sport: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 12,
-  },
-  instructor: {
-    fontSize: 14,
-    color: '#1a73e8',
-    marginBottom: 12,
-  },
-  inactiveInstructor: {
-    color: '#999',
-  },
-  details: {
-    flexDirection: 'row',
-    gap: 16,
-    marginBottom: 12,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  detailText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  inactiveText: {
-    color: '#999',
-  },
-  planContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  planTag: {
-    backgroundColor: '#e8f0fe',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  inactivePlanTag: {
-    backgroundColor: '#f5f5f5',
-  },
-  planText: {
-    color: '#1a73e8',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  inactivePlanText: {
-    color: '#999',
-  },
-  planPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1a73e8',
-  },
-  statusBadge: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    zIndex: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  activeBadge: {
-    backgroundColor: '#e8f5e9',
-  },
-  pendingBadge: {
-    backgroundColor: '#fff3e0',
-  },
-  inactiveBadge: {
-    backgroundColor: '#f5f5f5',
-  },
-  statusText: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  activeStatusText: {
-    color: '#2e7d32',
-  },
-  pendingStatusText: {
-    color: '#f57c00',
-  },
-  inactiveStatusText: {
-    color: '#999',
-  },
-  modalOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    gap: 12,
-  },
-  modalOptionText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  plansList: {
-    padding: 16,
-  },
-  planOption: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 16,
-  },
-  planOptionBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  planFrequency: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 4,
-  },
-  planDescription: {
-    fontSize: 14,
-    color: '#666',
-  },
-  planPriceContainer: {
-    alignItems: 'flex-end',
-  },
-  planPriceLabel: {
-    fontSize: 14,
-    color: '#666',
-  },
-  confirmModalContent: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  confirmModalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  confirmModalText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  planChangeDetails: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    paddingHorizontal: 8,
-  },
-  planChangeItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  planChangeLabel: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 4,
-  },
-  planChangePlan: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 4,
-  },
-  planChangePrice: {
-    fontSize: 14,
-    color: '#1a73e8',
-    fontWeight: '500',
-  },
-  planChangeArrow: {
-    paddingHorizontal: 16,
-  },
-  confirmModalButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  confirmModalButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  confirmModalButtonCancel: {
-    backgroundColor: '#f5f5f5',
-  },
-  confirmModalButtonConfirm: {
-    backgroundColor: '#1a73e8',
-  },
-  confirmModalButtonTextCancel: {
-    color: '#666',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  confirmModalButtonTextConfirm: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  planStatusDetails: {
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  planStatusName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
-  },
-  planStatusFrequency: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 4,
-  },
-  planStatusPrice: {
-    fontSize: 16,
-    color: '#1a73e8',
-    fontWeight: '500',
-  },
-  activateButton: {
-    backgroundColor: '#2e7d32',
-  },
-  deactivateButton: {
-    backgroundColor: '#c62828',
-  },
-  contactModalContent: {
-    alignItems: 'center',
-    paddingVertical: 20,
-    paddingBottom: 0,
-    paddingHorizontal: 16,
-  },
-  contactIconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#e6f3eb',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  contactModalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  contactModalText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 24,
-    paddingHorizontal: 20,
-  },
-  whatsappButton: {
-    backgroundColor: '#25D366',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-    borderRadius: 8,
-    width: '100%',
-    gap: 8,
-  },
-  whatsappButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
