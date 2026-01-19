@@ -1,7 +1,13 @@
 import React, { useCallback } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Tag } from './Tag';
+import { Image } from 'react-native';
+import { Box } from '@/components/ui/box';
+import { Pressable } from '@/components/ui/pressable';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Badge, BadgeText, BadgeIcon } from '@/components/ui/badge';
+import { Icon, ClockIcon, CheckIcon, CloseIcon } from '@/components/ui/icon';
 import { AttendanceListModal } from './AttendanceListModal';
 import { Loading } from './Loading';
 
@@ -51,52 +57,104 @@ export function ClassCard({
 
   return (
     <>
-      <TouchableOpacity
-        style={styles.card}
+      <Pressable
         onPress={() => setStudentsModalVisible(true)}
+        className="bg-white rounded-xl mb-4 overflow-hidden shadow-sm border border-gray-100 active:scale-[0.98] transition-transform"
       >
-        <Image
-          source={{ uri: data.image }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-        <View style={styles.content}>
-          <Text style={styles.title}>{data.spaceName}</Text>
-          <Text style={styles.sport}>{data.sport}</Text>
-          <Text style={styles.instructor}>Professor: {data.instructor}</Text>
+        {/* Image with overlay badge */}
+        <Box className="relative">
+          <Image
+            source={{ uri: data.image }}
+            className="w-full h-40"
+            style={{ resizeMode: 'cover' }}
+          />
+          
+          {/* Status badge overlay */}
+          <Box className="absolute top-3 right-3">
+            <Badge 
+              action={isConfirmed ? "success" : "muted"} 
+              variant="solid" 
+              className="bg-black/70 border-0"
+            >
+              <BadgeIcon 
+                as={isConfirmed ? CheckIcon : ClockIcon} 
+                className={`mr-1 ${isConfirmed ? 'text-green-400' : 'text-yellow-400'}`} 
+              />
+              <BadgeText className="text-white font-medium">
+                {isConfirmed ? 'Confirmado' : 'Pendente'}
+              </BadgeText>
+            </Badge>
+          </Box>
+        </Box>
 
-          <View style={styles.details}>
-            <View style={styles.detailItem}>
-              <Ionicons name="time-outline" size={16} color="#666" />
-              <Text style={styles.detailText}>{data.time}</Text>
-            </View>
-            <View style={styles.detailItem}>
-              <Ionicons name="hourglass-outline" size={16} color="#666" />
-              <Text style={styles.detailText}>{data.duration}</Text>
-            </View>
-          </View>
+        <VStack space="sm" className="p-4">
+          {/* Header */}
+          <VStack space="xs">
+            <Heading size="lg" className="text-gray-900 leading-tight">
+              {data.spaceName}
+            </Heading>
+            <Text size="md" className="text-blue-600 font-medium">
+              {data.sport}
+            </Text>
+            <Text size="sm" className="text-gray-600">
+              Professor: {data.instructor}
+            </Text>
+          </VStack>
 
-          <View style={styles.footer}>
-            <Tag
-              label={`${data.participants}/${data.maxParticipants} alunos`}
-              variant="ratio"
-              icon="people-outline"
-              ratio={data.participants / data.maxParticipants}
-            />
-            <Tag
-              label={isConfirmed ? 'Retirar Presença' : 'Confirmar Presença'}
-              variant="action"
-              icon={
-                isConfirmed
-                  ? 'close-circle-outline'
-                  : 'checkmark-circle-outline'
-              }
-              isActive={isConfirmed}
+          {/* Details */}
+          <HStack space="lg" className="py-2">
+            <HStack space="xs" className="items-center">
+              <Icon as={ClockIcon} size="sm" className="text-gray-500" />
+              <Text size="sm" className="text-gray-600">
+                {data.time}
+              </Text>
+            </HStack>
+            <HStack space="xs" className="items-center">
+              <Icon as={ClockIcon} size="sm" className="text-gray-500" />
+              <Text size="sm" className="text-gray-600">
+                {data.duration}
+              </Text>
+            </HStack>
+          </HStack>
+
+          {/* Footer */}
+          <HStack className="justify-between items-center pt-2 border-t border-gray-100">
+            {/* Participants badge */}
+            <Badge action="info" variant="outline" size="md">
+              <BadgeIcon as={ClockIcon} className="mr-1" />
+              <BadgeText>
+                {data.participants}/{data.maxParticipants} alunos
+              </BadgeText>
+            </Badge>
+
+            {/* Action button */}
+            <Pressable
               onPress={handleToggleConfirmation}
-            />
-          </View>
-        </View>
-      </TouchableOpacity>
+              className={`px-4 py-2 rounded-lg ${
+                isConfirmed 
+                  ? 'bg-red-50 border border-red-200' 
+                  : 'bg-green-50 border border-green-200'
+              }`}
+            >
+              <HStack space="xs" className="items-center">
+                <Icon 
+                  as={isConfirmed ? CloseIcon : CheckIcon} 
+                  size="sm" 
+                  className={isConfirmed ? 'text-red-600' : 'text-green-600'} 
+                />
+                <Text 
+                  size="sm" 
+                  className={`font-medium ${
+                    isConfirmed ? 'text-red-600' : 'text-green-600'
+                  }`}
+                >
+                  {isConfirmed ? 'Retirar' : 'Confirmar'}
+                </Text>
+              </HStack>
+            </Pressable>
+          </HStack>
+        </VStack>
+      </Pressable>
 
       <AttendanceListModal
         visible={studentsModalVisible}
@@ -113,61 +171,3 @@ export function ClassCard({
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 16,
-    overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  image: {
-    width: '100%',
-    height: 150,
-  },
-  content: {
-    padding: 16,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  sport: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 12,
-  },
-  instructor: {
-    fontSize: 14,
-    color: '#1a73e8',
-    marginBottom: 12,
-  },
-  details: {
-    flexDirection: 'row',
-    gap: 16,
-    marginBottom: 12,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  detailText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-});

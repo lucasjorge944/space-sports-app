@@ -1,7 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Tag } from './Tag';
-import { BottomSheetModal } from './BottomSheetModal';
+import {
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
+} from '@/components/ui/actionsheet';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { ScrollView } from '@/components/ui/scroll-view';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Badge, BadgeText, BadgeIcon } from '@/components/ui/badge';
+import { Pressable } from '@/components/ui/pressable';
+import { Icon, CheckIcon, CloseIcon } from '@/components/ui/icon';
 interface Student {
   id: string;
   name: string;
@@ -35,154 +48,108 @@ export function AttendanceListModal({
   if (!classData) return null;
 
   return (
-    <BottomSheetModal
-      visible={visible}
-      onClose={onClose}
-      height={80}
-      title="Lista de Presença"
-    >
-      <View style={styles.classInfo}>
-        <Text style={styles.classInfoTitle}>{classData.sport}</Text>
-        <Text style={styles.classInfoDetails}>
-          {classData.time} • {classData.instructor}
-        </Text>
-        <View style={{ alignSelf: 'flex-start', marginTop: 16 }}>
-          <Tag
-            label={isConfirmed ? 'Retirar Presença' : 'Confirmar Presença'}
-            variant="action"
-            icon={
-              isConfirmed ? 'close-circle-outline' : 'checkmark-circle-outline'
-            }
-            isActive={isConfirmed}
-            onPress={onToggleConfirmation}
-          />
-        </View>
-      </View>
-      <ScrollView style={styles.studentsListContainer}>
-        {Array.from({ length: classData.maxParticipants }).map((_, index) => {
-          const student = students[index];
-          const isCurrentUser = student?.name === currentUser;
+    <Actionsheet isOpen={visible} onClose={onClose} snapPoints={[80]}>
+      <ActionsheetBackdrop />
+      <ActionsheetContent>
+        <ActionsheetDragIndicatorWrapper>
+          <ActionsheetDragIndicator />
+        </ActionsheetDragIndicatorWrapper>
 
-          return (
-            <View key={index} style={styles.studentItem}>
-              <View style={styles.studentNumberContainer}>
-                <Text style={styles.studentNumber}>{index + 1}</Text>
-              </View>
-              <View style={styles.studentNameContainer}>
-                <Text
-                  style={[
-                    styles.studentName,
-                    !student && styles.emptySlot,
-                    isCurrentUser && styles.currentUserName,
-                  ]}
-                >
-                  {student?.name || '-'}
-                </Text>
-                {isCurrentUser && (
-                  <Text style={styles.currentUserTag}>Você</Text>
-                )}
-              </View>
-            </View>
-          );
-        })}
-      </ScrollView>
-    </BottomSheetModal>
+        <VStack space="xs" className="w-full px-3 pb-4">
+          {/* Header */}
+          <Heading size="lg" className="text-center text-gray-900 mt-1 mb-2">
+            Lista de Presença
+          </Heading>
+
+          {/* Class Info */}
+          <VStack space="xs" className="bg-gray-50 p-3 rounded-lg mb-2">
+            <Heading size="md" className="text-gray-900">
+              {classData.sport}
+            </Heading>
+            <Text size="sm" className="text-gray-600">
+              {classData.time} • {classData.instructor}
+            </Text>
+            
+            {/* Action Button */}
+            <Pressable
+              onPress={onToggleConfirmation}
+              className={`px-3 py-2 rounded-lg flex-row items-center justify-center mt-2 ${
+                isConfirmed 
+                  ? 'bg-red-50 border border-red-200' 
+                  : 'bg-green-50 border border-green-200'
+              }`}
+            >
+              <Icon 
+                as={isConfirmed ? CloseIcon : CheckIcon} 
+                size="xs" 
+                className={`mr-1 ${isConfirmed ? 'text-red-600' : 'text-green-600'}`} 
+              />
+              <Text 
+                size="sm" 
+                className={`font-medium ${
+                  isConfirmed ? 'text-red-600' : 'text-green-600'
+                }`}
+              >
+                {isConfirmed ? 'Retirar Presença' : 'Confirmar Presença'}
+              </Text>
+            </Pressable>
+          </VStack>
+
+          {/* Students List Header */}
+          <Heading size="sm" className="text-gray-900 mb-1">
+            Participantes ({students.length}/{classData.maxParticipants})
+          </Heading>
+          
+          {/* Students List */}
+          <Box className="flex-1 min-h-[300px]">
+            <VStack space="xs">
+              {Array.from({ length: classData.maxParticipants }).map((_, index) => {
+                const student = students[index];
+                const isCurrentUser = student?.name === currentUser;
+
+                return (
+                  <HStack 
+                    key={index} 
+                    className="items-center py-2 px-3 bg-white rounded-md border border-gray-100"
+                  >
+                    {/* Number */}
+                    <Box className="w-6 h-6 bg-blue-100 rounded-full items-center justify-center mr-2">
+                      <Text size="xs" className="text-blue-600 font-bold">
+                        {index + 1}
+                      </Text>
+                    </Box>
+
+                    {/* Student Info */}
+                    <HStack className="flex-1 items-center justify-between">
+                      <Text 
+                        size="sm" 
+                        className={`${
+                          !student 
+                            ? 'text-gray-400' 
+                            : isCurrentUser 
+                              ? 'text-blue-600 font-semibold' 
+                              : 'text-gray-900'
+                        }`}
+                      >
+                        {student?.name || '-'}
+                      </Text>
+                      
+                      {isCurrentUser && (
+                        <Badge action="info" variant="solid" size="sm">
+                          <BadgeText className="text-gray-900 text-xs">
+                            Você
+                          </BadgeText>
+                        </Badge>
+                      )}
+                    </HStack>
+                  </HStack>
+                );
+              })}
+            </VStack>
+          </Box>
+        </VStack>
+      </ActionsheetContent>
+    </Actionsheet>
   );
 }
 
-const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalView: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    height: '80%',
-    width: '100%',
-  },
-  modalHandleContainer: {
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  modalHandle: {
-    width: 40,
-    height: 4,
-    backgroundColor: '#DDD',
-    borderRadius: 2,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-
-  classInfo: {
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  classInfoTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 4,
-  },
-  classInfoDetails: {
-    fontSize: 14,
-    color: '#666',
-  },
-  studentsListContainer: {
-    flex: 1,
-    paddingHorizontal: 8,
-  },
-  studentItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  studentNumberContainer: {
-    width: 40,
-    alignItems: 'center',
-  },
-  studentNumber: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a73e8',
-  },
-  studentNameContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  studentName: {
-    fontSize: 16,
-    color: '#333',
-  },
-  emptySlot: {
-    color: '#999',
-  },
-  currentUserName: {
-    color: '#1a73e8',
-    fontWeight: '700',
-  },
-  currentUserTag: {
-    fontSize: 12,
-    color: '#1a73e8',
-    backgroundColor: '#e8f0fe',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 12,
-  },
-});
