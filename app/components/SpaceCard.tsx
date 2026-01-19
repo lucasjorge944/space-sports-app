@@ -1,8 +1,12 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'react-native';
 import { router } from 'expo-router';
-import { Tag } from './Tag';
+import { Box } from '@/components/ui/box';
+import { Pressable } from '@/components/ui/pressable';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Icon, StarIcon } from '@/components/ui/icon';
 
 interface SpaceCardProps {
   data: {
@@ -19,110 +23,74 @@ interface SpaceCardProps {
 
 export function SpaceCard({ data }: SpaceCardProps) {
   return (
-    <TouchableOpacity
-      style={styles.card}
+    <Pressable
       onPress={() => router.push(`/space/${data.id}`)}
+      className="bg-white rounded-xl mb-4 overflow-hidden shadow-sm border border-gray-100 active:scale-[0.98] transition-transform"
     >
-      <Image
-        source={{ uri: data.image }}
-        style={styles.image}
-        resizeMode="cover"
-      />
-      <View style={styles.info}>
-        <View style={styles.titleRow}>
-          <Text style={styles.name}>{data.name}</Text>
-          <View style={styles.ratingContainer}>
-            <Ionicons name="star" size={16} color="#FFD700" />
-            <Text style={styles.ratingText}>{data.rating}</Text>
-            <Text style={styles.reviewCount}>({data.reviews})</Text>
-          </View>
-        </View>
-        <Text style={styles.description}>{data.description}</Text>
-        <View style={styles.sportsTagsContainer}>
-          {data.sports.map((sport) => (
-            <Tag key={sport} label={sport} />
+      <Box className="relative">
+        <Image
+          source={{ uri: data.image }}
+          className="w-full h-48"
+          style={{ resizeMode: 'cover' }}
+        />
+        
+        {/* Rating badge overlay */}
+        <Box className="absolute top-3 right-3 bg-black/70 px-2 py-1 rounded-md flex-row items-center">
+          <Icon as={StarIcon} size="xs" className="text-yellow-400 mr-1" />
+          <Text size="sm" className="text-white font-medium">
+            {data.rating}
+          </Text>
+        </Box>
+      </Box>
+
+      <VStack space="sm" className="p-4">
+        {/* Title and reviews */}
+        <VStack space="xs">
+          <Heading size="lg" className="text-gray-900 leading-tight">
+            {data.name}
+          </Heading>
+          <Text size="sm" className="text-gray-500">
+            {data.reviews} avaliações
+          </Text>
+        </VStack>
+
+        {/* Description */}
+        <Text 
+          size="sm" 
+          className="text-gray-600 leading-relaxed"
+          isTruncated
+        >
+          {data.description}
+        </Text>
+
+        {/* Sports tags */}
+        <HStack space="xs" className="flex-wrap">
+          {data.sports.slice(0, 3).map((sport) => (
+            <Box key={sport} className="bg-blue-50 border border-blue-200 px-2 py-1 rounded-md">
+              <Text size="xs" className="text-blue-600 font-medium">
+                {sport}
+              </Text>
+            </Box>
           ))}
-        </View>
-        <View style={styles.priceContainer}>
-          <Text style={styles.priceLabel}>A partir de</Text>
-          <Text style={styles.price}>R$ {data.price.toFixed(2)}/hora</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
+          {data.sports.length > 3 && (
+            <Box className="bg-gray-50 border border-gray-200 px-2 py-1 rounded-md">
+              <Text size="xs" className="text-gray-500">
+                +{data.sports.length - 3}
+              </Text>
+            </Box>
+          )}
+        </HStack>
+
+        {/* Price */}
+        <HStack className="justify-between items-center pt-2 border-t border-gray-100">
+          <Text size="xs" className="text-gray-500 uppercase tracking-wide">
+            A partir de
+          </Text>
+          <Text size="lg" bold className="text-blue-600">
+            R$ {data.price.toFixed(2)}/h
+          </Text>
+        </HStack>
+      </VStack>
+    </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 16,
-    overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  image: {
-    width: '100%',
-    height: 200,
-  },
-  info: {
-    padding: 16,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ratingText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginLeft: 4,
-  },
-  reviewCount: {
-    fontSize: 14,
-    color: '#666',
-    marginLeft: 4,
-  },
-  description: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 12,
-  },
-  sportsTagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 12,
-  },
-  priceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  priceLabel: {
-    fontSize: 14,
-    color: '#666',
-  },
-  price: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1a73e8',
-  },
-});
