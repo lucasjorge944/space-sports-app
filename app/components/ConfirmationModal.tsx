@@ -1,7 +1,18 @@
 import React from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import {
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
+} from '@/components/ui/actionsheet';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Button, ButtonText } from '@/components/ui/button';
 import { Ionicons } from '@expo/vector-icons';
-import { BottomSheetModal } from './BottomSheetModal';
 interface ConfirmationModalProps {
   visible: boolean;
   onClose: () => void;
@@ -28,105 +39,68 @@ export function ConfirmationModal({
   icon = { name: 'alert-circle-outline', color: '#dc3545' },
   confirmButtonStyle = 'danger',
 }: ConfirmationModalProps) {
-  const getConfirmButtonColor = () => {
+  const getButtonAction = () => {
     switch (confirmButtonStyle) {
       case 'primary':
-        return '#1a73e8';
+        return 'primary';
       case 'success':
-        return '#2e7d32';
+        return 'positive';
       case 'danger':
-        return '#dc3545';
+        return 'negative';
       default:
-        return '#1a73e8';
+        return 'primary';
     }
   };
 
   return (
-    <BottomSheetModal
-      visible={visible}
-      onClose={onClose}
-      height={30}
-      header={false}
-    >
-      <View style={styles.modalContent}>
-        <Ionicons name={icon.name} size={48} color={icon.color} />
-        <Text style={styles.modalTitle}>{title}</Text>
-        <Text style={styles.modalText}>{message}</Text>
-      </View>
-      <View style={styles.modalButtons}>
-        <TouchableOpacity
-          style={[styles.modalButton, styles.buttonCancel]}
-          onPress={onClose}
-        >
-          <Text style={styles.buttonTextCancel}>{cancelText}</Text>
-        </TouchableOpacity>
+    <Actionsheet isOpen={visible} onClose={onClose} snapPoints={[35]}>
+      <ActionsheetBackdrop />
+      <ActionsheetContent className="max-h-[35%]">
+        <ActionsheetDragIndicatorWrapper>
+          <ActionsheetDragIndicator />
+        </ActionsheetDragIndicatorWrapper>
 
-        <TouchableOpacity
-          style={[
-            styles.modalButton,
-            { backgroundColor: getConfirmButtonColor() },
-          ]}
-          onPress={onConfirm}
-        >
-          <Text style={styles.buttonTextConfirm}>{confirmText}</Text>
-        </TouchableOpacity>
-      </View>
-    </BottomSheetModal>
+        <VStack space="lg" className="w-full px-6 pb-6">
+          {/* Content */}
+          <VStack space="md" className="items-center py-4">
+            <Box className="items-center justify-center">
+              <Ionicons name={icon.name} size={48} color={icon.color} />
+            </Box>
+            
+            <Heading size="xl" className="text-center text-gray-900">
+              {title}
+            </Heading>
+            
+            <Text size="md" className="text-center text-gray-600 leading-relaxed">
+              {message}
+            </Text>
+          </VStack>
+
+          {/* Buttons */}
+          <HStack space="md" className="w-full">
+            <Button
+              variant="outline"
+              action="secondary"
+              size="lg"
+              onPress={onClose}
+              className="flex-1"
+            >
+              <ButtonText>{cancelText}</ButtonText>
+            </Button>
+
+            <Button
+              variant="solid"
+              action={getButtonAction()}
+              size="lg"
+              onPress={onConfirm}
+              className="flex-1"
+            >
+              <ButtonText>{confirmText}</ButtonText>
+            </Button>
+          </HStack>
+        </VStack>
+      </ActionsheetContent>
+    </Actionsheet>
   );
 }
 
-const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    padding: 0,
-  },
-  modalView: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 24,
-    width: '100%',
-  },
-  modalContent: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  modalText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  modalButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonCancel: {
-    backgroundColor: '#f5f5f5',
-  },
-  buttonTextCancel: {
-    color: '#666',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  buttonTextConfirm: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});

@@ -1,10 +1,16 @@
 import React, { useCallback } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'react-native';
+import { Box } from '@/components/ui/box';
+import { Pressable } from '@/components/ui/pressable';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Badge, BadgeText, BadgeIcon } from '@/components/ui/badge';
+import { Icon, CalendarDaysIcon, ClockIcon } from '@/components/ui/icon';
 import { OptionModalType, OptionsModal } from './OptionsModal';
 import { ConfirmationModal } from './ConfirmationModal';
 import { Loading } from './Loading';
-import { Tag } from './Tag';
 
 interface ReservationCardProps {
   data: {
@@ -84,58 +90,87 @@ export function ReservationCard({
 
   return (
     <>
-      <TouchableOpacity
-        style={styles.card}
+      <Pressable
         onPress={() => setModalVisible(true)}
+        className="bg-white rounded-xl mb-4 overflow-hidden shadow-sm border border-gray-100 active:scale-[0.98] transition-transform"
       >
-        <Image
-          source={{ uri: data.image }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-        <View style={styles.content}>
-          <View style={styles.header}>
-            <Text style={styles.title}>{data.spaceName}</Text>
-          </View>
+        {/* Image with status overlay */}
+        <Box className="relative">
+          <Image
+            source={{ uri: data.image }}
+            className="w-full h-40"
+            style={{ resizeMode: 'cover' }}
+          />
+          
+          {/* Status badge */}
+          <Box className="absolute top-3 right-3">
+            <Badge action="success" variant="solid" className="bg-black/70 border-0">
+              <BadgeText className="text-white font-medium text-xs">
+                Confirmado
+              </BadgeText>
+            </Badge>
+          </Box>
+        </Box>
 
-          <Text style={styles.sport}>{data.sport}</Text>
+        <VStack space="sm" className="p-4">
+          {/* Header */}
+          <VStack space="xs">
+            <Heading size="lg" className="text-gray-900 leading-tight">
+              {data.spaceName}
+            </Heading>
+            <Text size="md" className="text-blue-600 font-medium">
+              {data.sport}
+            </Text>
+          </VStack>
 
-          <View style={styles.details}>
-            <View style={styles.detailItem}>
-              <Ionicons name="calendar-outline" size={16} color="#666" />
-              <Text style={styles.detailText}>{data.date}</Text>
-            </View>
-            <View style={styles.detailItem}>
-              <Ionicons name="time-outline" size={16} color="#666" />
-              <Text style={styles.detailText}>{data.time}</Text>
-            </View>
-          </View>
+          {/* Date and Time */}
+          <HStack space="lg" className="py-2">
+            <HStack space="xs" className="items-center flex-1">
+              <Icon as={CalendarDaysIcon} size="sm" className="text-gray-500" />
+              <Text size="sm" className="text-gray-600">
+                {data.date}
+              </Text>
+            </HStack>
+            <HStack space="xs" className="items-center flex-1">
+              <Icon as={ClockIcon} size="sm" className="text-gray-500" />
+              <Text size="sm" className="text-gray-600">
+                {data.time}
+              </Text>
+            </HStack>
+          </HStack>
 
-          <View style={styles.details}>
-            <View style={styles.detailItem}>
-              <Ionicons name="hourglass-outline" size={16} color="#666" />
-              <Text style={styles.detailText}>{data.duration}</Text>
-            </View>
-            <View style={styles.detailItem}>
-              <Ionicons name="people-outline" size={16} color="#666" />
-              <Text style={styles.detailText}>{data.people} pessoas</Text>
-            </View>
-          </View>
+          {/* Duration and People */}
+          <HStack space="lg" className="pb-2">
+            <HStack space="xs" className="items-center flex-1">
+              <Icon as={ClockIcon} size="sm" className="text-gray-500" />
+              <Text size="sm" className="text-gray-600">
+                {data.duration}
+              </Text>
+            </HStack>
+            <HStack space="xs" className="items-center flex-1">
+              <Icon as={ClockIcon} size="sm" className="text-gray-500" />
+              <Text size="sm" className="text-gray-600">
+                {data.people} pessoas
+              </Text>
+            </HStack>
+          </HStack>
 
-          <View style={styles.priceContainer}>
-            <Tag
-              label={`R$ ${data.pricePerPerson.toFixed(2)}/pessoa`}
-              variant="neutral"
-              icon="person-outline"
-            />
-            <Tag
-              label={`R$ ${data.price.toFixed(2)}`}
-              variant="action"
-              icon="cash-outline"
-            />
-          </View>
-        </View>
-      </TouchableOpacity>
+          {/* Price Section */}
+          <HStack className="justify-between items-center pt-2 border-t border-gray-100">
+            <Badge action="muted" variant="outline" size="sm">
+              <BadgeText className="text-gray-600">
+                R$ {data.pricePerPerson.toFixed(2)}/pessoa
+              </BadgeText>
+            </Badge>
+            
+            <Badge action="info" variant="solid" size="md">
+              <BadgeText className="text-gray-900 font-semibold">
+                R$ {data.price.toFixed(2)}
+              </BadgeText>
+            </Badge>
+          </HStack>
+        </VStack>
+      </Pressable>
 
       <OptionsModal
         visible={modalVisible}
@@ -161,63 +196,3 @@ export function ReservationCard({
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 16,
-    overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  image: {
-    width: '100%',
-    height: 150,
-  },
-  content: {
-    padding: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  sport: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 12,
-  },
-  details: {
-    flexDirection: 'row',
-    gap: 16,
-    marginBottom: 12,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  detailText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  priceContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 8,
-  },
-});
