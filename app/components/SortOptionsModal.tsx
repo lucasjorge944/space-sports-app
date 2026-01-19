@@ -1,7 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { IconButton } from './IconButton';
-import { BottomSheetModal } from './BottomSheetModal';
+import {
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
+  ActionsheetItem,
+  ActionsheetItemText,
+} from '@/components/ui/actionsheet';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Pressable } from '@/components/ui/pressable';
 import { Ionicons } from '@expo/vector-icons';
 
 export interface SortOptionConfig {
@@ -25,90 +37,78 @@ export function SortOptionsModal({
   onOptionSelect,
   options,
 }: SortOptionsModalProps) {
-  const SortOption = ({ title, value, icon }: SortOptionConfig) => (
-    <View style={styles.sortOption}>
-      <IconButton
-        name={icon}
-        size="large"
-        selected={selectedOption === value}
+  const SortOption = ({ title, value, icon }: SortOptionConfig) => {
+    const isSelected = selectedOption === value;
+    
+    return (
+      <Pressable
         onPress={() => {
           onOptionSelect(value);
           onClose();
         }}
-      />
-      <Text
-        style={[
-          styles.sortOptionText,
-          selectedOption === value && styles.sortOptionTextSelected,
-        ]}
-        numberOfLines={1}
+        className="items-center justify-center p-4 rounded-xl active:bg-gray-100 min-h-[80px]"
+        style={{
+          backgroundColor: isSelected ? '#e3f2fd' : '#f8f9fa',
+          borderWidth: isSelected ? 2 : 1,
+          borderColor: isSelected ? '#1976d2' : '#e0e0e0',
+        }}
       >
-        {title}
-      </Text>
-    </View>
-  );
-
-  // Divide options into rows of 3
-  const rows = options.reduce((acc, curr, i) => {
-    const rowIndex = Math.floor(i / 3);
-    if (!acc[rowIndex]) {
-      acc[rowIndex] = [];
-    }
-    acc[rowIndex].push(curr);
-    return acc;
-  }, [] as SortOptionConfig[][]);
+        <Box className="items-center justify-center mb-2">
+          <Ionicons 
+            name={icon} 
+            size={24} 
+            color={isSelected ? '#1976d2' : '#666'} 
+          />
+        </Box>
+        <Text
+          size="sm"
+          className={`text-center ${isSelected ? 'text-blue-600 font-medium' : 'text-gray-600'}`}
+          numberOfLines={2}
+        >
+          {title}
+        </Text>
+      </Pressable>
+    );
+  };
 
   return (
-    <BottomSheetModal
-      visible={visible}
-      onClose={onClose}
-      title="Ordenar por"
-      height={50}
-    >
-      <View style={styles.optionsContainer}>
-        {rows.map((row, rowIndex) => (
-          <View key={rowIndex} style={styles.optionsRow}>
-            {row.map((option) => (
-              <SortOption key={option.value} {...option} />
-            ))}
-            {/* Add empty views to maintain grid alignment if row is not complete */}
-            {row.length < 3 &&
-              Array(3 - row.length)
-                .fill(null)
-                .map((_, i) => (
-                  <View key={`empty-${i}`} style={styles.emptySlot} />
+    <Actionsheet isOpen={visible} onClose={onClose} snapPoints={[50]}>
+      <ActionsheetBackdrop />
+      <ActionsheetContent className="max-h-[50%]">
+        <ActionsheetDragIndicatorWrapper>
+          <ActionsheetDragIndicator />
+        </ActionsheetDragIndicatorWrapper>
+
+        <VStack space="lg" className="w-full px-2 pb-4">
+          {/* Header */}
+          <Heading size="lg" className="text-center text-gray-900 mt-2">
+            Ordenar por
+          </Heading>
+
+          {/* Options Grid */}
+          <VStack space="md" className="w-full">
+            {/* Create rows of 3 items */}
+            {Array.from({ length: Math.ceil(options.length / 3) }, (_, rowIndex) => (
+              <HStack key={rowIndex} space="md" className="justify-between w-full">
+                {options.slice(rowIndex * 3, (rowIndex + 1) * 3).map((option) => (
+                  <Box key={option.value} className="flex-1">
+                    <SortOption {...option} />
+                  </Box>
                 ))}
-          </View>
-        ))}
-      </View>
-    </BottomSheetModal>
+                {/* Fill empty slots to maintain grid alignment */}
+                {options.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 &&
+                  Array.from({ 
+                    length: 3 - options.slice(rowIndex * 3, (rowIndex + 1) * 3).length 
+                  }).map((_, emptyIndex) => (
+                    <Box key={`empty-${emptyIndex}`} className="flex-1" />
+                  ))
+                }
+              </HStack>
+            ))}
+          </VStack>
+        </VStack>
+      </ActionsheetContent>
+    </Actionsheet>
   );
 }
 
-const styles = StyleSheet.create({
-  optionsContainer: {
-    paddingVertical: 20,
-  },
-  optionsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-  },
-  sortOption: {
-    alignItems: 'center',
-    width: '30%', // Slightly less than 33.33% to account for spacing
-  },
-  emptySlot: {
-    width: '30%', // Same width as sortOption
-  },
-  sortOptionText: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 8,
-    textAlign: 'center',
-  },
-  sortOptionTextSelected: {
-    color: '#1a73e8',
-    fontWeight: '500',
-  },
-});

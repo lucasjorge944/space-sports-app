@@ -15,11 +15,11 @@
     "test:ci": "jest --ci --coverage --watchAll=false"
   },
   "dependencies": {
-    "@expo/html-elements": "^0.10.1",
+    "@expo/html-elements": "^0.12.5",
     "@expo/vector-icons": "^15.0.3",
     "@gluestack-ui/core": "^3.0.10",
     "@gluestack-ui/utils": "^3.0.11",
-    "@legendapp/motion": "^2.3.0",
+    "@legendapp/motion": "^2.5.3",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/datetimepicker": "8.4.4",
     "@react-native-firebase/app": "^23.8.2",
