@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Image, Dimensions } from 'react-native';
+import { Image, Dimensions, ScrollView as RNScrollView } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { IconButton } from '../components/IconButton';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Pressable } from '@/components/ui/pressable';
+import { ScrollView } from '@/components/ui/scroll-view';
+import { Icon } from '@/components/ui/icon';
+import { ArrowLeft, Share } from 'lucide-react-native';
 import { SpaceAmenities } from '../components/SpaceAmenities';
 import { SpaceSchedule } from '../components/SpaceSchedule';
 import { SpaceBasicInfo } from '../components/SpaceBasicInfo';
@@ -84,375 +90,80 @@ export default function SpaceDetailsScreen() {
   const { id } = useLocalSearchParams();
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <IconButton
-          name="arrow-back"
-          onPress={() => router.back()}
-          color="#666"
-        />
-        <IconButton name="share-outline" onPress={() => {}} color="#666" />
-      </View>
+    <Box className="flex-1 bg-white">
+      {/* Header flutuante */}
+      <Box className="absolute top-0 left-0 right-0 z-10">
+        <Box className="pt-12 pb-4 px-5">
+          <HStack className="justify-between">
+            <Pressable 
+              onPress={() => router.back()}
+              className="w-10 h-10 bg-black/50 rounded-full items-center justify-center"
+            >
+              <Icon as={ArrowLeft} size="lg" className="text-white" />
+            </Pressable>
+            
+            <Pressable 
+              onPress={() => {}}
+              className="w-10 h-10 bg-black/50 rounded-full items-center justify-center"
+            >
+              <Icon as={Share} size="lg" className="text-white" />
+            </Pressable>
+          </HStack>
+        </Box>
+      </Box>
 
-      <ScrollView
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        style={styles.imageCarousel}
-      >
-        {MOCK_SPACE.photos.map((photo, index) => (
-          <Image
-            key={index}
-            source={{ uri: photo }}
-            style={styles.coverImage}
-            resizeMode="cover"
+      <ScrollView className="flex-1">
+        {/* Carrossel de imagens */}
+        <Box className="h-80">
+          <RNScrollView
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+          >
+            {MOCK_SPACE.photos.map((photo, index) => (
+              <Image
+                key={index}
+                source={{ uri: photo }}
+                style={{
+                  width: Dimensions.get('window').width,
+                  height: 320,
+                }}
+                resizeMode="cover"
+              />
+            ))}
+          </RNScrollView>
+        </Box>
+
+        {/* Conteúdo */}
+        <VStack className="p-5" space="lg">
+          <SpaceBasicInfo
+            name={MOCK_SPACE.name}
+            rating={MOCK_SPACE.rating}
+            reviews={MOCK_SPACE.reviews}
+            address={MOCK_SPACE.address}
+            distance={MOCK_SPACE.distance}
+            description={MOCK_SPACE.description}
+            sports={MOCK_SPACE.sports}
           />
-        ))}
+
+          <SpaceSchedule schedule={MOCK_SPACE.schedule} />
+
+          <SpaceAmenities amenities={MOCK_SPACE.amenities} />
+
+          <SpaceServices
+            hourlyPrices={MOCK_SPACE.hourlyPrices}
+            classPlans={MOCK_SPACE.classPlans}
+            spaceName={MOCK_SPACE.name}
+            sports={MOCK_SPACE.sports}
+          />
+
+          <SpaceReviews
+            rating={MOCK_SPACE.rating}
+            reviews={MOCK_SPACE.reviewsUsers}
+          />
+        </VStack>
       </ScrollView>
-
-      <View style={styles.content}>
-        <SpaceBasicInfo
-          name={MOCK_SPACE.name}
-          rating={MOCK_SPACE.rating}
-          reviews={MOCK_SPACE.reviews}
-          address={MOCK_SPACE.address}
-          distance={MOCK_SPACE.distance}
-          description={MOCK_SPACE.description}
-          sports={MOCK_SPACE.sports}
-        />
-
-        <SpaceSchedule schedule={MOCK_SPACE.schedule} />
-
-        <SpaceAmenities amenities={MOCK_SPACE.amenities} />
-
-        <SpaceServices
-          hourlyPrices={MOCK_SPACE.hourlyPrices}
-          classPlans={MOCK_SPACE.classPlans}
-          spaceName={MOCK_SPACE.name}
-          sports={MOCK_SPACE.sports}
-        />
-
-        <SpaceReviews
-          rating={MOCK_SPACE.rating}
-          reviews={MOCK_SPACE.reviewsUsers}
-        />
-      </View>
-    </ScrollView>
+    </Box>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 20,
-    paddingTop: 60,
-    zIndex: 1,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  shareButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imageCarousel: {
-    height: 300,
-  },
-  coverImage: {
-    width: Dimensions.get('window').width,
-    height: 300,
-  },
-  content: {
-    padding: 20,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    flex: 1,
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  rating: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  reviews: {
-    fontSize: 14,
-    color: '#666',
-  },
-  locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-    gap: 4,
-  },
-  address: {
-    fontSize: 14,
-    color: '#666',
-    flex: 1,
-  },
-  distance: {
-    fontSize: 14,
-    color: '#666',
-  },
-  description: {
-    fontSize: 16,
-    color: '#333',
-    lineHeight: 24,
-    marginBottom: 16,
-  },
-  sportsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 24,
-  },
-  sportTag: {
-    backgroundColor: '#e8f0fe',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  sportText: {
-    color: '#1a73e8',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  scheduleContainer: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
-  },
-  scheduleItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  scheduleDay: {
-    fontSize: 14,
-    color: '#666',
-  },
-  scheduleTime: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '500',
-  },
-  servicesContainer: {
-    marginBottom: 24,
-  },
-  tabsContainer: {
-    flexDirection: 'row',
-    marginBottom: 16,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
-    padding: 4,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: 'center',
-    borderRadius: 6,
-  },
-  activeTab: {
-    backgroundColor: '#fff',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  tabText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#666',
-  },
-  activeTabText: {
-    color: '#1a73e8',
-  },
-  pricesContainer: {
-    gap: 12,
-  },
-  priceCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#e8e8e8',
-  },
-  hours: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-  },
-  price: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1a73e8',
-  },
-  plansContainer: {
-    gap: 12,
-  },
-  planCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#e8e8e8',
-  },
-  planFrequency: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#333',
-  },
-  planPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1a73e8',
-  },
-  reviewsContainer: {
-    marginBottom: 24,
-  },
-  reviewsSummary: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  ratingBig: {
-    alignItems: 'center',
-  },
-  ratingNumber: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  starsContainer: {
-    flexDirection: 'row',
-    gap: 4,
-    marginVertical: 8,
-  },
-  totalReviews: {
-    fontSize: 14,
-    color: '#666',
-  },
-  reviewsList: {
-    gap: 16,
-  },
-  reviewCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#e8e8e8',
-  },
-  reviewHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  reviewerAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 12,
-  },
-  reviewerInfo: {
-    flex: 1,
-  },
-  reviewerName: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-  },
-  reviewRating: {
-    flexDirection: 'row',
-    gap: 2,
-    marginTop: 4,
-  },
-  reviewDate: {
-    fontSize: 12,
-    color: '#666',
-  },
-  reviewComment: {
-    fontSize: 14,
-    color: '#333',
-    lineHeight: 20,
-  },
-  addReviewButton: {
-    marginBottom: 20,
-  },
-  reviewForm: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#e8e8e8',
-  },
-  reviewFormTitle: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#333',
-    marginBottom: 16,
-  },
-  ratingInput: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
-    marginBottom: 16,
-  },
-  commentInput: {
-    borderWidth: 1,
-    borderColor: '#e8e8e8',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 14,
-    color: '#333',
-    minHeight: 100,
-    marginBottom: 16,
-  },
-  reviewFormButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-});

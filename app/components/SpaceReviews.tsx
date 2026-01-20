@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { CustomButton } from './CustomButton';
-import { TextAreaInput } from './TextAreaInput';
+import { Image } from 'react-native';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Pressable } from '@/components/ui/pressable';
+import { Button, ButtonText } from '@/components/ui/button';
+import { Textarea, TextareaInput } from '@/components/ui/textarea';
+import { Icon } from '@/components/ui/icon';
+import { Star } from 'lucide-react-native';
 
 interface ReviewUser {
   id: string;
@@ -31,209 +38,166 @@ export function SpaceReviews({ rating, reviews }: SpaceReviewsProps) {
     setShowReviewForm(false);
   };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Avaliações</Text>
-      <View style={styles.reviewsSummary}>
-        <View style={styles.ratingBig}>
-          <Text style={styles.ratingNumber}>{rating}</Text>
-          <View style={styles.starsContainer}>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Ionicons
-                key={star}
-                name={star <= rating ? 'star' : 'star-outline'}
-                size={20}
-                color="#FFD700"
-              />
-            ))}
-          </View>
-          <Text style={styles.totalReviews}>{reviews.length} avaliações</Text>
-        </View>
-      </View>
-
-      {!showReviewForm ? (
-        <CustomButton
-          title="Avaliar Espaço"
-          variant="primary"
-          onPress={() => setShowReviewForm(true)}
-          style={styles.addReviewButton}
+  const renderStars = (currentRating: number, size: 'sm' | 'md' | 'lg' = 'md', interactive = false) => {
+    return [1, 2, 3, 4, 5].map((star) => (
+      <Pressable
+        key={star}
+        onPress={interactive ? () => setUserRating(star) : undefined}
+        disabled={!interactive}
+      >
+        <Icon
+          as={Star}
+          size={size}
+          className={star <= currentRating ? 'text-yellow-500' : 'text-gray-300'}
+          fill={star <= currentRating ? '#eab308' : 'transparent'}
         />
+      </Pressable>
+    ));
+  };
+
+  return (
+    <VStack space="lg">
+      {/* Título da seção */}
+      <Heading size="lg" className="text-gray-900">
+        Avaliações
+      </Heading>
+
+      {/* Resumo das avaliações */}
+      <Box className="items-center py-6 bg-gray-50 rounded-xl">
+        <VStack className="items-center" space="sm">
+          <Text size="4xl" className="text-gray-900 font-bold">
+            {rating.toFixed(1)}
+          </Text>
+          
+          <HStack space="xs">
+            {renderStars(rating, 'md')}
+          </HStack>
+          
+          <Text size="sm" className="text-gray-600">
+            {reviews.length} avaliação{reviews.length !== 1 ? 'ões' : ''}
+          </Text>
+        </VStack>
+      </Box>
+
+      {/* Botão ou formulário de avaliação */}
+      {!showReviewForm ? (
+        <Button
+          action="primary"
+          onPress={() => setShowReviewForm(true)}
+          className="bg-blue-600"
+        >
+          <ButtonText className="text-white font-medium">
+            Avaliar Espaço
+          </ButtonText>
+        </Button>
       ) : (
-        <View style={styles.reviewForm}>
-          <Text style={styles.reviewFormTitle}>Sua Avaliação</Text>
-          <View style={styles.ratingInput}>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <TouchableOpacity key={star} onPress={() => setUserRating(star)}>
-                <Ionicons
-                  name={star <= userRating ? 'star' : 'star-outline'}
-                  size={32}
-                  color="#FFD700"
+        <Box className="bg-white border border-gray-200 rounded-xl p-4">
+          <VStack space="md">
+            <Heading size="md" className="text-gray-900">
+              Sua Avaliação
+            </Heading>
+            
+            {/* Seletor de estrelas */}
+            <VStack space="sm">
+              <Text size="sm" className="text-gray-600 font-medium">
+                Classificação
+              </Text>
+              <HStack className="justify-center" space="xs">
+                {renderStars(userRating, 'lg', true)}
+              </HStack>
+            </VStack>
+
+            {/* Campo de comentário */}
+            <VStack space="sm">
+              <Text size="sm" className="text-gray-600 font-medium">
+                Comentário
+              </Text>
+              <Textarea className="bg-gray-50 border-gray-200">
+                <TextareaInput
+                  placeholder="Conte sua experiência neste espaço..."
+                  value={userComment}
+                  onChangeText={setUserComment}
+                  className="text-gray-900 min-h-24"
                 />
-              </TouchableOpacity>
-            ))}
-          </View>
-          <TextAreaInput
-            label="Comentário"
-            value={userComment}
-            onChangeText={setUserComment}
-            placeholder="Conte sua experiência neste espaço..."
-            numberOfLines={4}
-          />
-          <View style={styles.reviewFormButtons}>
-            <CustomButton
-              title="Cancelar"
-              variant="outline"
-              onPress={() => {
-                setShowReviewForm(false);
-                setUserRating(0);
-                setUserComment('');
-              }}
-            />
-            <CustomButton
-              title="Enviar Avaliação"
-              variant="primary"
-              size="small"
-              onPress={handleSubmitReview}
-              style={{ flex: 1 }}
-              disabled={userRating === 0 || !userComment.trim()}
-            />
-          </View>
-        </View>
+              </Textarea>
+            </VStack>
+
+            {/* Botões de ação */}
+            <HStack space="sm">
+              <Button
+                variant="outline"
+                action="secondary"
+                onPress={() => {
+                  setShowReviewForm(false);
+                  setUserRating(0);
+                  setUserComment('');
+                }}
+                className="flex-1"
+              >
+                <ButtonText className="text-gray-600">
+                  Cancelar
+                </ButtonText>
+              </Button>
+              
+              <Button
+                action="primary"
+                onPress={handleSubmitReview}
+                disabled={userRating === 0 || !userComment.trim()}
+                className="flex-1 bg-blue-600"
+              >
+                <ButtonText className="text-white font-medium">
+                  Enviar
+                </ButtonText>
+              </Button>
+            </HStack>
+          </VStack>
+        </Box>
       )}
 
-      <View style={styles.reviewsList}>
+      {/* Lista de avaliações */}
+      <VStack space="md">
         {reviews.map((review) => (
-          <View key={review.id} style={styles.reviewCard}>
-            <View style={styles.reviewHeader}>
-              <Image
-                source={{ uri: review.userAvatar }}
-                style={styles.reviewerAvatar}
-              />
-              <View style={styles.reviewerInfo}>
-                <Text style={styles.reviewerName}>{review.userName}</Text>
-                <View style={styles.reviewRating}>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Ionicons
-                      key={star}
-                      name={star <= review.rating ? 'star' : 'star-outline'}
-                      size={16}
-                      color="#FFD700"
-                    />
-                  ))}
-                </View>
-              </View>
-              <Text style={styles.reviewDate}>
-                {new Date(review.date).toLocaleDateString('pt-BR')}
+          <Box
+            key={review.id}
+            className="bg-white border border-gray-200 rounded-xl p-4"
+          >
+            <VStack space="sm">
+              {/* Header da avaliação */}
+              <HStack className="items-center justify-between">
+                <HStack className="items-center flex-1" space="sm">
+                  <Image
+                    source={{ uri: review.userAvatar }}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 20,
+                    }}
+                  />
+                  
+                  <VStack className="flex-1">
+                    <Text size="md" className="text-gray-900 font-medium">
+                      {review.userName}
+                    </Text>
+                    <HStack space="xs">
+                      {renderStars(review.rating, 'sm')}
+                    </HStack>
+                  </VStack>
+                </HStack>
+                
+                <Text size="xs" className="text-gray-500">
+                  {new Date(review.date).toLocaleDateString('pt-BR')}
+                </Text>
+              </HStack>
+
+              {/* Comentário */}
+              <Text size="md" className="text-gray-700 leading-5">
+                {review.comment}
               </Text>
-            </View>
-            <Text style={styles.reviewComment}>{review.comment}</Text>
-          </View>
+            </VStack>
+          </Box>
         ))}
-      </View>
-    </View>
+      </VStack>
+    </VStack>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
-  },
-  reviewsSummary: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  ratingBig: {
-    alignItems: 'center',
-  },
-  ratingNumber: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  starsContainer: {
-    flexDirection: 'row',
-    gap: 4,
-    marginVertical: 8,
-  },
-  totalReviews: {
-    fontSize: 14,
-    color: '#666',
-  },
-  addReviewButton: {
-    marginBottom: 20,
-  },
-  reviewForm: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#e8e8e8',
-  },
-  reviewFormTitle: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#333',
-    marginBottom: 16,
-  },
-  ratingInput: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
-    marginBottom: 16,
-  },
-  reviewFormButtons: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 16,
-  },
-  reviewsList: {
-    gap: 16,
-  },
-  reviewCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#e8e8e8',
-  },
-  reviewHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  reviewerAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 12,
-  },
-  reviewerInfo: {
-    flex: 1,
-  },
-  reviewerName: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-  },
-  reviewRating: {
-    flexDirection: 'row',
-    gap: 2,
-    marginTop: 4,
-  },
-  reviewDate: {
-    fontSize: 12,
-    color: '#666',
-  },
-  reviewComment: {
-    fontSize: 14,
-    color: '#333',
-    lineHeight: 20,
-  },
-});

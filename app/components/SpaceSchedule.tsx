@@ -1,5 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
 
 interface Schedule {
   weekdays: string;
@@ -16,42 +20,31 @@ export function SpaceSchedule({
   title = 'Horário de Funcionamento',
 }: SpaceScheduleProps) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <View style={styles.scheduleItem}>
-        <Text style={styles.scheduleDay}>Segunda à Sexta</Text>
-        <Text style={styles.scheduleTime}>{schedule.weekdays}</Text>
-      </View>
-      <View style={styles.scheduleItem}>
-        <Text style={styles.scheduleDay}>Sábado e Domingo</Text>
-        <Text style={styles.scheduleTime}>{schedule.weekends}</Text>
-      </View>
-    </View>
+    <VStack space="md">
+      <Heading size="lg" className="text-gray-900">
+        {title}
+      </Heading>
+      
+      <VStack space="sm">
+        <HStack className="justify-between items-center py-2">
+          <Text size="md" className="text-gray-600">
+            Segunda à Sexta
+          </Text>
+          <Text size="md" className="text-gray-900 font-medium">
+            {schedule.weekdays}
+          </Text>
+        </HStack>
+        
+        <HStack className="justify-between items-center py-2">
+          <Text size="md" className="text-gray-600">
+            Sábado e Domingo
+          </Text>
+          <Text size="md" className="text-gray-900 font-medium">
+            {schedule.weekends}
+          </Text>
+        </HStack>
+      </VStack>
+    </VStack>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
-  },
-  scheduleItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  scheduleDay: {
-    fontSize: 14,
-    color: '#666',
-  },
-  scheduleTime: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '500',
-  },
-});

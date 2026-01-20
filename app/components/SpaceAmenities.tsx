@@ -1,6 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Icon } from '@/components/ui/icon';
+import { CheckCircle } from 'lucide-react-native';
 
 interface SpaceAmenitiesProps {
   amenities: string[];
@@ -12,47 +17,24 @@ export function SpaceAmenities({
   title = 'Comodidades',
 }: SpaceAmenitiesProps) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <View style={styles.amenitiesList}>
-        {amenities.map((amenity) => (
-          <View key={amenity} style={styles.amenityItem}>
-            <Ionicons
-              name="checkmark-circle-outline"
-              size={20}
-              color="#1a73e8"
-            />
-            <Text style={styles.amenityText}>{amenity}</Text>
-          </View>
+    <VStack space="md">
+      <Heading size="lg" className="text-gray-900">
+        {title}
+      </Heading>
+      
+      <Box className="flex-row flex-wrap">
+        {amenities.map((amenity, index) => (
+          <Box key={amenity} className="w-1/2 mb-3">
+            <HStack className="items-center" space="xs">
+              <Icon as={CheckCircle} size="sm" className="text-blue-600" />
+              <Text size="md" className="text-gray-700 flex-1">
+                {amenity}
+              </Text>
+            </HStack>
+          </Box>
         ))}
-      </View>
-    </View>
+      </Box>
+    </VStack>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
-  },
-  amenitiesList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-  },
-  amenityItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    width: '45%',
-  },
-  amenityText: {
-    fontSize: 14,
-    color: '#333',
-  },
-});

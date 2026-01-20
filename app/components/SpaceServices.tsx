@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
-import { CustomButton } from './CustomButton';
-import { Tabs } from './Tabs';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Pressable } from '@/components/ui/pressable';
+import { Button, ButtonText } from '@/components/ui/button';
 
 interface PriceOption {
   hours: number;
@@ -31,11 +35,6 @@ export function SpaceServices({
     'reserve'
   );
 
-  const tabs = [
-    { key: 'reserve', label: 'Reservar Espaço' },
-    { key: 'classes', label: 'Aulas' },
-  ];
-
   const handleOpenBooking = (price: PriceOption) => {
     router.push({
       pathname: '/booking',
@@ -61,102 +60,119 @@ export function SpaceServices({
   };
 
   return (
-    <View style={styles.container}>
-      <Tabs
-        tabs={tabs}
-        selectedTab={selectedTab}
-        onTabChange={(tab) => setSelectedTab(tab as 'reserve' | 'classes')}
-      />
+    <VStack space="md">
+      {/* Tabs customizadas */}
+      <Box className="bg-gray-100 rounded-lg p-1">
+        <HStack space="xs">
+          <Pressable
+            onPress={() => setSelectedTab('reserve')}
+            className={`flex-1 py-3 px-4 rounded-md ${
+              selectedTab === 'reserve'
+                ? 'bg-white shadow-sm'
+                : 'bg-transparent'
+            }`}
+          >
+            <Text
+              size="md"
+              className={`text-center font-medium ${
+                selectedTab === 'reserve'
+                  ? 'text-blue-600'
+                  : 'text-gray-600'
+              }`}
+            >
+              Reservar Espaço
+            </Text>
+          </Pressable>
+          
+          <Pressable
+            onPress={() => setSelectedTab('classes')}
+            className={`flex-1 py-3 px-4 rounded-md ${
+              selectedTab === 'classes'
+                ? 'bg-white shadow-sm'
+                : 'bg-transparent'
+            }`}
+          >
+            <Text
+              size="md"
+              className={`text-center font-medium ${
+                selectedTab === 'classes'
+                  ? 'text-blue-600'
+                  : 'text-gray-600'
+              }`}
+            >
+              Aulas
+            </Text>
+          </Pressable>
+        </HStack>
+      </Box>
 
+      {/* Conteúdo das tabs */}
       {selectedTab === 'reserve' ? (
-        <View style={styles.pricesContainer}>
+        <VStack space="sm">
           {hourlyPrices.map((price) => (
-            <View key={price.hours} style={styles.priceCard}>
-              <Text style={styles.hours}>
-                {price.hours} horas{price.hours > 1 ? 's' : ''}
-              </Text>
-              <Text style={styles.price}>R$ {price.price.toFixed(2)}</Text>
-              <CustomButton
-                title="Reservar"
-                variant="primary"
-                size="small"
-                onPress={() => handleOpenBooking(price)}
-              />
-            </View>
+            <Box
+              key={price.hours}
+              className="bg-white border border-gray-200 rounded-xl p-4"
+            >
+              <HStack className="justify-between items-center">
+                <VStack className="flex-1">
+                  <Text size="md" className="text-gray-900 font-medium">
+                    {price.hours} hora{price.hours > 1 ? 's' : ''}
+                  </Text>
+                  <Text size="lg" className="text-blue-600 font-bold">
+                    R$ {price.price.toFixed(2)}
+                  </Text>
+                </VStack>
+                
+                <Button
+                  size="sm"
+                  action="primary"
+                  onPress={() => handleOpenBooking(price)}
+                  className="bg-blue-600"
+                >
+                  <ButtonText className="text-white font-medium">
+                    Reservar
+                  </ButtonText>
+                </Button>
+              </HStack>
+            </Box>
           ))}
-        </View>
+        </VStack>
       ) : (
-        <View style={styles.plansContainer}>
+        <VStack space="sm">
           {classPlans.map((plan) => (
-            <View key={plan.frequency} style={styles.planCard}>
-              <Text style={styles.planFrequency}>{plan.frequency}</Text>
-              <Text style={styles.planPrice}>
-                {plan.price > 0
-                  ? `R$ ${plan.price.toFixed(2)}/mês`
-                  : 'Gratuito'}
-              </Text>
-              <CustomButton
-                title="Matricular"
-                variant="primary"
-                size="small"
-                onPress={() => handleOpenEnrollment(plan)}
-              />
-            </View>
+            <Box
+              key={plan.frequency}
+              className="bg-white border border-gray-200 rounded-xl p-4"
+            >
+              <HStack className="justify-between items-center">
+                <VStack className="flex-1">
+                  <Text size="md" className="text-gray-900 font-medium">
+                    {plan.frequency}
+                  </Text>
+                  <Text size="lg" className="text-blue-600 font-bold">
+                    {plan.price > 0
+                      ? `R$ ${plan.price.toFixed(2)}/mês`
+                      : 'Gratuito'}
+                  </Text>
+                </VStack>
+                
+                <Button
+                  size="sm"
+                  action="primary"
+                  onPress={() => handleOpenEnrollment(plan)}
+                  className="bg-blue-600"
+                >
+                  <ButtonText className="text-white font-medium">
+                    Matricular
+                  </ButtonText>
+                </Button>
+              </HStack>
+            </Box>
           ))}
-        </View>
+        </VStack>
       )}
-    </View>
+    </VStack>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 24,
-  },
-  pricesContainer: {
-    gap: 12,
-  },
-  priceCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#e8e8e8',
-  },
-  hours: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-  },
-  price: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1a73e8',
-  },
-  plansContainer: {
-    gap: 12,
-  },
-  planCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#e8e8e8',
-  },
-  planFrequency: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#333',
-  },
-  planPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1a73e8',
-  },
-});

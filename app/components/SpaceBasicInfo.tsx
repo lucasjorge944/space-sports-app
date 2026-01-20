@@ -1,6 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Badge, BadgeText } from '@/components/ui/badge';
+import { Icon } from '@/components/ui/icon';
+import { Star, MapPin } from 'lucide-react-native';
 
 interface SpaceBasicInfoProps {
   name: string;
@@ -22,101 +28,50 @@ export function SpaceBasicInfo({
   sports,
 }: SpaceBasicInfoProps) {
   return (
-    <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>{name}</Text>
-        <View style={styles.ratingContainer}>
-          <Ionicons name="star" size={20} color="#FFD700" />
-          <Text style={styles.rating}>{rating}</Text>
-          <Text style={styles.reviews}>({reviews})</Text>
-        </View>
-      </View>
+    <VStack space="md">
+      {/* Título e avaliação */}
+      <HStack className="justify-between items-start">
+        <Heading size="xl" className="text-gray-900 flex-1 mr-4">
+          {name}
+        </Heading>
+        <HStack className="items-center" space="xs">
+          <Icon as={Star} size="sm" className="text-yellow-500" />
+          <Text size="md" className="text-gray-900 font-semibold">
+            {rating}
+          </Text>
+          <Text size="sm" className="text-gray-500">
+            ({reviews})
+          </Text>
+        </HStack>
+      </HStack>
 
-      <View style={styles.locationContainer}>
-        <Ionicons name="location-outline" size={20} color="#666" />
-        <Text style={styles.address}>{address}</Text>
-        <Text style={styles.distance}>• {distance}</Text>
-      </View>
+      {/* Localização */}
+      <HStack className="items-center" space="xs">
+        <Icon as={MapPin} size="sm" className="text-gray-500" />
+        <Text size="sm" className="text-gray-600 flex-1">
+          {address}
+        </Text>
+        <Text size="sm" className="text-gray-500">
+          • {distance}
+        </Text>
+      </HStack>
 
-      <Text style={styles.description}>{description}</Text>
+      {/* Descrição */}
+      <Text size="md" className="text-gray-700 leading-6">
+        {description}
+      </Text>
 
-      <View style={styles.sportsContainer}>
+      {/* Tags de esportes */}
+      <HStack className="flex-wrap" space="xs">
         {sports.map((sport) => (
-          <View key={sport} style={styles.sportTag}>
-            <Text style={styles.sportText}>{sport}</Text>
-          </View>
+          <Badge key={sport} action="info" className="bg-blue-50 border-blue-200">
+            <BadgeText className="text-blue-700 font-medium">
+              {sport}
+            </BadgeText>
+          </Badge>
         ))}
-      </View>
-    </View>
+      </HStack>
+    </VStack>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 24,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    flex: 1,
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  rating: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  reviews: {
-    fontSize: 14,
-    color: '#666',
-  },
-  locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-    gap: 4,
-  },
-  address: {
-    fontSize: 14,
-    color: '#666',
-    flex: 1,
-  },
-  distance: {
-    fontSize: 14,
-    color: '#666',
-  },
-  description: {
-    fontSize: 16,
-    color: '#333',
-    lineHeight: 24,
-    marginBottom: 16,
-  },
-  sportsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 24,
-  },
-  sportTag: {
-    backgroundColor: '#e8f0fe',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  sportText: {
-    color: '#1a73e8',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-});

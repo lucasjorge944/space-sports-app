@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-  Modal,
-  Share,
-} from 'react-native';
+import { Share } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Pressable } from '@/components/ui/pressable';
+import { ScrollView } from '@/components/ui/scroll-view';
+import { Button, ButtonText } from '@/components/ui/button';
+import { Modal, ModalBackdrop, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from '@/components/ui/modal';
+import { Icon } from '@/components/ui/icon';
+import { X, Calendar as CalendarIcon, Clock, ChevronDown, Minus, Plus, Check, Share2 } from 'lucide-react-native';
 import { Loading } from '../components/Loading';
-import { CustomButton } from '../components/CustomButton';
-import { SelectInput } from '../components/SelectInput';
-import { IconButton } from '../components/IconButton';
 
 export default function BookingScreen() {
   const params = useLocalSearchParams();
@@ -133,627 +131,456 @@ export default function BookingScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <Box className="flex-1 bg-white">
       {/* Header */}
-      <View style={styles.header}>
-        <IconButton
-          name="close-outline"
-          onPress={() => router.back()}
-          color="#666"
-        />
-        <Text style={styles.headerTitle}>Fazer Reserva</Text>
-        <View style={{ width: 24 }} />
-      </View>
+      <Box className="bg-white border-b border-gray-100">
+        <Box className="pt-4 pb-4 px-5">
+          <HStack className="items-center justify-between">
+            <Pressable 
+              onPress={() => router.back()}
+              className="p-2 -ml-2"
+            >
+              <Icon as={X} size="lg" className="text-gray-600" />
+            </Pressable>
+            
+            <Heading size="lg" className="text-gray-900">
+              Fazer Reserva
+            </Heading>
+            
+            <Box className="w-6" />
+          </HStack>
+        </Box>
+      </Box>
 
-      <ScrollView style={styles.content}>
+      <ScrollView className="flex-1">
         {/* Informações do Espaço */}
-        <View style={styles.spaceInfo}>
-          <Text style={styles.spaceName}>{spaceName}</Text>
-          <View style={styles.priceContainer}>
-            <Text style={styles.duration}>
-              {hours} hora{hours > 1 ? 's' : ''}
-            </Text>
-            <Text style={styles.price}>R$ {price.toFixed(2)}</Text>
-          </View>
-        </View>
+        <Box className="p-5 border-b border-gray-100">
+          <VStack space="sm">
+            <Heading size="xl" className="text-gray-900">
+              {spaceName}
+            </Heading>
+            <HStack className="justify-between items-center">
+              <Text size="md" className="text-gray-600">
+                {hours} hora{hours > 1 ? 's' : ''}
+              </Text>
+              <Text size="xl" className="text-blue-600 font-bold">
+                R$ {price.toFixed(2)}
+              </Text>
+            </HStack>
+          </VStack>
+        </Box>
 
         {/* Formulário */}
-        <View style={styles.form}>
+        <VStack className="p-5" space="lg">
           {/* Data */}
-          <SelectInput
-            label="Data"
-            value={date.toLocaleDateString('pt-BR')}
-            onPress={() => setShowCalendar(true)}
-            iconRight="calendar-outline"
-          />
+          <VStack space="sm">
+            <Text size="md" className="text-gray-700 font-medium">
+              Data
+            </Text>
+            <Pressable
+              onPress={() => setShowCalendar(true)}
+              className="p-4 border border-gray-200 rounded-lg bg-gray-50"
+            >
+              <HStack className="justify-between items-center">
+                <Text size="md" className="text-gray-900">
+                  {date.toLocaleDateString('pt-BR')}
+                </Text>
+                <Icon as={CalendarIcon} size="md" className="text-gray-500" />
+              </HStack>
+            </Pressable>
+          </VStack>
 
           {/* Hora */}
-          <SelectInput
-            label="Hora"
-            value={getTimeInterval(selectedTime.split(':')[0])}
-            onPress={() => setShowTimePicker(true)}
-            iconRight="time-outline"
-          />
+          <VStack space="sm">
+            <Text size="md" className="text-gray-700 font-medium">
+              Horário
+            </Text>
+            <Pressable
+              onPress={() => setShowTimePicker(true)}
+              className="p-4 border border-gray-200 rounded-lg bg-gray-50"
+            >
+              <HStack className="justify-between items-center">
+                <Text size="md" className="text-gray-900">
+                  {getTimeInterval(selectedTime.split(':')[0])}
+                </Text>
+                <Icon as={Clock} size="md" className="text-gray-500" />
+              </HStack>
+            </Pressable>
+          </VStack>
 
           {/* Esporte */}
-          <SelectInput
-            label="Esporte"
-            value={SPORTS_OPTIONS.find((s) => s.value === sport)?.label || ''}
-            onPress={() => setShowSportPicker(true)}
-            iconRight="chevron-down"
-          />
+          <VStack space="sm">
+            <Text size="md" className="text-gray-700 font-medium">
+              Esporte
+            </Text>
+            <Pressable
+              onPress={() => setShowSportPicker(true)}
+              className="p-4 border border-gray-200 rounded-lg bg-gray-50"
+            >
+              <HStack className="justify-between items-center">
+                <Text size="md" className="text-gray-900">
+                  {SPORTS_OPTIONS.find((s) => s.value === sport)?.label || ''}
+                </Text>
+                <Icon as={ChevronDown} size="md" className="text-gray-500" />
+              </HStack>
+            </Pressable>
+          </VStack>
 
           {/* Quantidade de Pessoas */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Quantidade de Pessoas</Text>
-            <View style={styles.numberInputContainer}>
-              <TouchableOpacity
-                style={styles.numberButton}
-                onPress={() => setPeople(Math.max(1, people - 1))}
-              >
-                <Ionicons name="remove" size={20} color="#666" />
-              </TouchableOpacity>
+          <VStack space="sm">
+            <Text size="md" className="text-gray-700 font-medium">
+              Quantidade de Pessoas
+            </Text>
+            <Box className="border border-gray-200 rounded-lg overflow-hidden">
+              <HStack className="items-center">
+                <Pressable
+                  onPress={() => setPeople(Math.max(1, people - 1))}
+                  className="p-4 bg-gray-100 items-center justify-center"
+                >
+                  <Icon as={Minus} size="md" className="text-gray-600" />
+                </Pressable>
 
-              <View style={styles.numberDisplay}>
-                <Text style={styles.numberText}>{people}</Text>
-              </View>
+                <Box className="flex-1 py-4 items-center justify-center">
+                  <Text size="lg" className="text-gray-900 font-medium">
+                    {people}
+                  </Text>
+                </Box>
 
-              <TouchableOpacity
-                style={styles.numberButton}
-                onPress={() => setPeople(Math.min(20, people + 1))}
-              >
-                <Ionicons name="add" size={20} color="#666" />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.pricePerPerson}>
+                <Pressable
+                  onPress={() => setPeople(Math.min(20, people + 1))}
+                  className="p-4 bg-gray-100 items-center justify-center"
+                >
+                  <Icon as={Plus} size="md" className="text-gray-600" />
+                </Pressable>
+              </HStack>
+            </Box>
+            <Text size="sm" className="text-gray-500 italic">
               R$ {calculatePricePerPerson()} por pessoa
             </Text>
-          </View>
-        </View>
+          </VStack>
+        </VStack>
       </ScrollView>
 
-      {/* Botões */}
-      <View style={styles.footer}>
-        <CustomButton
-          title="Confirmar Reserva"
-          variant="primary"
-          size="large"
+      {/* Botão de confirmação */}
+      <Box className="p-5 border-t border-gray-100">
+        <Button
+          size="lg"
+          action="primary"
           onPress={handleSubmit}
-        />
-      </View>
+          className="bg-blue-600"
+        >
+          <ButtonText className="text-white font-medium">
+            Confirmar Reserva
+          </ButtonText>
+        </Button>
+      </Box>
 
       {/* Calendar Modal */}
-      <Modal
-        visible={showCalendar}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowCalendar(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.calendarContainer}>
-            <View style={styles.calendarHeader}>
-              <Text style={styles.calendarTitle}>Selecione a Data</Text>
-              <TouchableOpacity
-                onPress={() => setShowCalendar(false)}
-                style={styles.closeButton}
-              >
-                <Ionicons name="close" size={24} color="#666" />
-              </TouchableOpacity>
-            </View>
-            <Calendar
-              current={formatDate(date)}
-              minDate={formatDate(new Date())}
-              onDayPress={handleDateSelect}
-              markedDates={{
-                [formatDate(date)]: {
-                  selected: true,
-                  selectedColor: '#1a73e8',
-                },
-              }}
-              theme={{
-                todayTextColor: '#1a73e8',
-                selectedDayBackgroundColor: '#1a73e8',
-                selectedDayTextColor: '#ffffff',
-                arrowColor: '#1a73e8',
-                monthTextColor: '#333',
-                textDayFontWeight: '400',
-                textMonthFontWeight: 'bold',
-                textDayHeaderFontWeight: '500',
-              }}
-            />
-          </View>
-        </View>
+      <Modal isOpen={showCalendar} onClose={() => setShowCalendar(false)} useRNModal={true}>
+        <ModalBackdrop />
+        <ModalContent className="max-w-md">
+          <ModalHeader>
+            <Heading size="lg" className="text-gray-900">
+              Selecione a Data
+            </Heading>
+            <ModalCloseButton>
+              <Icon as={X} size="md" className="text-gray-500" />
+            </ModalCloseButton>
+          </ModalHeader>
+          
+          <ModalBody>
+            <Box className="w-full">
+              <Calendar
+                current={formatDate(date)}
+                minDate={formatDate(new Date())}
+                onDayPress={handleDateSelect}
+                markedDates={{
+                  [formatDate(date)]: {
+                    selected: true,
+                    selectedColor: '#2563eb',
+                  },
+                }}
+                theme={{
+                  todayTextColor: '#2563eb',
+                  selectedDayBackgroundColor: '#2563eb',
+                  selectedDayTextColor: '#ffffff',
+                  arrowColor: '#2563eb',
+                  monthTextColor: '#111827',
+                  textDayFontWeight: '400',
+                  textMonthFontWeight: 'bold',
+                  textDayHeaderFontWeight: '500',
+                }}
+              />
+            </Box>
+          </ModalBody>
+        </ModalContent>
       </Modal>
 
       {/* Time Picker Modal */}
-      <Modal
-        visible={showTimePicker}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowTimePicker(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.calendarContainer}>
-            <View style={styles.calendarHeader}>
-              <Text style={styles.calendarTitle}>Selecione o Horário</Text>
-              <TouchableOpacity
-                onPress={() => setShowTimePicker(false)}
-                style={styles.closeButton}
-              >
-                <Ionicons name="close" size={24} color="#666" />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.timePickerContainer}>
-              {AVAILABLE_HOURS.map((hour) => (
-                <TouchableOpacity
-                  key={hour.value}
-                  style={[
-                    styles.timeOption,
-                    selectedTime === hour.value && styles.timeOptionSelected,
-                    hour.disabled && styles.timeOptionDisabled,
-                  ]}
-                  onPress={() => {
-                    if (!hour.disabled) {
-                      setSelectedTime(hour.value);
-                      setShowTimePicker(false);
-                    }
-                  }}
-                  disabled={hour.disabled}
-                >
-                  <Text
-                    style={[
-                      styles.timeOptionText,
-                      selectedTime === hour.value &&
-                        styles.timeOptionTextSelected,
-                      hour.disabled && styles.timeOptionTextDisabled,
-                    ]}
+      <Modal isOpen={showTimePicker} onClose={() => setShowTimePicker(false)} useRNModal={true}>
+        <ModalBackdrop />
+        <ModalContent className="max-w-md max-h-[80%]">
+          <ModalHeader>
+            <Heading size="lg" className="text-gray-900">
+              Selecione o Horário
+            </Heading>
+            <ModalCloseButton>
+              <Icon as={X} size="md" className="text-gray-500" />
+            </ModalCloseButton>
+          </ModalHeader>
+          
+          <ModalBody>
+            <ScrollView className="max-h-80">
+              <VStack space="xs">
+                {AVAILABLE_HOURS.map((hour) => (
+                  <Pressable
+                    key={hour.value}
+                    onPress={() => {
+                      if (!hour.disabled) {
+                        setSelectedTime(hour.value);
+                        setShowTimePicker(false);
+                      }
+                    }}
+                    disabled={hour.disabled}
+                    className={`p-4 rounded-lg border ${
+                      selectedTime === hour.value
+                        ? 'bg-blue-600 border-blue-600'
+                        : hour.disabled
+                        ? 'bg-gray-100 border-gray-200'
+                        : 'bg-white border-gray-200'
+                    }`}
                   >
-                    {hour.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        </View>
+                    <Text
+                      size="md"
+                      className={`text-center ${
+                        selectedTime === hour.value
+                          ? 'text-white font-medium'
+                          : hour.disabled
+                          ? 'text-gray-400'
+                          : 'text-gray-900'
+                      }`}
+                    >
+                      {hour.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </VStack>
+            </ScrollView>
+          </ModalBody>
+        </ModalContent>
       </Modal>
 
       {/* Sport Picker Modal */}
-      <Modal
-        visible={showSportPicker}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowSportPicker(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.calendarContainer}>
-            <View style={styles.calendarHeader}>
-              <Text style={styles.calendarTitle}>Selecione o Esporte</Text>
-              <TouchableOpacity
-                onPress={() => setShowSportPicker(false)}
-                style={styles.closeButton}
-              >
-                <Ionicons name="close" size={24} color="#666" />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.sportPickerContainer}>
+      <Modal isOpen={showSportPicker} onClose={() => setShowSportPicker(false)} useRNModal={true}>
+        <ModalBackdrop />
+        <ModalContent className="max-w-sm">
+          <ModalHeader>
+            <Heading size="lg" className="text-gray-900">
+              Selecione o Esporte
+            </Heading>
+            <ModalCloseButton>
+              <Icon as={X} size="md" className="text-gray-500" />
+            </ModalCloseButton>
+          </ModalHeader>
+          
+          <ModalBody>
+            <VStack space="xs">
               {SPORTS_OPTIONS.map((option) => (
-                <TouchableOpacity
+                <Pressable
                   key={option.value}
-                  style={[
-                    styles.sportOption,
-                    sport === option.value && styles.sportOptionSelected,
-                  ]}
                   onPress={() => {
                     setSport(option.value);
                     setShowSportPicker(false);
                   }}
+                  className={`p-4 rounded-lg border ${
+                    sport === option.value
+                      ? 'bg-blue-50 border-blue-200'
+                      : 'bg-white border-gray-200'
+                  }`}
                 >
-                  <Text
-                    style={[
-                      styles.sportOptionText,
-                      sport === option.value && styles.sportOptionTextSelected,
-                    ]}
-                  >
-                    {option.label}
-                  </Text>
-                </TouchableOpacity>
+                  <HStack className="items-center justify-between">
+                    <Text
+                      size="md"
+                      className={`${
+                        sport === option.value
+                          ? 'text-blue-600 font-medium'
+                          : 'text-gray-900'
+                      }`}
+                    >
+                      {option.label}
+                    </Text>
+                    {sport === option.value && (
+                      <Icon as={Check} size="sm" className="text-blue-600" />
+                    )}
+                  </HStack>
+                </Pressable>
               ))}
-            </View>
-          </View>
-        </View>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
       </Modal>
 
       {/* Receipt Modal */}
-      <Modal
-        visible={showReceipt}
-        transparent
-        animationType="fade"
-        onRequestClose={() => {
+      <Modal 
+        isOpen={showReceipt} 
+        onClose={() => {
           setShowReceipt(false);
           router.back();
         }}
+        size="lg"
+        useRNModal={true}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.receiptContainer}>
-            <View style={styles.receiptHeader}>
-              <Text style={styles.receiptTitle}>Reserva confirmada</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  setShowReceipt(false);
-                  router.back();
-                }}
-                style={styles.closeButton}
-              >
-                <Ionicons name="close" size={24} color="#666" />
-              </TouchableOpacity>
-            </View>
+        <ModalBackdrop />
+        <ModalContent className="max-w-md max-h-[90%]">
+          <ModalHeader>
+            <Heading size="xl" className="text-gray-900">
+              Reserva Confirmada
+            </Heading>
+            <ModalCloseButton>
+              <Icon as={X} size="md" className="text-gray-500" />
+            </ModalCloseButton>
+          </ModalHeader>
+          
+          <ModalBody>
+            <VStack space="lg">
+              {/* Success Icon */}
+              <Box className="items-center py-4">
+                <Box className="w-20 h-20 bg-green-500 rounded-full items-center justify-center">
+                  <Icon as={Check} size="xl" className="text-white" />
+                </Box>
+              </Box>
 
-            <View style={styles.successIconContainer}>
-              <View style={styles.successIconCircle}>
-                <Ionicons name="checkmark" size={48} color="#fff" />
-              </View>
-            </View>
+              {/* Receipt Details */}
+              <VStack space="md">
+                <VStack space="sm">
+                  <HStack className="justify-between items-center">
+                    <Text size="md" className="text-gray-600">
+                      Titular da reserva
+                    </Text>
+                    <Text size="md" className="text-gray-900 font-medium">
+                      Lucas Jorge
+                    </Text>
+                  </HStack>
 
-            <View style={styles.receiptContent}>
-              <View style={styles.receiptItem}>
-                <Text style={styles.receiptLabel}>Titular da reserva</Text>
-                <Text style={styles.receiptValue}>Lucas Jorge</Text>
-              </View>
+                  <HStack className="justify-between items-center">
+                    <Text size="md" className="text-gray-600">
+                      Local
+                    </Text>
+                    <Text size="md" className="text-gray-900 font-medium">
+                      {spaceName}
+                    </Text>
+                  </HStack>
 
-              <View style={styles.receiptItem}>
-                <Text style={styles.receiptLabel}>Local</Text>
-                <Text style={styles.receiptValue}>{spaceName}</Text>
-              </View>
+                  <HStack className="justify-between items-center">
+                    <Text size="md" className="text-gray-600">
+                      Data
+                    </Text>
+                    <Text size="md" className="text-gray-900 font-medium">
+                      {date.toLocaleDateString('pt-BR')}
+                    </Text>
+                  </HStack>
 
-              <View style={styles.receiptItem}>
-                <Text style={styles.receiptLabel}>Data</Text>
-                <Text style={styles.receiptValue}>
-                  {date.toLocaleDateString('pt-BR')}
-                </Text>
-              </View>
+                  <HStack className="justify-between items-center">
+                    <Text size="md" className="text-gray-600">
+                      Horário
+                    </Text>
+                    <Text size="md" className="text-gray-900 font-medium">
+                      {getTimeInterval(selectedTime.split(':')[0])}
+                    </Text>
+                  </HStack>
 
-              <View style={styles.receiptItem}>
-                <Text style={styles.receiptLabel}>Horário</Text>
-                <Text style={styles.receiptValue}>
-                  {getTimeInterval(selectedTime.split(':')[0])}
-                </Text>
-              </View>
+                  <HStack className="justify-between items-center">
+                    <Text size="md" className="text-gray-600">
+                      Esporte
+                    </Text>
+                    <Text size="md" className="text-gray-900 font-medium">
+                      {SPORTS_OPTIONS.find((s) => s.value === sport)?.label}
+                    </Text>
+                  </HStack>
 
-              <View style={styles.receiptItem}>
-                <Text style={styles.receiptLabel}>Esporte</Text>
-                <Text style={styles.receiptValue}>
-                  {SPORTS_OPTIONS.find((s) => s.value === sport)?.label}
-                </Text>
-              </View>
+                  <HStack className="justify-between items-center">
+                    <Text size="md" className="text-gray-600">
+                      Duração
+                    </Text>
+                    <Text size="md" className="text-gray-900 font-medium">
+                      {hours} hora{hours > 1 ? 's' : ''}
+                    </Text>
+                  </HStack>
 
-              <View style={styles.receiptItem}>
-                <Text style={styles.receiptLabel}>Duração</Text>
-                <Text style={styles.receiptValue}>
-                  {hours} hora{hours > 1 ? 's' : ''}
-                </Text>
-              </View>
+                  <HStack className="justify-between items-center">
+                    <Text size="md" className="text-gray-600">
+                      Pessoas
+                    </Text>
+                    <Text size="md" className="text-gray-900 font-medium">
+                      {people}
+                    </Text>
+                  </HStack>
+                </VStack>
 
-              <View style={styles.receiptItem}>
-                <Text style={styles.receiptLabel}>Pessoas</Text>
-                <Text style={styles.receiptValue}>{people}</Text>
-              </View>
+                {/* Divider */}
+                <Box className="h-px bg-gray-200 my-2" />
 
-              <View style={styles.receiptDivider} />
+                {/* Total */}
+                <VStack space="sm">
+                  <HStack className="justify-between items-center">
+                    <Text size="md" className="text-gray-600">
+                      Valor Total
+                    </Text>
+                    <Text size="lg" className="text-blue-600 font-bold">
+                      R$ {price.toFixed(2)}
+                    </Text>
+                  </HStack>
 
-              <View style={styles.receiptItem}>
-                <Text style={styles.receiptLabel}>Valor Total</Text>
-                <Text style={[styles.receiptValue, styles.totalValue]}>
-                  R$ {price.toFixed(2)}
-                </Text>
-              </View>
+                  <HStack className="justify-between items-center">
+                    <Text size="md" className="text-gray-600">
+                      Valor por pessoa
+                    </Text>
+                    <Text size="md" className="text-gray-900 font-medium">
+                      R$ {calculatePricePerPerson()}
+                    </Text>
+                  </HStack>
+                </VStack>
+              </VStack>
+            </VStack>
+          </ModalBody>
 
-              <View style={styles.receiptItem}>
-                <Text style={styles.receiptLabel}>Valor por pessoa</Text>
-                <Text style={styles.receiptValue}>
-                  R$ {calculatePricePerPerson()}
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.receiptButtons}>
-              <CustomButton
-                title="Compartilhar com amigos"
-                variant="success"
-                size="large"
-                icon={<Ionicons name="share-social" size={24} color="#fff" />}
+          <ModalFooter>
+            <VStack className="w-full" space="sm">
+              <Button
+                size="lg"
+                action="secondary"
+                variant="outline"
                 onPress={handleShare}
-                style={{ marginBottom: 10 }}
-              />
+                className="border-green-500"
+              >
+                <HStack className="items-center" space="xs">
+                  <Icon as={Share2} size="sm" className="text-green-600" />
+                  <ButtonText className="text-green-600 font-medium">
+                    Compartilhar com amigos
+                  </ButtonText>
+                </HStack>
+              </Button>
 
-              <CustomButton
-                title="Concluir"
-                variant="primary"
-                size="large"
+              <Button
+                size="lg"
+                action="primary"
                 onPress={() => {
                   setShowReceipt(false);
                   router.back();
                 }}
-              />
-            </View>
-          </View>
-        </View>
+                className="bg-blue-600"
+              >
+                <ButtonText className="text-white font-medium">
+                  Concluir
+                </ButtonText>
+              </Button>
+            </VStack>
+          </ModalFooter>
+        </ModalContent>
       </Modal>
 
       {/* Loading Modal */}
       <Loading visible={isLoading} message="Confirmando reserva..." />
-    </SafeAreaView>
+    </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  content: {
-    flex: 1,
-  },
-  spaceInfo: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  spaceName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
-  },
-  priceContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  duration: {
-    fontSize: 16,
-    color: '#666',
-  },
-  price: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1a73e8',
-  },
-  form: {
-    padding: 20,
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#333',
-    fontWeight: '500',
-  },
-  dateButton: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  pickerContainer: {
-    marginTop: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-  },
-  picker: {
-    width: '100%',
-  },
-  footer: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  confirmButton: {
-    backgroundColor: '#1a73e8',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  confirmText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  calendarContainer: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 20,
-    width: '90%',
-    maxWidth: 360,
-  },
-  calendarHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  calendarTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  closeButton: {
-    padding: 4,
-  },
-  timePickerContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
-  timeOption: {
-    width: '48%',
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginBottom: 10,
-    alignItems: 'center',
-  },
-  timeOptionSelected: {
-    backgroundColor: '#1a73e8',
-    borderColor: '#1a73e8',
-  },
-  timeOptionText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  timeOptionTextSelected: {
-    color: '#fff',
-  },
-  sportPickerContainer: {
-    paddingHorizontal: 10,
-  },
-  sportOption: {
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginBottom: 10,
-    alignItems: 'center',
-  },
-  sportOptionSelected: {
-    backgroundColor: '#1a73e8',
-    borderColor: '#1a73e8',
-  },
-  sportOptionText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  sportOptionTextSelected: {
-    color: '#fff',
-  },
-  numberInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  numberButton: {
-    padding: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f5f5f5',
-    width: 48,
-  },
-  numberDisplay: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-  },
-  numberText: {
-    fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
-  },
-  timeOptionDisabled: {
-    backgroundColor: '#f5f5f5',
-    borderColor: '#eee',
-  },
-  timeOptionTextDisabled: {
-    color: '#999',
-  },
-  pricePerPerson: {
-    marginTop: 8,
-    fontSize: 14,
-    color: '#666',
-    fontStyle: 'italic',
-  },
-  receiptContainer: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 20,
-    width: '90%',
-    maxWidth: 360,
-  },
-  receiptHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  receiptTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  receiptContent: {
-    marginBottom: 20,
-  },
-  receiptItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  receiptLabel: {
-    fontSize: 16,
-    color: '#666',
-  },
-  receiptValue: {
-    fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
-  },
-  receiptDivider: {
-    height: 1,
-    backgroundColor: '#eee',
-    marginVertical: 12,
-  },
-  totalValue: {
-    fontSize: 18,
-    color: '#1a73e8',
-    fontWeight: 'bold',
-  },
-  receiptButtons: {
-    marginTop: 20,
-  },
-  successIconContainer: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  successIconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#4CAF50',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
