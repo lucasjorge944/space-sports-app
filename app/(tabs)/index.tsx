@@ -12,6 +12,7 @@ import { Icon } from '@/components/ui/icon';
 import { RefreshCw, AlertCircle } from 'lucide-react-native';
 import { PageHeader } from '../components/PageHeader';
 import { SpaceCard } from '../components/SpaceCard';
+import { ADSBanner } from '../components/ADSBanner';
 import {
   SortOptionsModal,
   SortOptionConfig,
@@ -21,6 +22,18 @@ import { Loading } from '../components/Loading';
 import { getDIContainer } from '../infrastructure/di/DIContainer';
 import { useSpaces } from '../presentation/hooks/useSpaces';
 import { SpaceFilters } from '../domain/entities/Space';
+import { SpaceViewModel } from '../presentation/controllers/SpaceController';
+
+const ADS_BANNERS = [
+  { uri: 'ads-1.jpg', link: '' },
+  { uri: 'ads-2.jpg', link: '' },
+];
+
+type AdBanner = { uri: string; link: string };
+
+type FeedItem =
+  | { type: 'space'; data: SpaceViewModel }
+  | { type: 'ad'; data: AdBanner };
 
 const SORT_OPTIONS: SortOptionConfig[] = [
   {
@@ -90,6 +103,24 @@ export default function ExploreScreen() {
       }
     });
   }, [spaces, sortOption]);
+
+  // Cria lista intercalada de espaços e banners (1 banner a cada 2 espaços)
+  const feedItems = React.useMemo<FeedItem[]>(() => {
+    const items: FeedItem[] = [];
+    let adIndex = 0;
+
+    sortedSpaces.forEach((space, index) => {
+      items.push({ type: 'space', data: space });
+
+      // Adiciona banner a cada 2 espaços
+      if ((index + 1) % 2 === 0) {
+        items.push({ type: 'ad', data: ADS_BANNERS[adIndex % ADS_BANNERS.length] });
+        adIndex++;
+      }
+    });
+
+    return items;
+  }, [sortedSpaces]);
 
   const handleRefresh = () => {
     clearError();
@@ -184,9 +215,13 @@ export default function ExploreScreen() {
             </Box>
           ) : (
             <VStack space="md">
-              {sortedSpaces.map((space) => (
-                <SpaceCard key={space.id} data={space} />
-              ))}
+              {feedItems.map((item, index) =>
+                item.type === 'space' ? (
+                  <SpaceCard key={`space-${item.data.id}`} data={item.data} />
+                ) : (
+                  <ADSBanner key={`ad-${index}`} uri={item.data.uri} link={item.data.link} />
+                )
+              )}
             </VStack>
           )}
         </VStack>
