@@ -63,8 +63,8 @@ export function ClassCard({
       >
         {/* Image with overlay badge */}
         <Box className="relative">
-          <Image
-            source={{ uri: data.image }}
+        <Image
+          source={{ uri: data.image }}
             className="w-full h-40"
             style={{ resizeMode: 'cover' }}
           />

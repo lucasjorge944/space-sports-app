@@ -64,11 +64,11 @@ export function SortOptionsModal({
           size="sm"
           className={`text-center ${isSelected ? 'text-blue-600 font-medium' : 'text-gray-600'}`}
           numberOfLines={2}
-        >
-          {title}
-        </Text>
+      >
+        {title}
+      </Text>
       </Pressable>
-    );
+  );
   };
 
   return (
@@ -94,7 +94,7 @@ export function SortOptionsModal({
                   <Box key={option.value} className="flex-1">
                     <SortOption {...option} />
                   </Box>
-                ))}
+            ))}
                 {/* Fill empty slots to maintain grid alignment */}
                 {options.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 &&
                   Array.from({ 
@@ -104,7 +104,7 @@ export function SortOptionsModal({
                   ))
                 }
               </HStack>
-            ))}
+        ))}
           </VStack>
         </VStack>
       </ActionsheetContent>

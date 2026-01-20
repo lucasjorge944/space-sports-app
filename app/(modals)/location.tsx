@@ -1,18 +1,16 @@
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
-import { IconButton } from '../components/IconButton';
-import { CustomTextInput } from '../components/CustomTextInput';
 import { useState } from 'react';
+import { FlatList } from 'react-native';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { Pressable } from '@/components/ui/pressable';
+import { Input, InputField } from '@/components/ui/input';
+import { Spinner } from '@/components/ui/spinner';
+import { Icon } from '@/components/ui/icon';
+import { X, Search, MapPin } from 'lucide-react-native';
 
 interface Address {
   cep: string;
@@ -60,112 +58,109 @@ export default function LocationModal() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <IconButton
-          name="close-outline"
-          onPress={() => router.back()}
-          color="#666"
-        />
-        <Text style={styles.headerTitle}>Configurar localização</Text>
-        <View style={{ width: 24 }} />
-      </View>
-      <View style={styles.content}>
-        <CustomTextInput
-          placeholder="Digite o CEP (somente números)"
-          value={searchQuery}
-          onChangeText={(text) => {
-            const numbers = text.replace(/[^\d]/g, '');
-            setSearchQuery(numbers);
-            if (numbers.length === 8) {
-              searchAddress(numbers);
-            }
-          }}
-          icon="search-outline"
-          inputProps={{
-            keyboardType: 'numeric',
-            maxLength: 8,
-          }}
-        />
+    <Box className="flex-1 bg-white">
+      {/* Header minimalista */}
+      <Box className="bg-white border-b border-gray-100">
+        <Box className="pt-4 pb-4 px-5">
+          <HStack className="items-center justify-between">
+            <Pressable 
+              onPress={() => router.back()}
+              className="p-2 -ml-2"
+            >
+              <Icon as={X} size="lg" className="text-gray-600" />
+            </Pressable>
+            
+            <Heading size="lg" className="text-gray-900">
+              Configurar localização
+            </Heading>
+            
+            <Box className="w-6" />
+          </HStack>
+        </Box>
+      </Box>
 
+      {/* Conteúdo */}
+      <VStack className="flex-1 p-5" space="lg">
+        {/* Campo de busca */}
+        <VStack space="sm">
+          <Text size="sm" className="text-gray-600 font-medium">
+            Digite o CEP para buscar o endereço
+          </Text>
+          <Input className="bg-gray-50 border-gray-200">
+            <Icon as={Search} size="sm" className="text-gray-400 ml-3" />
+            <InputField
+              placeholder="00000-000"
+              value={searchQuery}
+              onChangeText={(text) => {
+                const numbers = text.replace(/[^\d]/g, '');
+                setSearchQuery(numbers);
+                if (numbers.length === 8) {
+                  searchAddress(numbers);
+                }
+              }}
+              keyboardType="numeric"
+              maxLength={8}
+              className="text-gray-900"
+            />
+          </Input>
+        </VStack>
+
+        {/* Estado de loading */}
         {loading && (
-          <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color="#1a73e8" />
-          </View>
+          <Box className="flex-1 justify-center items-center">
+            <VStack className="items-center" space="md">
+              <Spinner size="large" className="text-blue-600" />
+              <Text size="md" className="text-gray-600">
+                Buscando endereço...
+              </Text>
+            </VStack>
+          </Box>
         )}
 
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-        {!loading && (
-          <FlatList
-            data={addresses}
-            keyExtractor={(item) => item.cep}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.addressItem}
-                onPress={() => handleAddressSelect(item)}
-              >
-                <Text style={styles.addressText}>{item.logradouro}</Text>
-                <Text style={styles.addressDetails}>
-                  {`${item.bairro}, ${item.localidade} - ${item.uf}`}
-                </Text>
-              </TouchableOpacity>
-            )}
-          />
+        {/* Mensagem de erro */}
+        {error && !loading && (
+          <Box className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <Text size="md" className="text-red-700 text-center">
+              {error}
+            </Text>
+          </Box>
         )}
-      </View>
-    </SafeAreaView>
+
+        {/* Lista de endereços */}
+        {!loading && addresses.length > 0 && (
+          <VStack space="sm">
+            <Text size="sm" className="text-gray-600 font-medium">
+              Endereço encontrado
+            </Text>
+            <FlatList
+              data={addresses}
+              keyExtractor={(item) => item.cep}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => handleAddressSelect(item)}
+                  className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-2"
+                >
+                  <HStack className="items-start" space="sm">
+                    <Icon as={MapPin} size="sm" className="text-blue-600 mt-1" />
+                    <VStack className="flex-1" space="xs">
+                      <Text size="md" className="text-gray-900 font-medium">
+                        {item.logradouro}
+                      </Text>
+                      <Text size="sm" className="text-gray-600">
+                        {`${item.bairro}, ${item.localidade} - ${item.uf}`}
+                      </Text>
+                      <Text size="xs" className="text-gray-500">
+                        CEP: {item.cep}
+                      </Text>
+                    </VStack>
+                  </HStack>
+                </Pressable>
+              )}
+            />
+          </VStack>
+        )}
+      </VStack>
+    </Box>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  text: {
-    fontSize: 16,
-    color: '#333',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  content: {
-    padding: 20,
-    flex: 1,
-  },
-  centerContainer: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  errorText: {
-    color: 'red',
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  addressItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  addressText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  addressDetails: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
-  },
-});

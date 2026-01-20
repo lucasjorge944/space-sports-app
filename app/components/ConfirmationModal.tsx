@@ -64,7 +64,7 @@ export function ConfirmationModal({
           {/* Content */}
           <VStack space="md" className="items-center py-4">
             <Box className="items-center justify-center">
-              <Ionicons name={icon.name} size={48} color={icon.color} />
+        <Ionicons name={icon.name} size={48} color={icon.color} />
             </Box>
             
             <Heading size="xl" className="text-center text-gray-900">
@@ -82,7 +82,7 @@ export function ConfirmationModal({
               variant="outline"
               action="secondary"
               size="lg"
-              onPress={onClose}
+          onPress={onClose}
               className="flex-1"
             >
               <ButtonText>{cancelText}</ButtonText>
@@ -92,7 +92,7 @@ export function ConfirmationModal({
               variant="solid"
               action={getButtonAction()}
               size="lg"
-              onPress={onConfirm}
+          onPress={onConfirm}
               className="flex-1"
             >
               <ButtonText>{confirmText}</ButtonText>

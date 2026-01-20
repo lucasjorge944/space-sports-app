@@ -65,7 +65,7 @@ export default function ProfileScreen() {
             icon={SettingsIcon}
             title="Editar Perfil"
           />
-          
+
           <MenuItem
             icon={CalendarDaysIcon}
             title="Métodos de Pagamento"
@@ -74,7 +74,7 @@ export default function ProfileScreen() {
           <MenuItem
             icon={CalendarDaysIcon}
             title="Meus Planos"
-            onPress={() => router.push('/plans')}
+          onPress={() => router.push('/plans')}
           />
           
           <MenuItem
@@ -86,10 +86,10 @@ export default function ProfileScreen() {
         {/* Logout Button */}
         <Box className="mt-8">
           <Button
-            variant="outline"
+        variant="outline"
             action="secondary"
             size="lg"
-            onPress={handleLogout}
+        onPress={handleLogout}
             className="w-full border-red-200 bg-red-50"
           >
             <Icon as={SettingsIcon} size="sm" className="text-red-600 mr-2" />

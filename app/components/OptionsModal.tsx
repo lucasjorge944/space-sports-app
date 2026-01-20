@@ -42,24 +42,24 @@ export function OptionsModal({
         </ActionsheetDragIndicatorWrapper>
 
         <Box className="w-full">
-          {options.map((option, index) => (
-            <React.Fragment key={option.label}>
+      {options.map((option, index) => (
+        <React.Fragment key={option.label}>
               {option.showSeparator && (
                 <Divider className="my-2" />
               )}
               <ActionsheetItem
-                onPress={() => {
-                  onClose();
-                  onSelectOption(option);
-                }}
+            onPress={() => {
+              onClose();
+              onSelectOption(option);
+            }}
                 className="py-4 px-4"
-              >
+          >
                 <Box className="mr-3">
-                  <Ionicons
-                    name={option.icon}
-                    size={24}
-                    color={option.variant === 'danger' ? '#dc3545' : '#333'}
-                  />
+            <Ionicons
+              name={option.icon}
+              size={24}
+              color={option.variant === 'danger' ? '#dc3545' : '#333'}
+            />
                 </Box>
                 <ActionsheetItemText
                   className={`text-base ${
@@ -67,12 +67,12 @@ export function OptionsModal({
                       ? 'text-red-600' 
                       : 'text-gray-900'
                   }`}
-                >
-                  {option.label}
+            >
+              {option.label}
                 </ActionsheetItemText>
               </ActionsheetItem>
-            </React.Fragment>
-          ))}
+        </React.Fragment>
+      ))}
         </Box>
       </ActionsheetContent>
     </Actionsheet>
