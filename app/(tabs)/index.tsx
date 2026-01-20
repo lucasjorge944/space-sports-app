@@ -1,6 +1,15 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { router } from 'expo-router';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { ScrollView } from '@/components/ui/scroll-view';
+import { Alert, AlertIcon, AlertText } from '@/components/ui/alert';
+import { Button, ButtonText } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
+import { RefreshCw, AlertCircle } from 'lucide-react-native';
 import { PageHeader } from '../components/PageHeader';
 import { SpaceCard } from '../components/SpaceCard';
 import {
@@ -93,15 +102,15 @@ export default function ExploreScreen() {
 
   if (loading && spaces.length === 0) {
     return (
-      <View style={styles.container}>
+      <Box className="flex-1 bg-gray-50">
         <PageHeader title="Explorar" />
         <Loading visible={loading} />
-      </View>
+      </Box>
     );
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <Box className="flex-1 bg-gray-50">
       <PageHeader
         title="Explorar"
         buttons={
@@ -125,43 +134,62 @@ export default function ExploreScreen() {
         }
       />
 
-      <ScrollView style={styles.container}>
-        {error && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{error}</Text>
-            <IconButton
-              name="refresh-outline"
-              onPress={handleRefresh}
-              color="#1a73e8"
-            />
-          </View>
-        )}
-
-        <View style={styles.spacesList}>
-          <Text style={styles.containerTitle}>
-            Espaços {spaces.length > 0 && `(${spaces.length})`}
-          </Text>
-
-          {loading && spaces.length > 0 && (
-            <View style={styles.refreshingIndicator}>
-              <Text style={styles.refreshingText}>Atualizando...</Text>
-            </View>
+      <ScrollView className="flex-1">
+        <VStack className="p-5" space="md">
+          {/* Alert de erro */}
+          {error && (
+            <Alert action="error" className="bg-red-50 border border-red-200">
+              <AlertIcon as={AlertCircle} className="text-red-600" />
+              <VStack className="flex-1">
+                <AlertText className="text-red-800 font-medium">
+                  {error}
+                </AlertText>
+              </VStack>
+              <Button
+                size="sm"
+                variant="outline"
+                action="secondary"
+                onPress={handleRefresh}
+                className="ml-2"
+              >
+                <Icon as={RefreshCw} size="sm" className="text-red-600" />
+              </Button>
+            </Alert>
           )}
 
+          {/* Título da seção */}
+          <VStack space="sm">
+            <Heading size="lg" className="text-gray-900">
+              Espaços {spaces.length > 0 && `(${spaces.length})`}
+            </Heading>
+
+            {/* Indicador de atualização */}
+            {loading && spaces.length > 0 && (
+              <Box className="bg-blue-50 p-2 rounded-md">
+                <Text size="sm" className="text-blue-700 text-center">
+                  Atualizando...
+                </Text>
+              </Box>
+            )}
+          </VStack>
+
+          {/* Lista de espaços ou estado vazio */}
           {sortedSpaces.length === 0 && !loading ? (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>
+            <Box className="items-center py-16">
+              <Text size="md" className="text-gray-500 text-center">
                 {error
                   ? 'Erro ao carregar espaços'
                   : 'Nenhum espaço encontrado'}
               </Text>
-            </View>
+            </Box>
           ) : (
-            sortedSpaces.map((space) => (
-              <SpaceCard key={space.id} data={space} />
-            ))
+            <VStack space="md">
+              {sortedSpaces.map((space) => (
+                <SpaceCard key={space.id} data={space} />
+              ))}
+            </VStack>
           )}
-        </View>
+        </VStack>
       </ScrollView>
 
       <SortOptionsModal
@@ -171,57 +199,7 @@ export default function ExploreScreen() {
         onOptionSelect={setSortOption}
         options={SORT_OPTIONS}
       />
-    </View>
+    </Box>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  containerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 16,
-    color: '#333',
-  },
-  spacesList: {
-    paddingHorizontal: 20,
-    paddingTop: 18,
-  },
-  errorContainer: {
-    backgroundColor: '#ffebee',
-    margin: 16,
-    padding: 16,
-    borderRadius: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  errorText: {
-    color: '#c62828',
-    fontSize: 14,
-    flex: 1,
-  },
-  refreshingIndicator: {
-    backgroundColor: '#e3f2fd',
-    padding: 8,
-    borderRadius: 4,
-    marginBottom: 16,
-    alignItems: 'center',
-  },
-  refreshingText: {
-    color: '#1976d2',
-    fontSize: 12,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    padding: 32,
-  },
-  emptyText: {
-    color: '#666',
-    fontSize: 16,
-    textAlign: 'center',
-  },
-});

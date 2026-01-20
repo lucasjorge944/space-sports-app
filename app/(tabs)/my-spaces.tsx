@@ -1,5 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
+import { ScrollView } from '@/components/ui/scroll-view';
 import { PageHeader } from '../components/PageHeader';
 import { ClassCard } from '../components/ClassCard';
 import { ReservationCard } from '../components/ReservationCard';
@@ -150,7 +154,7 @@ export default function MySpacesScreen() {
   }, [MOCK_RESERVATIONS, sortOption]);
 
   return (
-    <>
+    <Box className="flex-1 bg-gray-50">
       <PageHeader
         title="Reservas"
         buttons={
@@ -161,42 +165,55 @@ export default function MySpacesScreen() {
           />
         }
       />
-      <ScrollView style={styles.container}>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Aulas de Hoje</Text>
-          {MOCK_TODAY_CLASSES.map((class_) => (
-            <ClassCard
-              key={class_.id}
-              data={class_}
-              isConfirmed={confirmedClasses.includes(class_.id)}
-              currentUser={CURRENT_USER}
-              students={MOCK_STUDENTS[class_.id as keyof typeof MOCK_STUDENTS]}
-              onConfirmationSuccess={() => {
-                setConfirmedClasses((prev) =>
-                  prev.includes(class_.id)
-                    ? prev.filter((id) => id !== class_.id)
-                    : [...prev, class_.id]
-                );
-              }}
-            />
-          ))}
-        </View>
+      
+      <ScrollView className="flex-1 pt-4">
+        <VStack space="lg" className="pb-6">
+          {/* Seção Aulas de Hoje */}
+          <Box className="px-5">
+            <Heading size="lg" className="text-gray-900 mb-4">
+              Aulas de Hoje
+            </Heading>
+            <VStack space="md">
+              {MOCK_TODAY_CLASSES.map((class_) => (
+                <ClassCard
+                  key={class_.id}
+                  data={class_}
+                  isConfirmed={confirmedClasses.includes(class_.id)}
+                  currentUser={CURRENT_USER}
+                  students={MOCK_STUDENTS[class_.id as keyof typeof MOCK_STUDENTS]}
+                  onConfirmationSuccess={() => {
+                    setConfirmedClasses((prev) =>
+                      prev.includes(class_.id)
+                        ? prev.filter((id) => id !== class_.id)
+                        : [...prev, class_.id]
+                    );
+                  }}
+                />
+              ))}
+            </VStack>
+          </Box>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Próximas Reservas</Text>
-          {sortedReservations.map((reservation) => (
-            <ReservationCard
-              key={reservation.id}
-              data={reservation}
-              onCancelSuccess={() => {
-                console.log('Reservation cancelled:', reservation.id);
-              }}
-              onChangeSuccess={() => {
-                console.log('Reservation changed:', reservation.id);
-              }}
-            />
-          ))}
-        </View>
+          {/* Seção Próximas Reservas */}
+          <Box className="px-5">
+            <Heading size="lg" className="text-gray-900 mb-4">
+              Próximas Reservas
+            </Heading>
+            <VStack space="md">
+              {sortedReservations.map((reservation) => (
+                <ReservationCard
+                  key={reservation.id}
+                  data={reservation}
+                  onCancelSuccess={() => {
+                    console.log('Reservation cancelled:', reservation.id);
+                  }}
+                  onChangeSuccess={() => {
+                    console.log('Reservation changed:', reservation.id);
+                  }}
+                />
+              ))}
+            </VStack>
+          </Box>
+        </VStack>
       </ScrollView>
 
       <SortOptionsModal
@@ -206,170 +223,7 @@ export default function MySpacesScreen() {
         onOptionSelect={setSortOption}
         options={SORT_OPTIONS}
       />
-    </>
+    </Box>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-    paddingTop: 18,
-  },
-  section: {
-    marginBottom: 30,
-    paddingHorizontal: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 16,
-    color: '#333',
-  },
-  planContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  planTag: {
-    backgroundColor: '#e8f0fe',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  planText: {
-    color: '#1a73e8',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  planPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1a73e8',
-  },
-  classFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  studentsModalView: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    height: '80%',
-    width: '100%',
-  },
-  modalHandleContainer: {
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  studentsModalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  studentsModalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  closeButton: {
-    padding: 4,
-  },
-  classInfo: {
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  classInfoTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 4,
-  },
-  classInfoDetails: {
-    fontSize: 14,
-    color: '#666',
-  },
-  studentsListContainer: {
-    flex: 1,
-    paddingHorizontal: 16,
-  },
-  studentItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  studentNumberContainer: {
-    width: 40,
-    alignItems: 'center',
-  },
-  studentNumber: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a73e8',
-  },
-  studentNameContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  studentName: {
-    fontSize: 16,
-    color: '#333',
-  },
-  emptySlot: {
-    color: '#999',
-  },
-  currentUserName: {
-    color: '#1a73e8',
-    fontWeight: '700',
-  },
-  currentUserTag: {
-    fontSize: 12,
-    color: '#1a73e8',
-    backgroundColor: '#e8f0fe',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 12,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalHandle: {
-    width: 40,
-    height: 4,
-    backgroundColor: '#DDD',
-    borderRadius: 2,
-  },
-  sortOptionsContainer: {
-    padding: 20,
-  },
-  sortOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  sortOptionSelected: {
-    backgroundColor: '#1a73e8',
-  },
-  sortOptionText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  sortOptionTextSelected: {
-    color: '#fff',
-  },
-});

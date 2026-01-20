@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
 import { Stack } from 'expo-router';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
+import { ScrollView } from '@/components/ui/scroll-view';
 import { PlanCard } from '../components/PlanCard';
 import { PageHeader } from '../components/PageHeader';
 import { IconButton } from '../components/IconButton';
@@ -63,36 +65,26 @@ const MOCK_CLASSES: Plan[] = [
 
 export default function PlansScreen() {
   return (
-    <>
+    <Box className="flex-1 bg-gray-50">
       <Stack.Screen
         options={{
           headerShown: false,
         }}
       />
+      
       <PageHeader
         title="Planos"
         buttons={<IconButton name="filter" color="#1a73e8" />}
         showBackButton
       />
-      <ScrollView style={styles.container}>
-        <View style={styles.section}>
-          {MOCK_CLASSES.map((class_) => (
-            <PlanCard key={class_.id} data={class_} />
+      
+      <ScrollView className="flex-1">
+        <VStack className="p-5" space="md">
+          {MOCK_CLASSES.map((plan) => (
+            <PlanCard key={plan.id} data={plan} />
           ))}
-        </View>
+        </VStack>
       </ScrollView>
-    </>
+    </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  section: {
-    marginBottom: 30,
-    paddingHorizontal: 20,
-    marginTop: 20,
-  },
-});
