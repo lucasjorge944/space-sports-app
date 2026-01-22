@@ -87,7 +87,11 @@ export default function ProfileScreen() {
             onPress={() => router.push('/plans')}
           />
 
-          <MenuItem icon={SettingsIcon} title="Configurações" />
+          <MenuItem
+            icon={SettingsIcon}
+            title="Configurações"
+            onPress={() => router.push('/app-configs')}
+          />
         </VStack>
 
         {/* Logout Button */}

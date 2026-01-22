@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Animated } from 'react-native';
 import { CustomSplash } from './components/CustomSplash';
 import { app } from './config/firebaseConfig';
+import { AppConfigProvider, useAppConfig } from './contexts/AppConfigContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
@@ -30,12 +31,13 @@ function useProtectedRoute(user: any, loading: boolean) {
 
 function RootLayoutNav() {
   const { user, loading } = useAuth();
+  const { config } = useAppConfig();
   useProtectedRoute(user, loading);
   if (loading) {
     return <CustomSplash />;
   }
   return (
-    <GluestackUIProvider mode="light">
+    <GluestackUIProvider mode={config.themeMode}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -55,6 +57,13 @@ function RootLayoutNav() {
         />
         <Stack.Screen
           name="payment-methods"
+          options={{
+            headerShown: false,
+            presentation: 'card',
+          }}
+        />
+        <Stack.Screen
+          name="app-configs"
           options={{
             headerShown: false,
             presentation: 'card',
@@ -123,26 +132,28 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <>
-        <RootLayoutNav />
-        {!splashAnimationFinished && (
-          <Animated.View
-            style={{
-              position: 'absolute',
-              backgroundColor: '#FFFFFF',
-              width: '100%',
-              height: '100%',
-              opacity: fadeAnim,
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 999,
-            }}
-          >
-            <CustomSplash />
-          </Animated.View>
-        )}
-        <StatusBar style="auto" />
-      </>
+      <AppConfigProvider>
+        <>
+          <RootLayoutNav />
+          {!splashAnimationFinished && (
+            <Animated.View
+              style={{
+                position: 'absolute',
+                backgroundColor: '#FFFFFF',
+                width: '100%',
+                height: '100%',
+                opacity: fadeAnim,
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 999,
+              }}
+            >
+              <CustomSplash />
+            </Animated.View>
+          )}
+          <StatusBar style="auto" />
+        </>
+      </AppConfigProvider>
     </AuthProvider>
   );
 }
