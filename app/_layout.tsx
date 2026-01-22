@@ -54,6 +54,13 @@ function RootLayoutNav() {
           }}
         />
         <Stack.Screen
+          name="payment-methods"
+          options={{
+            headerShown: false,
+            presentation: 'card',
+          }}
+        />
+        <Stack.Screen
           name="(modals)/booking"
           options={{
             presentation: 'modal',

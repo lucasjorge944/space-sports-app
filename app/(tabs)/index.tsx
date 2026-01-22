@@ -1,28 +1,27 @@
-import React, { useEffect } from 'react';
-import { router } from 'expo-router';
-import { Box } from '@/components/ui/box';
-import { VStack } from '@/components/ui/vstack';
-import { HStack } from '@/components/ui/hstack';
-import { Text } from '@/components/ui/text';
-import { Heading } from '@/components/ui/heading';
-import { ScrollView } from '@/components/ui/scroll-view';
 import { Alert, AlertIcon, AlertText } from '@/components/ui/alert';
-import { Button, ButtonText } from '@/components/ui/button';
+import { Box } from '@/components/ui/box';
+import { Button } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
 import { Icon } from '@/components/ui/icon';
-import { RefreshCw, AlertCircle } from 'lucide-react-native';
-import { PageHeader } from '../components/PageHeader';
-import { SpaceCard } from '../components/SpaceCard';
+import { ScrollView } from '@/components/ui/scroll-view';
+import { Text } from '@/components/ui/text';
+import { VStack } from '@/components/ui/vstack';
+import { router } from 'expo-router';
+import { AlertCircle, RefreshCw } from 'lucide-react-native';
+import React, { useEffect } from 'react';
 import { ADSBanner } from '../components/ADSBanner';
-import {
-  SortOptionsModal,
-  SortOptionConfig,
-} from '../components/SortOptionsModal';
 import { IconButton } from '../components/IconButton';
 import { Loading } from '../components/Loading';
-import { getDIContainer } from '../infrastructure/di/DIContainer';
-import { useSpaces } from '../presentation/hooks/useSpaces';
+import { PageHeader } from '../components/PageHeader';
+import {
+  SortOptionConfig,
+  SortOptionsModal,
+} from '../components/SortOptionsModal';
+import { SpaceCard } from '../components/SpaceCard';
 import { SpaceFilters } from '../domain/entities/Space';
+import { getDIContainer } from '../infrastructure/di/DIContainer';
 import { SpaceViewModel } from '../presentation/controllers/SpaceController';
+import { useSpaces } from '../presentation/hooks/useSpaces';
 
 const ADS_BANNERS = [
   { uri: 'ads-1.jpg', link: '' },
@@ -114,7 +113,10 @@ export default function ExploreScreen() {
 
       // Adiciona banner a cada 2 espaços
       if ((index + 1) % 2 === 0) {
-        items.push({ type: 'ad', data: ADS_BANNERS[adIndex % ADS_BANNERS.length] });
+        items.push({
+          type: 'ad',
+          data: ADS_BANNERS[adIndex % ADS_BANNERS.length],
+        });
         adIndex++;
       }
     });
@@ -219,7 +221,11 @@ export default function ExploreScreen() {
                 item.type === 'space' ? (
                   <SpaceCard key={`space-${item.data.id}`} data={item.data} />
                 ) : (
-                  <ADSBanner key={`ad-${index}`} uri={item.data.uri} link={item.data.link} />
+                  <ADSBanner
+                    key={`ad-${index}`}
+                    uri={item.data.uri}
+                    link={item.data.link}
+                  />
                 )
               )}
             </VStack>
@@ -237,4 +243,3 @@ export default function ExploreScreen() {
     </Box>
   );
 }
-

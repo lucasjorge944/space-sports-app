@@ -14,7 +14,7 @@ import { router } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function ProfileScreen() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const handleLogout = async () => {
     try {
       await logout();
@@ -58,10 +58,11 @@ export default function ProfileScreen() {
 
           <VStack space="xs" className="items-center">
             <Heading size="xl" className="text-gray-900">
-              Usuário
+              {user?.displayName}
             </Heading>
             <Text size="md" className="text-gray-600">
-              (11) 99999-9999
+              {user?.email}
+              {user?.phoneNumber}
             </Text>
           </VStack>
         </VStack>
@@ -74,7 +75,11 @@ export default function ProfileScreen() {
             onPress={() => router.push('/profile-edit')}
           />
 
-          <MenuItem icon={CalendarDaysIcon} title="Métodos de Pagamento" />
+          <MenuItem
+            icon={CalendarDaysIcon}
+            title="Métodos de Pagamento"
+            onPress={() => router.push('/payment-methods')}
+          />
 
           <MenuItem
             icon={CalendarDaysIcon}
