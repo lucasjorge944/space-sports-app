@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Stack, useRouter, useSegments } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
+import { useEffect, useRef, useState } from 'react';
 import { Animated } from 'react-native';
+import { CustomSplash } from './components/CustomSplash';
 import { app } from './config/firebaseConfig';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { CustomSplash } from './components/CustomSplash';
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import '@/global.css';
@@ -41,6 +41,13 @@ function RootLayoutNav() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="space/[id]"
+          options={{
+            headerShown: false,
+            presentation: 'card',
+          }}
+        />
+        <Stack.Screen
+          name="profile-edit"
           options={{
             headerShown: false,
             presentation: 'card',

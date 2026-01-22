@@ -1,13 +1,16 @@
-import React from 'react';
-import { router } from 'expo-router';
 import { Box } from '@/components/ui/box';
-import { VStack } from '@/components/ui/vstack';
-import { HStack } from '@/components/ui/hstack';
-import { Text } from '@/components/ui/text';
-import { Heading } from '@/components/ui/heading';
 import { Button, ButtonText } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import {
+  CalendarDaysIcon,
+  ChevronRightIcon,
+  Icon,
+  SettingsIcon,
+} from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
-import { Icon, CalendarDaysIcon, SettingsIcon, ChevronRightIcon } from '@/components/ui/icon';
+import { Text } from '@/components/ui/text';
+import { VStack } from '@/components/ui/vstack';
+import { router } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function ProfileScreen() {
@@ -21,9 +24,13 @@ export default function ProfileScreen() {
     }
   };
 
-  const MenuItem = ({ icon, title, onPress }: { 
-    icon: any; 
-    title: string; 
+  const MenuItem = ({
+    icon,
+    title,
+    onPress,
+  }: {
+    icon: any;
+    title: string;
     onPress?: () => void;
   }) => (
     <Pressable
@@ -48,7 +55,7 @@ export default function ProfileScreen() {
           <Box className="w-24 h-24 bg-blue-100 rounded-full items-center justify-center mb-4">
             <Icon as={SettingsIcon} size="xl" className="text-blue-600" />
           </Box>
-          
+
           <VStack space="xs" className="items-center">
             <Heading size="xl" className="text-gray-900">
               Usuário
@@ -64,42 +71,34 @@ export default function ProfileScreen() {
           <MenuItem
             icon={SettingsIcon}
             title="Editar Perfil"
+            onPress={() => router.push('/profile-edit')}
           />
+
+          <MenuItem icon={CalendarDaysIcon} title="Métodos de Pagamento" />
 
           <MenuItem
             icon={CalendarDaysIcon}
-            title="Métodos de Pagamento"
-          />
-          
-          <MenuItem
-            icon={CalendarDaysIcon}
             title="Meus Planos"
-          onPress={() => router.push('/plans')}
+            onPress={() => router.push('/plans')}
           />
-          
-          <MenuItem
-            icon={SettingsIcon}
-            title="Configurações"
-          />
+
+          <MenuItem icon={SettingsIcon} title="Configurações" />
         </VStack>
 
         {/* Logout Button */}
         <Box className="mt-8">
           <Button
-        variant="outline"
+            variant="outline"
             action="secondary"
             size="lg"
-        onPress={handleLogout}
+            onPress={handleLogout}
             className="w-full border-red-200 bg-red-50"
           >
             <Icon as={SettingsIcon} size="sm" className="text-red-600 mr-2" />
-            <ButtonText className="text-red-600 font-medium">
-              Sair
-            </ButtonText>
+            <ButtonText className="text-red-600 font-medium">Sair</ButtonText>
           </Button>
         </Box>
       </VStack>
     </Box>
   );
 }
-

@@ -1,12 +1,16 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { auth } from '../config/firebaseConfig';
 import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
+  EmailAuthProvider,
   User,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  reauthenticateWithCredential,
+  signInWithEmailAndPassword,
+  signOut,
+  updatePassword,
+  updateProfile,
 } from 'firebase/auth';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { auth } from '../config/firebaseConfig';
 
 interface AuthContextData {
   user: User | null;
@@ -15,6 +19,14 @@ interface AuthContextData {
   signInWithGoogle: () => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateUserProfile: (data: {
+    displayName?: string;
+    photoURL?: string;
+  }) => Promise<void>;
+  changePassword: (
+    currentPassword: string,
+    newPassword: string
+  ) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -72,6 +84,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateUserProfile = async (data: {
+    displayName?: string;
+    photoURL?: string;
+  }) => {
+    try {
+      if (!auth.currentUser) {
+        throw new Error('Usuário não autenticado');
+      }
+      await updateProfile(auth.currentUser, data);
+      // Atualiza o estado do usuário
+      setUser({ ...auth.currentUser, ...data } as User);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const changePassword = async (
+    currentPassword: string,
+    newPassword: string
+  ) => {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser || !currentUser.email) {
+        throw new Error('Usuário não autenticado');
+      }
+
+      // Reautenticar o usuário
+      const credential = EmailAuthProvider.credential(
+        currentUser.email,
+        currentPassword
+      );
+      await reauthenticateWithCredential(currentUser, credential);
+
+      // Atualizar a senha
+      await updatePassword(currentUser, newPassword);
+    } catch (error: any) {
+      if (error.code === 'auth/wrong-password') {
+        throw new Error('Senha atual incorreta');
+      } else if (error.code === 'auth/weak-password') {
+        throw new Error('A nova senha é muito fraca');
+      }
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -81,6 +138,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signInWithGoogle,
         signUp,
         logout,
+        updateUserProfile,
+        changePassword,
       }}
     >
       {children}
